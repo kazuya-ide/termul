@@ -90,7 +90,11 @@ function isWslPath(p: string): boolean {
 
 export async function openClaudeTerminal(localPath: string): Promise<LaunchResult> {
   if (isWslPath(localPath)) {
-    const match = localPath.match(/^\\\\wsl(?:\.localhost)?\$\\([^\\]+)\\(.*)$/)
+    // 新形式 \\wsl.localhost\<distro>\... と旧形式 \\wsl$\<distro>\... の
+    // どちらも受け付ける(実機で `wslpath -w` が既定で .localhost 形式を
+    // 返すことを確認済み。旧形式のみを前提にしていた版はここで一致せず、
+    // WSL専用の起動処理に入れないまま素通りしてしまう不具合があった)。
+    const match = localPath.match(/^\\\\wsl(?:\.localhost|\$)\\([^\\]+)\\(.*)$/)
     if (match) {
       const [, distro, rest] = match
       const wslPath = `/${rest.replace(/\\/g, '/')}`
