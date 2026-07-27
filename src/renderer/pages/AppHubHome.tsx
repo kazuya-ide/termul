@@ -1,4 +1,4 @@
-import type { AppFrontmatter } from '@shared/types/app-hub.types'
+import type { AppFrontmatter, AppRecord } from '@shared/types/app-hub.types'
 import { KIND_LABEL, STATUS_LABEL, STATUS_VALUES } from '@shared/types/app-hub.types'
 import {
   AlertTriangle,
@@ -6,6 +6,7 @@ import {
   ChevronUp,
   ExternalLink,
   FolderOpen,
+  Info,
   Play,
   RefreshCw,
   Search,
@@ -14,6 +15,8 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { extractOverviewExcerpt, extractSection } from '@/lib/app-hub-format'
 import {
   openAppUrl,
   openClaudeTerminal,
@@ -37,6 +40,8 @@ export default function AppHubHome(): React.JSX.Element {
   const { apps, isLoading, hasLoadedOnce, loadErrors, load, pathStatus } = useAppHubStore()
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [detailSlug, setDetailSlug] = useState<string | null>(null)
+  const detailApp = apps.find((a) => a.frontmatter.slug === detailSlug) ?? null
 
   useEffect(() => {
     if (!hasLoadedOnce) {
@@ -149,13 +154,20 @@ export default function AppHubHome(): React.JSX.Element {
           {filtered.map((app) => (
             <AppCard
               key={app.frontmatter.slug}
-              frontmatter={app.frontmatter}
+              record={app}
               runAction={runAction}
               pathStatus={pathStatus[app.frontmatter.slug] ?? 'unknown'}
+              onOpenDetail={() => setDetailSlug(app.frontmatter.slug)}
             />
           ))}
         </div>
       )}
+
+      <AppDetailModal
+        record={detailApp}
+        onClose={() => setDetailSlug(null)}
+        runAction={runAction}
+      />
     </div>
   )
 }
@@ -174,17 +186,21 @@ const PROCESS_STATUS_CLASS: Record<string, string> = {
 }
 
 function AppCard({
-  frontmatter: fm,
+  record,
   runAction,
-  pathStatus
+  pathStatus,
+  onOpenDetail
 }: {
-  frontmatter: AppFrontmatter
+  record: AppRecord
   runAction: (
     label: string,
     action: () => Promise<{ ok: boolean; message: string }>
   ) => Promise<void>
   pathStatus: PathStatus
+  onOpenDetail: () => void
 }): React.JSX.Element {
+  const fm = record.frontmatter
+  const overview = extractOverviewExcerpt(record.body)
   const primaryUrl = fm.urls.production ?? fm.urls.admin ?? null
   const devCommand = fm.launch?.dev_command?.trim() || ''
   const process = useAppHubProcessStore((s) => s.processes[fm.slug])
@@ -217,6 +233,8 @@ function AppCard({
         </div>
       )}
 
+      {overview && <p className="text-xs text-muted-foreground line-clamp-2">{overview}</p>}
+
       {fm.tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {fm.tags.slice(0, 4).map((tag) => (
@@ -235,6 +253,14 @@ function AppCard({
       </div>
 
       <div className="flex flex-wrap gap-1.5 pt-1">
+        <button
+          type="button"
+          onClick={onOpenDetail}
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+        >
+          <Info size={12} />
+          詳細
+        </button>
         <button
           type="button"
           onClick={() => void runAction('フォルダを開く', () => openFolder(fm.paths.local))}
@@ -343,5 +369,169 @@ function AppCard({
         </div>
       )}
     </div>
+  )
+}
+
+const URL_FIELDS: Array<{ key: keyof AppFrontmatter['urls']; label: string }> = [
+  { key: 'production', label: '本番' },
+  { key: 'admin', label: '管理画面' },
+  { key: 'github', label: 'GitHub' },
+  { key: 'vercel', label: 'Vercel' },
+  { key: 'supabase_dashboard', label: 'Supabaseダッシュボード' }
+]
+
+/** cautions配列は台帳側の過去データ形式ゆれを許容するため型を緩めている。
+ *  表示時に {text, severity} の形をしている項目だけを安全に取り出す。 */
+function readCaution(item: unknown): { text: string; severity: string } | null {
+  if (typeof item !== 'object' || item === null) return null
+  const record = item as Record<string, unknown>
+  if (typeof record.text !== 'string') return null
+  return {
+    text: record.text,
+    severity: typeof record.severity === 'string' ? record.severity : 'medium'
+  }
+}
+
+const CAUTION_SEVERITY_CLASS: Record<string, string> = {
+  high: 'text-red-500 bg-red-500/10 border-red-500/30',
+  medium: 'text-amber-500 bg-amber-500/10 border-amber-500/30',
+  low: 'text-muted-foreground bg-secondary/50 border-border'
+}
+
+function AppDetailModal({
+  record,
+  onClose,
+  runAction
+}: {
+  record: AppRecord | null
+  onClose: () => void
+  runAction: (
+    label: string,
+    action: () => Promise<{ ok: boolean; message: string }>
+  ) => Promise<void>
+}): React.JSX.Element {
+  const fm = record?.frontmatter
+  const overview = record ? (extractSection(record.body, '概要') ?? record.body) : ''
+  const cautions = (fm?.cautions ?? []).map(readCaution).filter((c) => c !== null)
+
+  return (
+    <Dialog open={record !== null} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        {fm && (
+          <>
+            <DialogHeader>
+              <DialogTitle>{fm.name}</DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4 text-sm">
+              <div className="flex flex-wrap gap-1.5">
+                <span
+                  className={`text-[11px] px-1.5 py-0.5 rounded ${STATUS_BADGE_CLASS[fm.status] ?? ''}`}
+                >
+                  {STATUS_LABEL[fm.status]}
+                </span>
+                <span className="text-[11px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">
+                  {KIND_LABEL[fm.kind]}
+                </span>
+                {fm.company && (
+                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">
+                    {fm.company}
+                  </span>
+                )}
+                {fm.project_group && (
+                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground">
+                    {fm.project_group}
+                  </span>
+                )}
+              </div>
+
+              {overview && (
+                <p className="whitespace-pre-wrap text-muted-foreground leading-relaxed">
+                  {overview}
+                </p>
+              )}
+
+              {(fm.tags.length > 0 || fm.tech_stack.length > 0) && (
+                <div className="space-y-1">
+                  {fm.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {fm.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {fm.tech_stack.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {fm.tech_stack.map((t) => (
+                        <span
+                          key={t}
+                          className="text-[10px] px-1.5 py-0.5 rounded border border-border text-muted-foreground"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div>
+                <div className="text-xs font-medium text-muted-foreground mb-1">保存場所</div>
+                <div className="text-xs font-mono break-all">{fm.paths.local}</div>
+              </div>
+
+              {URL_FIELDS.some(({ key }) => fm.urls[key]) && (
+                <div>
+                  <div className="text-xs font-medium text-muted-foreground mb-1.5">関連リンク</div>
+                  <div className="space-y-1">
+                    {URL_FIELDS.filter(({ key }) => fm.urls[key]).map(({ key, label }) => (
+                      <div key={key} className="flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="text-xs text-muted-foreground">{label}</div>
+                          <div className="text-xs truncate">{fm.urls[key]}</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            void runAction(`${label}を開く`, () =>
+                              openAppUrl(fm.urls[key] as string)
+                            )
+                          }
+                          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 shrink-0"
+                        >
+                          <ExternalLink size={11} />
+                          開く
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {cautions.length > 0 && (
+                <div>
+                  <div className="text-xs font-medium text-muted-foreground mb-1.5">注意事項</div>
+                  <div className="space-y-1">
+                    {cautions.map((c, i) => (
+                      <div
+                        key={`${c.text}-${i}`}
+                        className={`text-xs rounded border p-1.5 ${CAUTION_SEVERITY_CLASS[c.severity] ?? CAUTION_SEVERITY_CLASS.medium}`}
+                      >
+                        {c.text}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }
