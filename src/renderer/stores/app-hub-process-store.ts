@@ -1,5 +1,6 @@
 import { Command } from '@tauri-apps/plugin-shell'
 import { create } from 'zustand'
+import { buildPowerShellInvocation } from '@/lib/app-hub-launch'
 
 export type AppProcessStatus = 'stopped' | 'starting' | 'running' | 'error'
 
@@ -51,7 +52,15 @@ export const useAppHubProcessStore = create<AppHubProcessState>((set, get) => ({
     }))
 
     try {
-      const command = Command.create(program, args, { cwd })
+      // npm/code等はWindows上で.cmd/.ps1として配布されており、直接起動すると
+      // 解決に失敗する(実機検証で確認)。PowerShell経由で安全に起動する
+      // (app-hub-launch.tsのspawnViaPowerShellと同じ方式)。
+      const invocation = buildPowerShellInvocation(program, args)
+      const command = Command.create(
+        'powershell',
+        ['-NoProfile', '-NonInteractive', '-Command', invocation],
+        { cwd }
+      )
       command.stdout.on('data', (line) => {
         set((s) => {
           const rec = s.processes[slug]
@@ -132,7 +141,10 @@ export const useAppHubProcessStore = create<AppHubProcessState>((set, get) => ({
     const child = get().children.get(slug)
     if (!child) return
     try {
-      await child.kill()
+      // PowerShell経由で起動しているため、child.kill()はラッパーの
+      // powershell.exeしか止められず、その下でnpm/nodeが孫プロセスとして
+      // 残り続ける恐れがある。taskkill /T でプロセスツリーごと終了させる。
+      await Command.create('taskkill', ['/T', '/F', '/PID', String(child.pid)]).execute()
     } finally {
       get().children.delete(slug)
       set((s) => {
