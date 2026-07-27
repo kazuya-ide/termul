@@ -2,6 +2,7 @@ import {
   FolderKanban,
   GitBranch,
   History,
+  LayoutGrid,
   MessageSquarePlus,
   Network,
   Palette,
@@ -140,6 +141,23 @@ export function ActivityRail({
         disabled={!onOpenCommandPalette}
       >
         <FolderKanban size={18} className="text-muted-foreground" />
+      </button>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          navigate('/apps')
+        }}
+        className={railButtonClass}
+        title="アプリ"
+        aria-label="アプリ一覧を開く"
+        aria-current={location.pathname === '/apps' ? 'page' : undefined}
+      >
+        <LayoutGrid
+          size={18}
+          className={location.pathname === '/apps' ? 'text-foreground' : 'text-muted-foreground'}
+        />
       </button>
 
       <button

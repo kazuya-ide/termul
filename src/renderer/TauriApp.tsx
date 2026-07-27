@@ -33,6 +33,7 @@ import { useWhatsNew } from './hooks/use-whats-new'
 import { useTerminalAutoSave } from './hooks/useTerminalAutoSave'
 import WorkspaceLayout from './layouts/WorkspaceLayout'
 import { initNotificationPermissions } from './lib/tauri-notification-api'
+import AppHubHome from './pages/AppHubHome'
 import AppPreferences from './pages/AppPreferences'
 import NotFound from './pages/NotFound'
 import ProjectSettings from './pages/ProjectSettings'
@@ -83,6 +84,7 @@ const router = createHashRouter(
       element: <WorkspaceLayout />,
       children: [
         { index: true, element: <WorkspaceDashboard /> },
+        { path: 'apps', element: <AppHubHome /> },
         { path: 'snapshots', element: <WorkspaceSnapshots /> },
         { path: 'settings', element: <ProjectSettings /> },
         { path: 'preferences', element: <AppPreferences /> }
