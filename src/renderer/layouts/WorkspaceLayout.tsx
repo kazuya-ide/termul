@@ -1471,6 +1471,18 @@ export default function WorkspaceLayout(): React.JSX.Element {
                     {activeSSHProfile ? (
                       /* SSH Workspace */
                       <SSHWorkspace profile={sshProfileWithPassword!} conn={sshConn} />
+                    ) : !isWorkspaceRoute ? (
+                      /* Non-workspace routes (settings/preferences/snapshots/apps/...) always
+                         render their own page, regardless of whether any Project exists yet —
+                         these pages are not all Project-scoped (e.g. the App Hub screen). */
+                      <>
+                        <div className="flex-1 overflow-hidden bg-background relative rounded-xl">
+                          <div className="w-full h-full">
+                            <Outlet />
+                          </div>
+                        </div>
+                        <StatusBar project={activeProject} />
+                      </>
                     ) : projects.length === 0 ? (
                       /* No Projects Empty State */
                       <div className="flex-1 flex flex-col items-center justify-center bg-background px-6 rounded-xl">
@@ -1499,32 +1511,24 @@ export default function WorkspaceLayout(): React.JSX.Element {
                       </div>
                     ) : (
                       <>
-                        {isWorkspaceRoute ? (
-                          <motion.div
-                            key={fullscreenPaneId ? 'fullscreen' : 'normal'}
-                            initial={{ opacity: 0.85, scale: 0.97 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                            className="flex-1 min-h-0 h-full overflow-hidden"
-                          >
-                            <PaneRenderer
-                              node={fullscreenPane ?? paneRoot}
-                              onAddTerminal={handleAddTerminal}
-                              onAddBrowserTab={handleNewBrowserTab}
-                              onCloseTerminal={handleCloseTerminal}
-                              onRenameTerminal={renameTerminal}
-                              onCloseEditorTab={handleCloseEditorTab}
-                              closingTerminalIds={closingTerminalIds}
-                              defaultShell={activeProject?.defaultShell || appDefaultShell}
-                            />
-                          </motion.div>
-                        ) : (
-                          <div className="flex-1 overflow-hidden bg-background relative rounded-xl">
-                            <div className="w-full h-full">
-                              <Outlet />
-                            </div>
-                          </div>
-                        )}
+                        <motion.div
+                          key={fullscreenPaneId ? 'fullscreen' : 'normal'}
+                          initial={{ opacity: 0.85, scale: 0.97 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.2, ease: 'easeOut' }}
+                          className="flex-1 min-h-0 h-full overflow-hidden"
+                        >
+                          <PaneRenderer
+                            node={fullscreenPane ?? paneRoot}
+                            onAddTerminal={handleAddTerminal}
+                            onAddBrowserTab={handleNewBrowserTab}
+                            onCloseTerminal={handleCloseTerminal}
+                            onRenameTerminal={renameTerminal}
+                            onCloseEditorTab={handleCloseEditorTab}
+                            closingTerminalIds={closingTerminalIds}
+                            defaultShell={activeProject?.defaultShell || appDefaultShell}
+                          />
+                        </motion.div>
 
                         {/* Status Bar */}
                         <StatusBar project={activeProject} />
