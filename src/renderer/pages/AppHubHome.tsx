@@ -22,6 +22,7 @@ import {
   runSafeCommand
 } from '@/lib/app-hub-launch'
 import { useAppHubProcessStore } from '@/stores/app-hub-process-store'
+import type { PathStatus } from '@/stores/app-hub-store'
 import { useAppHubStore } from '@/stores/app-hub-store'
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -33,7 +34,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 }
 
 export default function AppHubHome(): React.JSX.Element {
-  const { apps, isLoading, hasLoadedOnce, loadErrors, load } = useAppHubStore()
+  const { apps, isLoading, hasLoadedOnce, loadErrors, load, pathStatus } = useAppHubStore()
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
@@ -150,6 +151,7 @@ export default function AppHubHome(): React.JSX.Element {
               key={app.frontmatter.slug}
               frontmatter={app.frontmatter}
               runAction={runAction}
+              pathStatus={pathStatus[app.frontmatter.slug] ?? 'unknown'}
             />
           ))}
         </div>
@@ -173,13 +175,15 @@ const PROCESS_STATUS_CLASS: Record<string, string> = {
 
 function AppCard({
   frontmatter: fm,
-  runAction
+  runAction,
+  pathStatus
 }: {
   frontmatter: AppFrontmatter
   runAction: (
     label: string,
     action: () => Promise<{ ok: boolean; message: string }>
   ) => Promise<void>
+  pathStatus: PathStatus
 }): React.JSX.Element {
   const primaryUrl = fm.urls.production ?? fm.urls.admin ?? null
   const devCommand = fm.launch?.dev_command?.trim() || ''
@@ -188,6 +192,7 @@ function AppCard({
   const stopProcess = useAppHubProcessStore((s) => s.stop)
   const [showLogs, setShowLogs] = useState(false)
   const status = process?.status ?? 'stopped'
+  const pathMissing = pathStatus === 'missing'
 
   return (
     <div className="border border-border rounded-lg p-4 space-y-2.5 bg-card">
@@ -202,6 +207,15 @@ function AppCard({
           {STATUS_LABEL[fm.status]}
         </span>
       </div>
+
+      {pathMissing && (
+        <div className="text-[11px] text-red-500 bg-red-500/10 border border-red-500/30 rounded p-1.5 flex items-start gap-1">
+          <AlertTriangle size={12} className="shrink-0 mt-0.5" />
+          <span>
+            登録されたフォルダが見つかりません。移動または削除された可能性があります。アプリ台帳ハブ側でパスを更新してください。
+          </span>
+        </div>
+      )}
 
       {fm.tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
@@ -224,7 +238,8 @@ function AppCard({
         <button
           type="button"
           onClick={() => void runAction('フォルダを開く', () => openFolder(fm.paths.local))}
-          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+          disabled={pathMissing}
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-40 disabled:hover:bg-transparent"
         >
           <FolderOpen size={12} />
           フォルダ
@@ -232,7 +247,8 @@ function AppCard({
         <button
           type="button"
           onClick={() => void runAction('VS Codeで開く', () => openInVSCode(fm.paths.local))}
-          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+          disabled={pathMissing}
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-40 disabled:hover:bg-transparent"
         >
           VS Code
         </button>
@@ -241,7 +257,8 @@ function AppCard({
           onClick={() =>
             void runAction('Claude Codeを開く', () => openClaudeTerminal(fm.paths.local))
           }
-          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+          disabled={pathMissing}
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-40 disabled:hover:bg-transparent"
         >
           <Terminal size={12} />
           Claude Code
@@ -297,7 +314,8 @@ function AppCard({
               <button
                 type="button"
                 onClick={() => void startProcess(fm.slug, devCommand, fm.paths.local)}
-                className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+                disabled={pathMissing}
+                className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-40 disabled:hover:bg-transparent"
               >
                 <Play size={10} />
                 起動
