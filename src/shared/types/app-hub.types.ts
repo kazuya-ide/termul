@@ -33,55 +33,28 @@ export const STATUS_LABEL: Record<(typeof STATUS_VALUES)[number], string> = {
   planned: '計画中'
 }
 
-const relatedAppSchema = z.object({
-  slug: z.string(),
-  relation: z.enum(RELATION_TYPES),
-  note: z.string().optional().default('')
-})
+// 表示に使う項目(name/kind/status/tags/paths/urls/launch/safe_commands)だけ
+// 厳密にチェックする。related_apps/important_files/presets/todos/cautions/
+// changelogはTermul側の画面では読んでいないため、アプリ台帳ハブ側の過去データが
+// 型どおりでなくても(文字列配列のままの古い記録等)読み込み自体は失敗させない。
+const looseArray = z.array(z.unknown()).default([])
 
-const importantFileSchema = z.object({
-  id: z.string(),
-  path: z.string(),
-  note: z.string().optional().default('')
-})
+/** null/undefined/空文字を安全に空文字へそろえる(台帳側にnullが入っている記録があるため)。 */
+const nullableString = () =>
+  z
+    .string()
+    .nullish()
+    .transform((v) => v ?? '')
 
 export const safeCommandSchema = z.object({
   id: z.string(),
   label: z.string(),
   command: z.string(),
   args: z.array(z.string()).default([]),
-  cwd: z.string().optional()
-})
-
-const presetStepSchema = z.object({
-  action: z.enum(['open_vscode', 'open_claude_terminal', 'open_folder', 'open_url', 'run_command']),
-  target: z.string().optional(),
-  command_id: z.string().optional()
-})
-
-const presetSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  steps: z.array(presetStepSchema)
-})
-
-const todoSchema = z.object({
-  id: z.string(),
-  text: z.string(),
-  done: z.boolean().default(false),
-  created_at: z.string().optional()
-})
-
-const cautionSchema = z.object({
-  id: z.string(),
-  text: z.string(),
-  severity: z.enum(SEVERITY_VALUES).default('medium')
-})
-
-const changelogEntrySchema = z.object({
-  date: z.string(),
-  text: z.string(),
-  author: z.string().optional().default('')
+  cwd: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined)
 })
 
 const appUrlsSchema = z.object({
@@ -98,17 +71,12 @@ const appPortsSchema = z.object({
 })
 
 const appLaunchSchema = z.object({
-  dev_command: z.string().optional().default(''),
-  install_command: z.string().optional().default('')
+  dev_command: nullableString(),
+  install_command: nullableString()
 })
 
 const appPathsSchema = z.object({
   local: z.string()
-})
-
-const relatedNoteSchema = z.object({
-  path: z.string(),
-  note: z.string().optional().default('')
 })
 
 export const appFrontmatterSchema = z.object({
@@ -127,14 +95,14 @@ export const appFrontmatterSchema = z.object({
   urls: appUrlsSchema.default({}),
   ports: appPortsSchema.default({}),
   launch: appLaunchSchema.default({}),
-  related_apps: z.array(relatedAppSchema).default([]),
-  related_notes: z.array(relatedNoteSchema).default([]),
-  important_files: z.array(importantFileSchema).default([]),
+  related_apps: looseArray,
+  related_notes: looseArray,
+  important_files: looseArray,
   safe_commands: z.array(safeCommandSchema).default([]),
-  presets: z.array(presetSchema).default([]),
-  todos: z.array(todoSchema).default([]),
-  cautions: z.array(cautionSchema).default([]),
-  changelog: z.array(changelogEntrySchema).default([]),
+  presets: looseArray,
+  todos: looseArray,
+  cautions: looseArray,
+  changelog: looseArray,
   updated_at: z.string().optional().default('')
 })
 
