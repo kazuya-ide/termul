@@ -1,6 +1,17 @@
 import type { AppFrontmatter } from '@shared/types/app-hub.types'
 import { KIND_LABEL, STATUS_LABEL, STATUS_VALUES } from '@shared/types/app-hub.types'
-import { AlertTriangle, ExternalLink, FolderOpen, RefreshCw, Search, Terminal } from 'lucide-react'
+import {
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  FolderOpen,
+  Play,
+  RefreshCw,
+  Search,
+  Square,
+  Terminal
+} from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import {
@@ -10,6 +21,7 @@ import {
   openInVSCode,
   runSafeCommand
 } from '@/lib/app-hub-launch'
+import { useAppHubProcessStore } from '@/stores/app-hub-process-store'
 import { useAppHubStore } from '@/stores/app-hub-store'
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -146,6 +158,19 @@ export default function AppHubHome(): React.JSX.Element {
   )
 }
 
+const PROCESS_STATUS_LABEL: Record<string, string> = {
+  stopped: '停止中',
+  starting: '起動中…',
+  running: '稼働中',
+  error: 'エラー'
+}
+const PROCESS_STATUS_CLASS: Record<string, string> = {
+  stopped: 'bg-neutral-500/15 text-neutral-400',
+  starting: 'bg-amber-500/15 text-amber-500',
+  running: 'bg-emerald-500/15 text-emerald-500',
+  error: 'bg-red-500/15 text-red-500'
+}
+
 function AppCard({
   frontmatter: fm,
   runAction
@@ -157,6 +182,12 @@ function AppCard({
   ) => Promise<void>
 }): React.JSX.Element {
   const primaryUrl = fm.urls.production ?? fm.urls.admin ?? null
+  const devCommand = fm.launch?.dev_command?.trim() || ''
+  const process = useAppHubProcessStore((s) => s.processes[fm.slug])
+  const startProcess = useAppHubProcessStore((s) => s.start)
+  const stopProcess = useAppHubProcessStore((s) => s.stop)
+  const [showLogs, setShowLogs] = useState(false)
+  const status = process?.status ?? 'stopped'
 
   return (
     <div className="border border-border rounded-lg p-4 space-y-2.5 bg-card">
@@ -243,6 +274,54 @@ function AppCard({
               {cmd.label}
             </button>
           ))}
+        </div>
+      )}
+
+      {devCommand && (
+        <div className="pt-1.5 border-t border-border/60 space-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <span className={`text-[11px] px-1.5 py-0.5 rounded ${PROCESS_STATUS_CLASS[status]}`}>
+              devサーバー: {PROCESS_STATUS_LABEL[status]}
+            </span>
+            {status === 'running' || status === 'starting' ? (
+              <button
+                type="button"
+                onClick={() => void stopProcess(fm.slug)}
+                disabled={status === 'starting'}
+                className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-50"
+              >
+                <Square size={10} />
+                停止
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => void startProcess(fm.slug, devCommand, fm.paths.local)}
+                className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+              >
+                <Play size={10} />
+                起動
+              </button>
+            )}
+            {process && process.logs.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowLogs((v) => !v)}
+                className="flex items-center gap-0.5 px-1.5 py-1 text-xs text-muted-foreground hover:text-foreground"
+              >
+                ログ
+                {showLogs ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            )}
+          </div>
+          {process?.lastError && (
+            <div className="text-[11px] text-red-500">{process.lastError}</div>
+          )}
+          {showLogs && process && process.logs.length > 0 && (
+            <pre className="text-[10px] leading-tight bg-black/40 text-neutral-300 rounded p-2 max-h-40 overflow-y-auto whitespace-pre-wrap">
+              {process.logs.slice(-60).join('\n')}
+            </pre>
+          )}
         </div>
       )}
     </div>
