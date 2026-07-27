@@ -11,7 +11,7 @@ import {
   type AppRecord,
   appFrontmatterSchema
 } from '@shared/types/app-hub.types'
-import matter from 'gray-matter'
+import { load as parseYaml } from 'js-yaml'
 import { filesystemApi } from '@/lib/filesystem-api'
 
 /** アプリ台帳ハブのインストール場所。設定画面で変更可能にする想定(現状は固定値)。 */
@@ -21,6 +21,20 @@ export interface LoadRegistryResult {
   apps: AppRecord[]
   /** 読み込みはできたがスキーマ不正だった等でスキップしたファイル */
   errors: Array<{ file: string; message: string }>
+}
+
+// gray-matter は Node.js の Buffer 前提で実装されており、Tauriのレンダラー
+// (Node.jsではなくブラウザ相当の実行環境)では "Buffer is not defined" で
+// 例外になる。frontmatter形式("---"で囲まれたYAML)は単純なので、
+// js-yaml(ブラウザ安全・Node API非依存)で自前パースする。
+function splitFrontmatter(raw: string): { data: unknown; content: string } {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/)
+  if (!match) {
+    return { data: {}, content: raw }
+  }
+  const [, yamlBlock, body] = match
+  const data = parseYaml(yamlBlock)
+  return { data, content: body }
 }
 
 function normalizeMarkdownFrontmatter(raw: unknown): AppFrontmatter {
@@ -46,7 +60,7 @@ export async function loadAppRegistry(
       continue
     }
     try {
-      const parsed = matter(fileResult.data.content)
+      const parsed = splitFrontmatter(fileResult.data.content)
       const frontmatter = normalizeMarkdownFrontmatter(parsed.data)
       apps.push({ frontmatter, body: parsed.content.trim(), filePath: entry.path })
     } catch (err) {
