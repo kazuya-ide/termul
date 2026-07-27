@@ -2,11 +2,13 @@ import type { AppFrontmatter, AppRecord } from '@shared/types/app-hub.types'
 import { KIND_LABEL, STATUS_LABEL, STATUS_VALUES } from '@shared/types/app-hub.types'
 import {
   AlertTriangle,
+  CheckSquare,
   ChevronDown,
   ChevronUp,
   ExternalLink,
   FolderOpen,
   Info,
+  ListTodo,
   Play,
   RefreshCw,
   Search,
@@ -209,6 +211,8 @@ function AppCard({
   const [showLogs, setShowLogs] = useState(false)
   const status = process?.status ?? 'stopped'
   const pathMissing = pathStatus === 'missing'
+  const cautionSummary = summarizeCautions(fm.cautions)
+  const openTodoCount = countOpenTodos(fm.todos)
 
   return (
     <div className="border border-border rounded-lg p-4 space-y-2.5 bg-card">
@@ -217,11 +221,40 @@ function AppCard({
           <div className="font-semibold text-sm">{fm.name}</div>
           <div className="text-xs text-muted-foreground">{KIND_LABEL[fm.kind]}</div>
         </div>
-        <span
-          className={`text-[11px] px-1.5 py-0.5 rounded shrink-0 ${STATUS_BADGE_CLASS[fm.status] ?? ''}`}
-        >
-          {STATUS_LABEL[fm.status]}
-        </span>
+        <div className="flex items-center gap-1 shrink-0">
+          {cautionSummary.high > 0 && (
+            <span
+              title={`重大な注意事項 ${cautionSummary.high}件`}
+              className="flex items-center gap-0.5 text-[11px] px-1.5 py-0.5 rounded bg-red-500/15 text-red-500"
+            >
+              <AlertTriangle size={10} />
+              {cautionSummary.high}
+            </span>
+          )}
+          {cautionSummary.medium > 0 && (
+            <span
+              title={`注意事項 ${cautionSummary.medium}件`}
+              className="flex items-center gap-0.5 text-[11px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-500"
+            >
+              <AlertTriangle size={10} />
+              {cautionSummary.medium}
+            </span>
+          )}
+          {openTodoCount > 0 && (
+            <span
+              title={`残作業 ${openTodoCount}件`}
+              className="flex items-center gap-0.5 text-[11px] px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-500"
+            >
+              <ListTodo size={10} />
+              {openTodoCount}
+            </span>
+          )}
+          <span
+            className={`text-[11px] px-1.5 py-0.5 rounded ${STATUS_BADGE_CLASS[fm.status] ?? ''}`}
+          >
+            {STATUS_LABEL[fm.status]}
+          </span>
+        </div>
       </div>
 
       {pathMissing && (
@@ -398,6 +431,28 @@ const CAUTION_SEVERITY_CLASS: Record<string, string> = {
   low: 'text-muted-foreground bg-secondary/50 border-border'
 }
 
+function summarizeCautions(items: unknown[]): { high: number; medium: number; low: number } {
+  const cautions = items.map(readCaution).filter((c) => c !== null)
+  return {
+    high: cautions.filter((c) => c.severity === 'high').length,
+    medium: cautions.filter((c) => c.severity !== 'high' && c.severity !== 'low').length,
+    low: cautions.filter((c) => c.severity === 'low').length
+  }
+}
+
+/** todos配列も cautions と同じ理由(台帳側の形式ゆれ)で型を緩めている。
+ *  表示時に {text, done} の形をしている項目だけを安全に取り出す。 */
+function readTodo(item: unknown): { text: string; done: boolean } | null {
+  if (typeof item !== 'object' || item === null) return null
+  const record = item as Record<string, unknown>
+  if (typeof record.text !== 'string') return null
+  return { text: record.text, done: record.done === true }
+}
+
+function countOpenTodos(items: unknown[]): number {
+  return items.map(readTodo).filter((t) => t !== null && !t.done).length
+}
+
 function AppDetailModal({
   record,
   onClose,
@@ -413,6 +468,7 @@ function AppDetailModal({
   const fm = record?.frontmatter
   const overview = record ? (extractSection(record.body, '概要') ?? record.body) : ''
   const cautions = (fm?.cautions ?? []).map(readCaution).filter((c) => c !== null)
+  const todos = (fm?.todos ?? []).map(readTodo).filter((t) => t !== null)
 
   return (
     <Dialog open={record !== null} onOpenChange={(open) => !open && onClose()}>
@@ -523,6 +579,27 @@ function AppDetailModal({
                         className={`text-xs rounded border p-1.5 ${CAUTION_SEVERITY_CLASS[c.severity] ?? CAUTION_SEVERITY_CLASS.medium}`}
                       >
                         {c.text}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {todos.length > 0 && (
+                <div>
+                  <div className="text-xs font-medium text-muted-foreground mb-1.5">残作業</div>
+                  <div className="space-y-1">
+                    {todos.map((t, i) => (
+                      <div
+                        key={`${t.text}-${i}`}
+                        className={`flex items-center gap-1.5 text-xs rounded border p-1.5 ${
+                          t.done
+                            ? 'text-muted-foreground bg-secondary/30 border-border line-through'
+                            : 'text-sky-500 bg-sky-500/10 border-sky-500/30'
+                        }`}
+                      >
+                        {t.done ? <CheckSquare size={12} /> : <ListTodo size={12} />}
+                        {t.text}
                       </div>
                     ))}
                   </div>
