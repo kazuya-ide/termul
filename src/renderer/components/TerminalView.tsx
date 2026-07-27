@@ -67,9 +67,9 @@ export function EmptyTerminalPane({ onCreateTerminal }: { onCreateTerminal: () =
   return (
     <div className="flex-1 flex flex-col min-w-[200px] bg-surface-darker">
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <h3 className="text-muted-foreground font-medium mb-4">Create New Terminal</h3>
+        <h3 className="text-muted-foreground font-medium mb-4">新しいターミナルを作成</h3>
         <div className="flex items-center gap-2 mb-4">
-          <label className="label-section text-muted-foreground">Shell:</label>
+          <label className="label-section text-muted-foreground">シェル:</label>
           <select className="bg-secondary text-foreground text-sm border-none rounded px-2 py-1 focus:ring-1 focus:ring-primary cursor-pointer">
             <option>PowerShell</option>
             <option>Command Prompt</option>
@@ -81,7 +81,7 @@ export function EmptyTerminalPane({ onCreateTerminal }: { onCreateTerminal: () =
           onClick={onCreateTerminal}
           className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-1.5 px-4 rounded shadow-lg shadow-primary/20 transition-all flex items-center"
         >
-          Create Terminal
+          ターミナルを作成
         </button>
       </div>
     </div>

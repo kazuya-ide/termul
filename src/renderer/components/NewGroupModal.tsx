@@ -16,10 +16,10 @@ export function NewGroupModal({
   isOpen,
   onClose,
   onSubmit,
-  title = 'Create New Group',
-  submitLabel = 'Create',
+  title = '新規グループを作成',
+  submitLabel = '作成',
   initialValue = '',
-  placeholder = 'Enter group name...'
+  placeholder = 'グループ名を入力...'
 }: NewGroupModalProps) {
   const [name, setName] = useState(initialValue)
 
@@ -100,7 +100,7 @@ export function NewGroupModal({
             <div className="p-4 space-y-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Group Folder Name
+                  グループフォルダ名
                 </label>
                 <input
                   type="text"
@@ -118,7 +118,7 @@ export function NewGroupModal({
                 onClick={onClose}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleSubmit}

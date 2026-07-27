@@ -60,20 +60,20 @@ export function EditorTab({
 
   const contextMenuItems: ContextMenuItem[] = [
     {
-      label: 'Close',
+      label: '閉じる',
       icon: <X size={12} />,
       onClick: onClose
     },
     {
-      label: 'Close Others',
+      label: '他を閉じる',
       onClick: onCloseOthers
     },
     {
-      label: 'Close All',
+      label: 'すべて閉じる',
       onClick: onCloseAll
     },
     {
-      label: 'Copy Path',
+      label: 'パスをコピー',
       onClick: onCopyPath
     }
   ]
@@ -113,12 +113,12 @@ export function EditorTab({
           disabled={showStatusIndicator}
           title={
             operationStatus === 'saving'
-              ? 'Saving file'
+              ? '保存中'
               : operationStatus === 'reloading'
-                ? 'Reloading file'
+                ? '再読み込み中'
                 : operationStatus === 'saved'
-                  ? `${fileName} saved`
-                  : 'Close tab'
+                  ? `${fileName} を保存しました`
+                  : 'タブを閉じる'
           }
           className={cn(
             'ml-auto p-0.5 rounded-md transition-opacity flex-shrink-0',

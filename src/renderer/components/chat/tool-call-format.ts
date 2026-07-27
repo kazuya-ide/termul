@@ -53,14 +53,14 @@ export interface StatusStyle {
 export function statusStyle(status: ToolCallStatus | undefined): StatusStyle {
   switch (status) {
     case 'in_progress':
-      return { label: 'running', className: 'text-amber-400 bg-amber-400/10', spinning: true }
+      return { label: '実行中', className: 'text-amber-400 bg-amber-400/10', spinning: true }
     case 'completed':
-      return { label: 'done', className: 'text-green-400 bg-green-400/10', spinning: false }
+      return { label: '完了', className: 'text-green-400 bg-green-400/10', spinning: false }
     case 'failed':
-      return { label: 'failed', className: 'text-red-400 bg-red-400/10', spinning: false }
+      return { label: '失敗', className: 'text-red-400 bg-red-400/10', spinning: false }
     case 'pending':
     default:
-      return { label: 'pending', className: 'text-muted-foreground bg-muted/40', spinning: false }
+      return { label: '保留中', className: 'text-muted-foreground bg-muted/40', spinning: false }
   }
 }
 

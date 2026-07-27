@@ -75,7 +75,7 @@ export function DeleteSnapshotModal({
             <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-secondary/50">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <Trash2 size={14} className="text-destructive" />
-                Delete Snapshot
+                スナップショットを削除
               </h3>
               <button
                 onClick={onClose}
@@ -89,11 +89,11 @@ export function DeleteSnapshotModal({
             {/* Content */}
             <div className="p-4 space-y-4">
               <p className="text-sm text-foreground">
-                Are you sure you want to delete the snapshot{' '}
-                <span className="font-semibold">&quot;{snapshot.name}&quot;</span>?
+                スナップショット <span className="font-semibold">&quot;{snapshot.name}&quot;</span>{' '}
+                を削除してもよろしいですか？
               </p>
 
-              <p className="text-sm text-muted-foreground">This action cannot be undone.</p>
+              <p className="text-sm text-muted-foreground">この操作は元に戻せません。</p>
             </div>
 
             {/* Footer */}
@@ -103,7 +103,7 @@ export function DeleteSnapshotModal({
                 disabled={isDeleting}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleDelete}
@@ -111,7 +111,7 @@ export function DeleteSnapshotModal({
                 className="px-3 py-1.5 text-xs font-medium bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
                 <Trash2 size={12} />
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? '削除中...' : '削除'}
               </button>
             </div>
           </motion.div>

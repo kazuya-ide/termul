@@ -67,7 +67,7 @@ export function ConflictResolutionPanel({
           </span>
         </div>
         <span className="text-xs text-muted-foreground">
-          {state.resolvedCount}/{state.totalConflicts} resolved
+          {state.resolvedCount}/{state.totalConflicts} 件解決済み
         </span>
       </div>
 
@@ -116,7 +116,7 @@ export function ConflictResolutionPanel({
                     <button
                       onClick={() => handleFileStatusChange(file.filePath, 'resolved')}
                       className="px-1.5 py-0.5 rounded text-4xs font-medium bg-green-500/10 text-green-500 hover:bg-green-500/20 transition-colors"
-                      title="Mark as resolved"
+                      title="解決済みにする"
                     >
                       ✓
                     </button>
@@ -124,7 +124,7 @@ export function ConflictResolutionPanel({
                       <button
                         onClick={() => handleFileStatusChange(file.filePath, 'resolving')}
                         className="px-1.5 py-0.5 rounded text-4xs font-medium bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-colors"
-                        title="Mark as resolving"
+                        title="解決中にする"
                       >
                         ↻
                       </button>
@@ -141,8 +141,10 @@ export function ConflictResolutionPanel({
       {unresolved.length === 0 && state.totalConflicts > 0 && (
         <div className="text-center py-4">
           <CheckCircle2 size={24} className="mx-auto mb-2 text-green-500" />
-          <p className="text-xs font-medium text-foreground">All conflicts resolved!</p>
-          <p className="text-3xs text-muted-foreground mt-0.5">Ready to complete the merge.</p>
+          <p className="text-xs font-medium text-foreground">すべてのコンフリクトを解決しました!</p>
+          <p className="text-3xs text-muted-foreground mt-0.5">
+            マージを完了する準備ができています。
+          </p>
         </div>
       )}
     </div>

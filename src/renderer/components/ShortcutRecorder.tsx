@@ -136,8 +136,8 @@ export function ShortcutRecorder({
               type="button"
               onClick={handleReset}
               className="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              title="Reset to default"
-              aria-label={`Reset ${shortcut.label} shortcut to default`}
+              title="既定に戻す"
+              aria-label={`${shortcut.label}のショートカットを既定に戻す`}
             >
               <RotateCcw size={13} />
             </button>
@@ -148,7 +148,7 @@ export function ShortcutRecorder({
             tabIndex={0}
             role="button"
             data-shortcut-recorder="true"
-            aria-label={`Record ${shortcut.label} shortcut`}
+            aria-label={`${shortcut.label}のショートカットを記録`}
             onClick={handleClick}
             onBlur={handleBlur}
             onKeyDown={handleKeyboardActivate}
@@ -164,7 +164,7 @@ export function ShortcutRecorder({
             `}
           >
             {isRecording && !pendingKey ? (
-              <span className="text-muted-foreground">Press keys...</span>
+              <span className="text-muted-foreground">キーを押してください…</span>
             ) : (
               formatKeyForDisplay(displayKey)
             )}
@@ -173,14 +173,14 @@ export function ShortcutRecorder({
 
         {conflict && (
           <div className="mt-1 text-2xs text-red-500">
-            Conflicts with "{conflict.label}".{' '}
+            「{conflict.label}」と競合しています。{' '}
             <button
               type="button"
               onMouseDown={(event) => event.preventDefault()}
               onClick={handleConfirmWithConflict}
               className="underline hover:no-underline"
             >
-              Use anyway
+              このまま使用
             </button>
           </div>
         )}
@@ -198,8 +198,8 @@ export function ShortcutRecorder({
               type="button"
               onClick={handleReset}
               className="p-1 hover:bg-secondary rounded text-muted-foreground hover:text-foreground transition-colors"
-              title="Reset to default"
-              aria-label={`Reset ${shortcut.label} shortcut to default`}
+              title="既定に戻す"
+              aria-label={`${shortcut.label}のショートカットを既定に戻す`}
             >
               <RotateCcw size={14} />
             </button>
@@ -212,7 +212,7 @@ export function ShortcutRecorder({
           tabIndex={0}
           role="button"
           data-shortcut-recorder="true"
-          aria-label={`Record ${shortcut.label} shortcut`}
+          aria-label={`${shortcut.label}のショートカットを記録`}
           onClick={handleClick}
           onBlur={handleBlur}
           onKeyDown={handleKeyboardActivate}
@@ -228,7 +228,7 @@ export function ShortcutRecorder({
           `}
         >
           {isRecording && !pendingKey ? (
-            <span className="text-muted-foreground">Press keys...</span>
+            <span className="text-muted-foreground">キーを押してください…</span>
           ) : (
             formatKeyForDisplay(displayKey)
           )}
@@ -236,14 +236,14 @@ export function ShortcutRecorder({
 
         {conflict && (
           <div className="mt-2 text-xs text-red-500">
-            Conflicts with "{conflict.label}".{' '}
+            「{conflict.label}」と競合しています。{' '}
             <button
               type="button"
               onMouseDown={(event) => event.preventDefault()}
               onClick={handleConfirmWithConflict}
               className="underline hover:no-underline"
             >
-              Use anyway
+              このまま使用
             </button>
           </div>
         )}

@@ -26,7 +26,7 @@ export function PlanPanel({ entries }: PlanPanelProps): React.JSX.Element | null
     <div className="mx-4 my-2 rounded-md border border-border/50 bg-card/30">
       <div className="flex items-center gap-1.5 border-b border-border/40 px-3 py-1.5 text-2xs font-semibold text-muted-foreground">
         <ListChecks size={12} />
-        Plan
+        プラン
       </div>
       <ul className="flex flex-col gap-1 px-3 py-2">
         {entries.map((entry, i) => (
@@ -37,7 +37,7 @@ export function PlanPanel({ entries }: PlanPanelProps): React.JSX.Element | null
                 'h-1.5 w-1.5 shrink-0 rounded-full',
                 PRIORITY_DOT[entry.priority ?? 'low'] ?? 'bg-muted-foreground/50'
               )}
-              title={`priority: ${entry.priority ?? 'low'}`}
+              title={`優先度: ${entry.priority ?? 'low'}`}
             />
             <span
               className={cn(

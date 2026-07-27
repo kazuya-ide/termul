@@ -77,7 +77,7 @@ export function RestoreSnapshotModal({
             <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-secondary/50">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <RotateCcw size={14} />
-                Restore Snapshot
+                スナップショットを復元
               </h3>
               <button
                 onClick={onClose}
@@ -91,21 +91,21 @@ export function RestoreSnapshotModal({
             {/* Content */}
             <div className="p-4 space-y-4">
               <p className="text-sm text-foreground">
-                Are you sure you want to restore the snapshot{' '}
-                <span className="font-semibold">&quot;{snapshot.name}&quot;</span>?
+                スナップショット <span className="font-semibold">&quot;{snapshot.name}&quot;</span>{' '}
+                を復元してもよろしいですか？
               </p>
 
               <p className="text-sm text-muted-foreground">
-                This will close all current terminals and recreate {snapshot.paneCount} terminal
-                {snapshot.paneCount !== 1 ? 's' : ''} from the snapshot.
+                現在開いているすべてのターミナルを閉じ、スナップショットから
+                {snapshot.paneCount} 個のターミナルを再作成します。
               </p>
 
               {hasRunningProcesses && (
                 <div className="bg-yellow-900/20 border border-yellow-800/50 rounded p-3 flex items-start gap-2">
                   <AlertTriangle size={16} className="text-yellow-400 mt-0.5 flex-shrink-0" />
                   <div className="text-sm text-yellow-400">
-                    <span className="font-medium">Warning:</span> You have terminals with running
-                    processes. Restoring will terminate these processes.
+                    <span className="font-medium">警告:</span>{' '}
+                    実行中の処理があるターミナルがあります。復元するとこれらの処理は終了します。
                   </div>
                 </div>
               )}
@@ -118,7 +118,7 @@ export function RestoreSnapshotModal({
                 disabled={isRestoring}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleRestore}
@@ -126,7 +126,7 @@ export function RestoreSnapshotModal({
                 className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 shadow-md shadow-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
                 <RotateCcw size={12} className={isRestoring ? 'animate-spin' : ''} />
-                {isRestoring ? 'Restoring...' : 'Restore'}
+                {isRestoring ? '復元中...' : '復元'}
               </button>
             </div>
           </motion.div>

@@ -52,8 +52,8 @@ export function TauriTitleBar(): React.JSX.Element {
         <button
           onClick={() => appWindow.minimize()}
           className={focusableButtonClass}
-          title="Minimize"
-          aria-label="Minimize window"
+          title="最小化"
+          aria-label="ウィンドウを最小化"
           data-press-feedback="off"
         >
           <Minus size={16} />
@@ -62,8 +62,8 @@ export function TauriTitleBar(): React.JSX.Element {
         <button
           onClick={() => appWindow.toggleMaximize()}
           className={focusableButtonClass}
-          title={isMaximized ? 'Restore' : 'Maximize'}
-          aria-label={isMaximized ? 'Restore window' : 'Maximize window'}
+          title={isMaximized ? '元に戻す' : '最大化'}
+          aria-label={isMaximized ? 'ウィンドウを元に戻す' : 'ウィンドウを最大化'}
           data-press-feedback="off"
         >
           {isMaximized ? <Copy size={14} /> : <Square size={14} />}
@@ -72,8 +72,8 @@ export function TauriTitleBar(): React.JSX.Element {
         <button
           onClick={() => appWindow.close()}
           className="h-full px-3 hover:bg-red-500/90 hover:text-white inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-          title="Close"
-          aria-label="Close window"
+          title="閉じる"
+          aria-label="ウィンドウを閉じる"
           data-press-feedback="off"
         >
           <X size={16} />

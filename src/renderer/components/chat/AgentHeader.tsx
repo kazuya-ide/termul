@@ -107,12 +107,12 @@ export function ModeChip({
           disabled={disabled}
           className="flex h-[30px] items-center gap-1 rounded-lg bg-foreground/[0.06] px-2.5 text-xs text-foreground/80 hover:bg-foreground/[0.09] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {current?.name ?? 'Mode'}
+          {current?.name ?? 'モード'}
           <ChevronDown size={11} className="text-muted-foreground" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" side="top" className="w-56 p-1">
-        <div className="label-group px-2 py-1 text-muted-foreground/70">Mode</div>
+        <div className="label-group px-2 py-1 text-muted-foreground/70">モード</div>
         {modes.availableModes.map((m) => (
           <button
             key={m.id}

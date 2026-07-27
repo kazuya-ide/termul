@@ -47,8 +47,8 @@ export function TitleBar(): React.JSX.Element | null {
             void windowApi.minimize()
           }}
           className={windowControlClass}
-          title="Minimize"
-          aria-label="Minimize window"
+          title="最小化"
+          aria-label="ウィンドウを最小化"
         >
           <Minus size={16} />
         </button>
@@ -63,8 +63,8 @@ export function TitleBar(): React.JSX.Element | null {
             })
           }}
           className={windowControlClass}
-          title={isMaximized ? 'Restore' : 'Maximize'}
-          aria-label={isMaximized ? 'Restore window' : 'Maximize window'}
+          title={isMaximized ? '元に戻す' : '最大化'}
+          aria-label={isMaximized ? 'ウィンドウを元に戻す' : 'ウィンドウを最大化'}
         >
           {isMaximized ? <Copy size={14} /> : <Square size={14} />}
         </button>
@@ -75,8 +75,8 @@ export function TitleBar(): React.JSX.Element | null {
             void windowApi.close()
           }}
           className="h-full px-3 hover:bg-red-500/90 hover:text-white inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 cursor-pointer"
-          title="Close"
-          aria-label="Close window"
+          title="閉じる"
+          aria-label="ウィンドウを閉じる"
         >
           <X size={16} />
         </button>

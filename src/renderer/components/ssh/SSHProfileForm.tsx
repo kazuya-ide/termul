@@ -32,16 +32,18 @@ export function SSHProfileForm({
   const handleSelectKeyFile = async () => {
     try {
       const result = await dialogApi.selectFile({
-        title: 'Select Private Key',
-        filters: [{ name: 'All Files', extensions: ['*'] }]
+        title: '秘密鍵を選択',
+        filters: [{ name: 'すべてのファイル', extensions: ['*'] }]
       })
       if (result.success) {
         setPrivateKeyPath(result.data)
       } else if (result.code !== 'CANCELLED') {
-        toast.error(`Failed to select file: ${result.error}`)
+        toast.error(`ファイルの選択に失敗しました: ${result.error}`)
       }
     } catch (error) {
-      toast.error(`File dialog failed: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error(
+        `ファイル選択ダイアログの起動に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+      )
     }
   }
 
@@ -49,12 +51,12 @@ export function SSHProfileForm({
     e.preventDefault()
 
     if (!name.trim() || !host.trim() || !username.trim()) {
-      toast.error('Name, host, and username are required')
+      toast.error('名前、ホスト、ユーザー名は必須です')
       return
     }
 
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
-      toast.error('Port must be an integer between 1 and 65535')
+      toast.error('ポートは1〜65535の整数で指定してください')
       return
     }
 
@@ -81,10 +83,10 @@ export function SSHProfileForm({
 
       const success = await saveProfile(profileData)
       if (success) {
-        toast.success(profile ? 'Profile updated' : 'Profile created')
+        toast.success(profile ? 'プロファイルを更新しました' : 'プロファイルを作成しました')
         onSaved()
       } else {
-        toast.error('Failed to save profile')
+        toast.error('プロファイルの保存に失敗しました')
       }
     } finally {
       setSaving(false)
@@ -97,7 +99,7 @@ export function SSHProfileForm({
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <h3 className="text-sm font-semibold">
-            {profile ? 'Edit SSH Profile' : 'New SSH Profile'}
+            {profile ? 'SSHプロファイルを編集' : '新規SSHプロファイル'}
           </h3>
           <button onClick={onClose} className="p-1 rounded hover:bg-accent">
             <X className="h-4 w-4" />
@@ -108,12 +110,12 @@ export function SSHProfileForm({
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {/* Name */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground">Name</label>
+            <label className="text-xs font-medium text-muted-foreground">名前</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="My Server"
+              placeholder="マイサーバー"
               className="mt-1 w-full px-3 py-1.5 text-sm bg-muted border border-border rounded focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
@@ -121,17 +123,17 @@ export function SSHProfileForm({
           {/* Host + Port */}
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="text-xs font-medium text-muted-foreground">Host</label>
+              <label className="text-xs font-medium text-muted-foreground">ホスト</label>
               <input
                 type="text"
                 value={host}
                 onChange={(e) => setHost(e.target.value)}
-                placeholder="192.168.1.100 or example.com"
+                placeholder="192.168.1.100 または example.com"
                 className="mt-1 w-full px-3 py-1.5 text-sm bg-muted border border-border rounded focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             <div className="w-20">
-              <label className="text-xs font-medium text-muted-foreground">Port</label>
+              <label className="text-xs font-medium text-muted-foreground">ポート</label>
               <input
                 type="number"
                 value={port}
@@ -145,7 +147,7 @@ export function SSHProfileForm({
 
           {/* Username */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground">Username</label>
+            <label className="text-xs font-medium text-muted-foreground">ユーザー名</label>
             <input
               type="text"
               value={username}
@@ -157,22 +159,22 @@ export function SSHProfileForm({
 
           {/* Auth Method */}
           <div>
-            <label className="text-xs font-medium text-muted-foreground">Authentication</label>
+            <label className="text-xs font-medium text-muted-foreground">認証</label>
             <select
               value={authMethod}
               onChange={(e) => setAuthMethod(e.target.value as SSHAuthMethod)}
               className="mt-1 w-full px-3 py-1.5 text-sm bg-muted border border-border rounded focus:outline-none focus:ring-1 focus:ring-ring"
             >
-              <option value="key">Private Key</option>
-              <option value="password">Password</option>
-              <option value="agent">SSH Agent</option>
+              <option value="key">秘密鍵</option>
+              <option value="password">パスワード</option>
+              <option value="agent">SSHエージェント</option>
             </select>
           </div>
 
           {/* Private Key Path (conditional) */}
           {authMethod === 'key' && (
             <div>
-              <label className="text-xs font-medium text-muted-foreground">Private Key Path</label>
+              <label className="text-xs font-medium text-muted-foreground">秘密鍵のパス</label>
               <div className="flex gap-2 mt-1">
                 <input
                   type="text"
@@ -185,7 +187,7 @@ export function SSHProfileForm({
                   type="button"
                   onClick={handleSelectKeyFile}
                   className="px-2 py-1.5 text-xs rounded border border-border bg-muted hover:bg-accent text-muted-foreground flex items-center"
-                  title="Browse for private key file"
+                  title="秘密鍵ファイルを参照"
                 >
                   <FolderOpen className="h-4 w-4" />
                 </button>
@@ -196,19 +198,20 @@ export function SSHProfileForm({
           {/* Passphrase for key (conditional) */}
           {authMethod === 'key' && (
             <div>
-              <label className="text-xs font-medium text-muted-foreground">Key Passphrase</label>
+              <label className="text-xs font-medium text-muted-foreground">鍵のパスフレーズ</label>
               <input
                 type="password"
                 value={passphrase}
                 onChange={(e) => setPassphrase(e.target.value)}
                 placeholder={
-                  profile?.hasStoredPassphrase ? '••••••••' : 'Leave empty if no passphrase'
+                  profile?.hasStoredPassphrase ? '••••••••' : 'パスフレーズがない場合は空欄'
                 }
                 className="mt-1 w-full px-3 py-1.5 text-sm bg-muted border border-border rounded focus:outline-none focus:ring-1 focus:ring-ring"
               />
               {profile?.hasStoredPassphrase && (
                 <p className="mt-1 text-3xs text-muted-foreground">
-                  🔒 Passphrase stored securely in OS keychain. Leave blank to keep existing.
+                  🔒
+                  パスフレーズはOSのキーチェーンに安全に保存されています。既存の値を維持する場合は空欄にしてください。
                 </p>
               )}
             </div>
@@ -217,18 +220,18 @@ export function SSHProfileForm({
           {/* Password (conditional) */}
           {authMethod === 'password' && (
             <div>
-              <label className="text-xs font-medium text-muted-foreground">Password</label>
+              <label className="text-xs font-medium text-muted-foreground">パスワード</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={profile?.hasStoredPassword ? '••••••••' : 'Enter password'}
+                placeholder={profile?.hasStoredPassword ? '••••••••' : 'パスワードを入力'}
                 className="mt-1 w-full px-3 py-1.5 text-sm bg-muted border border-border rounded focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <p className="mt-1 text-3xs text-muted-foreground">
                 {profile?.hasStoredPassword
-                  ? '🔒 Password stored securely in OS keychain. Leave blank to keep existing.'
-                  : '🔒 Password will be stored in your OS keychain (Windows Credential Manager / macOS Keychain)'}
+                  ? '🔒 パスワードはOSのキーチェーンに安全に保存されています。既存の値を維持する場合は空欄にしてください。'
+                  : '🔒 パスワードはOSのキーチェーン(Windows Credential Manager / macOS Keychain)に保存されます'}
               </p>
             </div>
           )}
@@ -240,14 +243,14 @@ export function SSHProfileForm({
               onClick={onClose}
               className="px-3 py-1.5 text-xs rounded border border-border hover:bg-accent"
             >
-              Cancel
+              キャンセル
             </button>
             <button
               type="submit"
               disabled={saving}
               className="px-3 py-1.5 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
-              {saving ? 'Saving...' : profile ? 'Update' : 'Create'}
+              {saving ? '保存中...' : profile ? '更新' : '作成'}
             </button>
           </div>
         </form>

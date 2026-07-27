@@ -21,9 +21,9 @@ interface PermissionDialogProps {
 function toolTitle(toolCall: unknown): string {
   if (toolCall && typeof toolCall === 'object') {
     const t = toolCall as { title?: string; toolCallId?: string }
-    return t.title ?? t.toolCallId ?? 'this action'
+    return t.title ?? t.toolCallId ?? 'この操作'
   }
-  return 'this action'
+  return 'この操作'
 }
 
 /**
@@ -37,7 +37,7 @@ export function PermissionDialog({ permission }: PermissionDialogProps): React.J
   const choose = useCallback(
     (optionId?: string) => {
       void respond(permission.requestId, optionId).catch((err) => {
-        toast.error(`Permission response failed: ${String(err)}`)
+        toast.error(`権限の応答に失敗しました: ${String(err)}`)
       })
     },
     [respond, permission.requestId]
@@ -59,15 +59,15 @@ export function PermissionDialog({ permission }: PermissionDialogProps): React.J
     <Dialog open onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Permission required</DialogTitle>
+          <DialogTitle>権限が必要です</DialogTitle>
           <DialogDescription>
-            The agent wants to run{' '}
-            <span className="font-medium">{toolTitle(permission.toolCall)}</span>.
+            エージェントが <span className="font-medium">{toolTitle(permission.toolCall)}</span>{' '}
+            を実行しようとしています。
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
           {permission.options.length === 0 && (
-            <p className="text-sm text-muted-foreground">No options were provided.</p>
+            <p className="text-sm text-muted-foreground">選択肢が提示されていません。</p>
           )}
           {permission.options.map((option) => (
             <Button
@@ -88,13 +88,13 @@ export function PermissionDialog({ permission }: PermissionDialogProps): React.J
           {!pickRejectOption(permission.options) && (
             // Guarantee a dismissal path when the agent provided no reject option.
             <Button variant="ghost" className="justify-start" onClick={() => choose(undefined)}>
-              Cancel
+              キャンセル
             </Button>
           )}
         </div>
         <DialogFooter className="sm:justify-start">
           <span className="text-2xs text-muted-foreground">
-            Closing this dialog declines the request.
+            このダイアログを閉じると、リクエストは拒否されます。
           </span>
         </DialogFooter>
       </DialogContent>

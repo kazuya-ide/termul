@@ -44,13 +44,13 @@ export function RemoteFileExplorer({
           setEntries(result.data)
           setCurrentPath(path)
         } else {
-          setError(result.error ?? 'Failed to load directory')
-          toast.error(`Failed to load: ${result.error}`)
+          setError(result.error ?? 'ディレクトリの読み込みに失敗しました')
+          toast.error(`読み込みに失敗しました: ${result.error}`)
         }
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error)
         setError(errorMsg)
-        toast.error(`Failed to load: ${errorMsg}`)
+        toast.error(`読み込みに失敗しました: ${errorMsg}`)
       } finally {
         setIsLoading(false)
       }
@@ -76,11 +76,11 @@ export function RemoteFileExplorer({
           setChildEntries((prev) => new Map(prev).set(dirPath, result.data))
           setExpandedDirs((prev) => new Set(prev).add(dirPath))
         } else {
-          toast.error(`Permission denied: ${dirPath}`)
+          toast.error(`アクセスが拒否されました: ${dirPath}`)
         }
       } catch (error) {
         toast.error(
-          `Failed to load ${dirPath}: ${error instanceof Error ? error.message : String(error)}`
+          `${dirPath} の読み込みに失敗しました: ${error instanceof Error ? error.message : String(error)}`
         )
       } finally {
         setLoadingDirs((prev) => {
@@ -95,44 +95,45 @@ export function RemoteFileExplorer({
 
   const handleDownload = async (entry: SFTPEntry) => {
     const saveResult = await dialogApi.selectFile({
-      title: `Save ${entry.name}`,
-      filters: [{ name: 'All Files', extensions: ['*'] }]
+      title: `${entry.name} を保存`,
+      filters: [{ name: 'すべてのファイル', extensions: ['*'] }]
     })
     if (!saveResult.success) {
-      if (saveResult.code !== 'CANCELLED') toast.error(`Save dialog failed: ${saveResult.error}`)
+      if (saveResult.code !== 'CANCELLED')
+        toast.error(`保存ダイアログの起動に失敗しました: ${saveResult.error}`)
       return
     }
     const localPath = saveResult.data
     const result = await sshApi.sftpDownload(connectionId, entry.path, localPath)
     if (result.success) {
-      toast.success(`Downloaded: ${entry.name}`)
+      toast.success(`ダウンロードしました: ${entry.name}`)
     } else {
-      toast.error(`Download failed: ${result.error}`)
+      toast.error(`ダウンロードに失敗しました: ${result.error}`)
     }
   }
 
   const handleDelete = async (entry: SFTPEntry) => {
     const result = await sshApi.sftpDelete(connectionId, entry.path)
     if (result.success) {
-      toast.success(`Deleted: ${entry.name}`)
+      toast.success(`削除しました: ${entry.name}`)
       loadDirectory(currentPath)
     } else {
-      toast.error(`Delete failed: ${result.error}`)
+      toast.error(`削除に失敗しました: ${result.error}`)
     }
   }
 
   const handleMkdir = async () => {
-    const name = prompt('Directory name:')
+    const name = prompt('フォルダ名:')
     if (!name) return
 
     const newPath = currentPath.endsWith('/') ? `${currentPath}${name}` : `${currentPath}/${name}`
 
     const result = await sshApi.sftpMkdir(connectionId, newPath)
     if (result.success) {
-      toast.success(`Created: ${name}`)
+      toast.success(`作成しました: ${name}`)
       loadDirectory(currentPath)
     } else {
-      toast.error(`Failed to create directory: ${result.error}`)
+      toast.error(`フォルダの作成に失敗しました: ${result.error}`)
     }
   }
 
@@ -216,7 +217,7 @@ export function RemoteFileExplorer({
                   handleDownload(entry)
                 }}
                 className="p-0.5 rounded hover:bg-accent"
-                title="Download"
+                title="ダウンロード"
               >
                 <Download className="h-3 w-3 text-muted-foreground" />
               </button>
@@ -227,7 +228,7 @@ export function RemoteFileExplorer({
                 handleDelete(entry)
               }}
               className="p-0.5 rounded hover:bg-destructive/20"
-              title="Delete"
+              title="削除"
             >
               <Trash2 className="h-3 w-3 text-muted-foreground" />
             </button>
@@ -250,14 +251,14 @@ export function RemoteFileExplorer({
         <button
           onClick={handleMkdir}
           className="p-1 rounded hover:bg-accent text-muted-foreground"
-          title="New folder"
+          title="新規フォルダ"
         >
           <FolderPlus className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={() => loadDirectory(currentPath)}
           className="p-1 rounded hover:bg-accent text-muted-foreground"
-          title="Refresh"
+          title="更新"
         >
           <RefreshCw className="h-3.5 w-3.5" />
         </button>
@@ -275,7 +276,7 @@ export function RemoteFileExplorer({
           </div>
         ) : entries.length === 0 ? (
           <div className="p-4 text-center">
-            <p className="text-xs text-muted-foreground">Empty directory</p>
+            <p className="text-xs text-muted-foreground">空のディレクトリ</p>
           </div>
         ) : (
           <div className="py-1">{entries.map((entry) => renderEntry(entry))}</div>

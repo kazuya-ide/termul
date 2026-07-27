@@ -98,7 +98,7 @@ export function ChatInputBar({
       setLoadedSkill(null)
       resetHeight()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to load skill')
+      toast.error(err instanceof Error ? err.message : 'スキルの読み込みに失敗しました')
     } finally {
       setSending(false)
     }
@@ -185,10 +185,10 @@ export function ChatInputBar({
               rows={1}
               placeholder={
                 disabled
-                  ? 'Session closed'
+                  ? 'セッションは終了しました'
                   : loadedSkill
-                    ? 'Add a message (optional)…'
-                    : 'Ask anything… (/ for commands & skills)'
+                    ? 'メッセージを追加（任意）…'
+                    : '何でも聞いてください…（/ でコマンドとスキル）'
               }
               className={cn(
                 'w-full resize-none bg-transparent text-sm leading-relaxed',
@@ -232,8 +232,8 @@ export function ChatInputBar({
                 <button
                   type="button"
                   onClick={onCancel}
-                  title="Cancel turn"
-                  aria-label="Cancel turn"
+                  title="ターンを取り消す"
+                  aria-label="ターンを取り消す"
                   className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-secondary text-foreground hover:bg-secondary/80"
                 >
                   <Square size={14} />
@@ -243,8 +243,8 @@ export function ChatInputBar({
                   type="button"
                   onClick={() => void submit()}
                   disabled={!canSend}
-                  title="Send"
-                  aria-label="Send message"
+                  title="送信"
+                  aria-label="メッセージを送信"
                   className={cn(
                     'flex h-[34px] w-[34px] items-center justify-center rounded-full transition-colors',
                     canSend

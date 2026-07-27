@@ -45,7 +45,7 @@ export function AgentChatPanel({ sessionId }: AgentChatPanelProps): React.JSX.El
   const handleSend = useCallback(
     (text: string) => {
       void sendPrompt(sessionId, text).catch((err) => {
-        toast.error(`Failed to send: ${String(err)}`)
+        toast.error(`送信に失敗しました: ${String(err)}`)
       })
     },
     [sendPrompt, sessionId]
@@ -53,14 +53,14 @@ export function AgentChatPanel({ sessionId }: AgentChatPanelProps): React.JSX.El
 
   const handleCancel = useCallback(() => {
     void cancelPrompt(sessionId).catch((err) => {
-      toast.error(`Failed to cancel: ${String(err)}`)
+      toast.error(`キャンセルに失敗しました: ${String(err)}`)
     })
   }, [cancelPrompt, sessionId])
 
   const handleSetConfig = useCallback(
     (configId: string, valueId: string) => {
       void setConfigOption(sessionId, configId, valueId).catch((err) => {
-        toast.error(`Failed to set option: ${String(err)}`)
+        toast.error(`オプションの設定に失敗しました: ${String(err)}`)
       })
     },
     [setConfigOption, sessionId]
@@ -69,7 +69,7 @@ export function AgentChatPanel({ sessionId }: AgentChatPanelProps): React.JSX.El
   const handleSetMode = useCallback(
     (modeId: string) => {
       void setMode(sessionId, modeId).catch((err) => {
-        toast.error(`Failed to set mode: ${String(err)}`)
+        toast.error(`モードの設定に失敗しました: ${String(err)}`)
       })
     },
     [setMode, sessionId]
@@ -85,7 +85,7 @@ export function AgentChatPanel({ sessionId }: AgentChatPanelProps): React.JSX.El
   if (!session) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-        No active chat for this pane.
+        このペインにアクティブなチャットはありません。
       </div>
     )
   }
@@ -102,14 +102,14 @@ export function AgentChatPanel({ sessionId }: AgentChatPanelProps): React.JSX.El
       )}
       {pendingAuth && pendingAuth.methods.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 border-b border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-2xs text-amber-400">
-          <span>{pendingAuth.message ?? 'This agent requires authentication.'}</span>
+          <span>{pendingAuth.message ?? 'このエージェントには認証が必要です。'}</span>
           {pendingAuth.methods.map((m) => (
             <button
               key={m.id}
               type="button"
               onClick={() => {
                 void authenticate(session.agentId, m.id).catch((err) => {
-                  toast.error(`Authentication failed: ${String(err)}`)
+                  toast.error(`認証に失敗しました: ${String(err)}`)
                 })
               }}
               className="rounded border border-amber-500/40 px-2 py-0.5 font-medium hover:bg-amber-500/20"

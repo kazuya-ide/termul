@@ -81,11 +81,11 @@ export type AppSettingsUpdate = Partial<Omit<AppSettings, AppPanelVisibilitySett
 
 // Terminal buffer size options
 export const BUFFER_SIZE_OPTIONS = [
-  { value: 1000, label: '1,000 lines' },
-  { value: 5000, label: '5,000 lines' },
-  { value: 10000, label: '10,000 lines' },
-  { value: 25000, label: '25,000 lines' },
-  { value: 50000, label: '50,000 lines' }
+  { value: 1000, label: '1,000行' },
+  { value: 5000, label: '5,000行' },
+  { value: 10000, label: '10,000行' },
+  { value: 25000, label: '25,000行' },
+  { value: 50000, label: '50,000行' }
 ]
 
 // Font family options for terminal
@@ -101,25 +101,25 @@ export const FONT_FAMILY_OPTIONS = [
 
 // Max terminals per project options
 export const MAX_TERMINALS_OPTIONS = [
-  { value: 5, label: '5 terminals' },
-  { value: 10, label: '10 terminals' },
-  { value: 15, label: '15 terminals' },
-  { value: 20, label: '20 terminals' },
-  { value: 50, label: '50 terminals' }
+  { value: 5, label: '5個のターミナル' },
+  { value: 10, label: '10個のターミナル' },
+  { value: 15, label: '15個のターミナル' },
+  { value: 20, label: '20個のターミナル' },
+  { value: 50, label: '50個のターミナル' }
 ]
 
 // Orphan detection timeout options
 export const ORPHAN_TIMEOUT_OPTIONS = [
-  { value: 60000, label: '1 minute' },
-  { value: 300000, label: '5 minutes' },
-  { value: 600000, label: '10 minutes' },
-  { value: 1800000, label: '30 minutes' },
-  { value: 3600000, label: '1 hour' }
+  { value: 60000, label: '1分' },
+  { value: 300000, label: '5分' },
+  { value: 600000, label: '10分' },
+  { value: 1800000, label: '30分' },
+  { value: 3600000, label: '1時間' }
 ]
 
 // Terminal renderer strategy options
 export const TERMINAL_RENDERER_OPTIONS = [
-  { value: 'auto', label: 'Auto (Prefer WebGL, DOM fallback)' },
+  { value: 'auto', label: '自動（WebGL優先、DOMにフォールバック）' },
   { value: 'webgl', label: 'WebGL' },
   { value: 'dom', label: 'DOM' }
 ]
@@ -129,8 +129,8 @@ export const TERMINAL_URL_OPEN_MODE_OPTIONS: Array<{
   value: TerminalUrlOpenMode
   label: string
 }> = [
-  { value: 'system', label: 'System Default Browser' },
-  { value: 'termul', label: 'Termul Browser' }
+  { value: 'system', label: 'システムの既定のブラウザ' },
+  { value: 'termul', label: 'Termulブラウザ' }
 ]
 
 export const REMOTE_BIND_MODE_OPTIONS: Array<{
@@ -140,13 +140,14 @@ export const REMOTE_BIND_MODE_OPTIONS: Array<{
 }> = [
   {
     value: 'localhost',
-    label: 'Localhost only (127.0.0.1)',
-    description: 'Only this machine can connect directly. Safest default.'
+    label: 'ローカルホストのみ（127.0.0.1）',
+    description: 'このマシンからのみ直接接続できます。最も安全な既定設定です。'
   },
   {
     value: 'all',
-    label: 'All interfaces (0.0.0.0)',
-    description: 'Listen on every network interface. Other devices on your LAN can reach the port.'
+    label: 'すべてのネットワークインターフェース（0.0.0.0）',
+    description:
+      'すべてのネットワークインターフェースで待ち受けます。LAN内の他のデバイスからこのポートにアクセスできます。'
   }
 ]
 
@@ -191,166 +192,168 @@ export type KeyboardShortcutsConfig = Record<string, KeyboardShortcut>
 export const DEFAULT_KEYBOARD_SHORTCUTS: KeyboardShortcutsConfig = {
   commandPalette: {
     id: 'commandPalette',
-    label: 'Command Palette',
-    description: 'Open the command palette for quick actions',
+    label: 'コマンドパレット',
+    description: 'クイックアクション用のコマンドパレットを開きます',
     defaultKey: 'ctrl+k'
   },
   commandPaletteAlt: {
     id: 'commandPaletteAlt',
-    label: 'Command Palette (Alt)',
-    description: 'Open command palette (VS Code style)',
+    label: 'コマンドパレット（代替）',
+    description: 'コマンドパレットを開きます（VS Code形式）',
     defaultKey: 'ctrl+shift+p'
   },
   terminalSearch: {
     id: 'terminalSearch',
-    label: 'Terminal Search',
-    description: 'Search within terminal output',
+    label: 'ターミナル検索',
+    description: 'ターミナルの出力内を検索します',
     defaultKey: 'ctrl+f'
   },
   commandHistory: {
     id: 'commandHistory',
-    label: 'Command History',
-    description: 'Search command history',
+    label: 'コマンド履歴',
+    description: 'コマンド履歴を検索します',
     defaultKey: 'ctrl+r'
   },
   newProject: {
     id: 'newProject',
-    label: 'New Project',
-    description: 'Create a new project',
+    label: '新規プロジェクト',
+    description: '新しいプロジェクトを作成します',
     defaultKey: 'ctrl+n'
   },
   newTerminal: {
     id: 'newTerminal',
-    label: 'Agent Launcher',
-    description: 'Show the agent launcher prompt in the active pane',
+    label: 'エージェント起動',
+    description: 'アクティブなペインにエージェント起動プロンプトを表示します',
     defaultKey: 'ctrl+t'
   },
   newBrowserTab: {
     id: 'newBrowserTab',
-    label: 'New Browser Tab',
-    description: 'Create a new browser tab',
+    label: '新規ブラウザタブ',
+    description: '新しいブラウザタブを作成します',
     defaultKey: 'ctrl+shift+n'
   },
   nextTerminal: {
     id: 'nextTerminal',
-    label: 'Next Tab',
-    description: 'Switch to next tab (terminal or editor) using the Tauri-safe fallback',
+    label: '次のタブ',
+    description:
+      '次のタブ（ターミナルまたはエディタ）に切り替えます（Tauri対応のフォールバック使用）',
     defaultKey: 'ctrl+pagedown'
   },
   prevTerminal: {
     id: 'prevTerminal',
-    label: 'Previous Tab',
-    description: 'Switch to previous tab (terminal or editor) using the Tauri-safe fallback',
+    label: '前のタブ',
+    description:
+      '前のタブ（ターミナルまたはエディタ）に切り替えます（Tauri対応のフォールバック使用）',
     defaultKey: 'ctrl+pageup'
   },
   zoomIn: {
     id: 'zoomIn',
-    label: 'Zoom In',
-    description: 'Zoom in the entire UI',
+    label: '拡大',
+    description: '画面全体を拡大します',
     defaultKey: 'ctrl+='
   },
   zoomOut: {
     id: 'zoomOut',
-    label: 'Zoom Out',
-    description: 'Zoom out the entire UI',
+    label: '縮小',
+    description: '画面全体を縮小します',
     defaultKey: 'ctrl+-'
   },
   zoomReset: {
     id: 'zoomReset',
-    label: 'Reset Zoom',
-    description: 'Reset the whole-UI zoom to 100%',
+    label: '拡大率をリセット',
+    description: '画面全体の拡大率を100%に戻します',
     defaultKey: 'ctrl+0'
   },
   sidebarToggle: {
     id: 'sidebarToggle',
-    label: 'Toggle Sidebar',
-    description: 'Show or hide the project sidebar',
+    label: 'サイドバー表示切替',
+    description: 'プロジェクトサイドバーの表示・非表示を切り替えます',
     defaultKey: 'ctrl+shift+b'
   },
   closeTab: {
     id: 'closeTab',
-    label: 'Close Tab',
-    description: 'Close the active tab (terminal, editor, or browser)',
+    label: 'タブを閉じる',
+    description: 'アクティブなタブ（ターミナル・エディタ・ブラウザ）を閉じます',
     defaultKey: 'ctrl+w'
   },
   saveFile: {
     id: 'saveFile',
-    label: 'Save File',
-    description: 'Save the current editor file',
+    label: 'ファイルを保存',
+    description: 'エディタで開いているファイルを保存します',
     defaultKey: 'ctrl+s'
   },
   toggleFileExplorer: {
     id: 'toggleFileExplorer',
-    label: 'Toggle File Explorer',
-    description: 'Show or hide the file explorer panel',
+    label: 'ファイルエクスプローラー表示切替',
+    description: 'ファイルエクスプローラーパネルの表示・非表示を切り替えます',
     defaultKey: 'ctrl+b'
   },
   fileExplorerRename: {
     id: 'fileExplorerRename',
-    label: 'Rename File',
-    description: 'Rename selected file',
+    label: 'ファイル名を変更',
+    description: '選択したファイルの名前を変更します',
     defaultKey: 'f2'
   },
   fileExplorerDelete: {
     id: 'fileExplorerDelete',
-    label: 'Delete Files',
-    description: 'Delete selected files',
+    label: 'ファイルを削除',
+    description: '選択したファイルを削除します',
     defaultKey: 'delete'
   },
 
   // Worktree shortcuts
   worktreeCreate: {
     id: 'worktreeCreate',
-    label: 'Create Worktree',
-    description: 'Open the new worktree creation modal',
+    label: 'ワークツリーを作成',
+    description: '新規ワークツリー作成ダイアログを開きます',
     defaultKey: 'ctrl+shift+alt+n'
   },
   worktreeSwitchNext: {
     id: 'worktreeSwitchNext',
-    label: 'Switch to Next Worktree',
-    description: 'Cycle to the next worktree in the sidebar',
+    label: '次のワークツリーに切替',
+    description: 'サイドバーで次のワークツリーに切り替えます',
     defaultKey: 'ctrl+shift+downarrow'
   },
   worktreeSwitchPrev: {
     id: 'worktreeSwitchPrev',
-    label: 'Switch to Previous Worktree',
-    description: 'Cycle to the previous worktree in the sidebar',
+    label: '前のワークツリーに切替',
+    description: 'サイドバーで前のワークツリーに切り替えます',
     defaultKey: 'ctrl+shift+uparrow'
   },
   worktreeOpenTerminal: {
     id: 'worktreeOpenTerminal',
-    label: 'Open Terminal in Worktree',
-    description: 'Spawn a new terminal in the active worktree',
+    label: 'ワークツリーでターミナルを開く',
+    description: 'アクティブなワークツリーで新しいターミナルを起動します',
     defaultKey: 'ctrl+shift+alt+t'
   },
   worktreeMergeToMain: {
     id: 'worktreeMergeToMain',
-    label: 'Merge Worktree to Main',
-    description: 'Start merge workflow: worktree branch to main',
+    label: 'ワークツリーをmainにマージ',
+    description: 'マージ作業を開始します（ワークツリーのブランチ→main）',
     defaultKey: 'ctrl+shift+m'
   },
   worktreeSyncMain: {
     id: 'worktreeSyncMain',
-    label: 'Sync Main into Worktree',
-    description: 'Start merge workflow: main into worktree branch',
+    label: 'mainをワークツリーに同期',
+    description: 'マージ作業を開始します（main→ワークツリーのブランチ）',
     defaultKey: 'ctrl+shift+alt+s'
   },
   worktreeArchive: {
     id: 'worktreeArchive',
-    label: 'Archive Active Worktree',
-    description: 'Archive the current active worktree',
+    label: 'アクティブなワークツリーをアーカイブ',
+    description: '現在アクティブなワークツリーをアーカイブします',
     defaultKey: 'ctrl+shift+a'
   },
   worktreeSwitchRoot: {
     id: 'worktreeSwitchRoot',
-    label: 'Switch to Project Root',
-    description: 'Switch active context to the project root directory',
+    label: 'プロジェクトルートに切替',
+    description: 'アクティブなコンテキストをプロジェクトルートディレクトリに切り替えます',
     defaultKey: 'ctrl+shift+home'
   },
   colorThemePicker: {
     id: 'colorThemePicker',
-    label: 'Change Color Theme',
-    description: 'Open the color theme picker with live preview',
+    label: '配色テーマを変更',
+    description: 'ライブプレビュー付きの配色テーマ選択を開きます',
     defaultKey: 'ctrl+alt+t'
   }
 }

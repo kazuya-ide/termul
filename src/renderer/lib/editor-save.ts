@@ -22,13 +22,13 @@ export async function requestSaveEditorFile(filePath: string): Promise<boolean> 
   try {
     const saved = await useEditorStore.getState().saveFile(filePath)
     if (saved) {
-      toast.success(`${fileName} saved`)
+      toast.success(`${fileName} を保存しました`)
     } else {
-      toast.error(`Failed to save ${fileName}`)
+      toast.error(`${fileName} の保存に失敗しました`)
     }
     return saved
   } catch {
-    toast.error(`Failed to save ${fileName}`)
+    toast.error(`${fileName} の保存に失敗しました`)
     return false
   }
 }

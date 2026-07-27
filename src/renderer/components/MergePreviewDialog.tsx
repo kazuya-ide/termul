@@ -58,7 +58,7 @@ export function MergePreviewDialog({
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
               <GitMerge size={14} className="text-primary" />
-              <h2 className="text-sm font-semibold text-foreground">Merge Preview</h2>
+              <h2 className="text-sm font-semibold text-foreground">マージのプレビュー</h2>
             </div>
             <button
               onClick={onClose}
@@ -72,7 +72,7 @@ export function MergePreviewDialog({
           {loading && (
             <div className="flex items-center justify-center py-12">
               <Loader2 size={20} className="animate-spin text-muted-foreground" />
-              <span className="ml-2 text-sm text-muted-foreground">Detecting conflicts...</span>
+              <span className="ml-2 text-sm text-muted-foreground">コンフリクトを検出中...</span>
             </div>
           )}
 
@@ -110,11 +110,11 @@ export function MergePreviewDialog({
               {/* Summary */}
               <div className="flex gap-4 text-xs">
                 <div>
-                  <span className="text-muted-foreground">Changed files: </span>
+                  <span className="text-muted-foreground">変更されたファイル: </span>
                   <span className="font-medium text-foreground">{preview.totalChanges}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Conflicts: </span>
+                  <span className="text-muted-foreground">コンフリクト: </span>
                   <span
                     className={cn(
                       'font-medium',
@@ -129,7 +129,7 @@ export function MergePreviewDialog({
               {/* Conflict files list */}
               {preview.conflictFiles.length > 0 && (
                 <div className="space-y-1 max-h-[180px] overflow-auto">
-                  <p className="label-group text-muted-foreground">Conflicted Files</p>
+                  <p className="label-group text-muted-foreground">コンフリクトのあるファイル</p>
                   {preview.conflictFiles.map((file) => (
                     <div
                       key={file.path}
@@ -157,7 +157,7 @@ export function MergePreviewDialog({
               {/* Changed files list (no conflict) */}
               {preview.changedFiles.length > 0 && (
                 <div className="space-y-1 max-h-[100px] overflow-auto">
-                  <p className="label-group text-muted-foreground">Files that will change</p>
+                  <p className="label-group text-muted-foreground">変更されるファイル</p>
                   {preview.changedFiles.map((file) => (
                     <div
                       key={file}
@@ -173,7 +173,7 @@ export function MergePreviewDialog({
               {/* No conflicts */}
               {preview.conflictFiles.length === 0 && preview.changedFiles.length === 0 && (
                 <p className="text-xs text-muted-foreground text-center py-4">
-                  No conflicts detected. Ready to merge.
+                  コンフリクトは検出されませんでした。マージの準備ができています。
                 </p>
               )}
 
@@ -185,13 +185,13 @@ export function MergePreviewDialog({
                       onClick={handleResolveConflicts}
                       className="flex-1 px-3 py-1.5 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                     >
-                      Resolve Conflicts
+                      コンフリクトを解決
                     </button>
                     <button
                       onClick={handleAiHelp}
                       className="px-3 py-1.5 rounded-md text-xs font-medium bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      AI Help
+                      AI で解決
                     </button>
                   </>
                 ) : (
@@ -199,14 +199,14 @@ export function MergePreviewDialog({
                     onClick={onExecuteMerge}
                     className="flex-1 px-3 py-1.5 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                   >
-                    Execute Merge
+                    マージを実行
                   </button>
                 )}
                 <button
                   onClick={onClose}
                   className="px-3 py-1.5 rounded-md text-xs font-medium bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Cancel
+                  キャンセル
                 </button>
               </div>
 
@@ -228,7 +228,7 @@ export function MergePreviewDialog({
             <div className="text-center py-12">
               <GitMerge size={24} className="mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
-                Select a merge direction to preview conflicts.
+                マージの方向を選択すると、コンフリクトのプレビューが表示されます。
               </p>
             </div>
           )}

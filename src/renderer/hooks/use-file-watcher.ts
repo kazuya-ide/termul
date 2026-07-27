@@ -65,10 +65,10 @@ export function useFileWatcher(): void {
         if (!fileState.isDirty) {
           void editorState.reloadFile(path)
         } else {
-          toast('File changed externally', {
+          toast('ファイルが外部で変更されました', {
             description: path.split(/[\\/]/).pop() || path,
             action: {
-              label: 'Reload',
+              label: '再読み込み',
               onClick: () => {
                 void useEditorStore.getState().reloadFile(path)
               }

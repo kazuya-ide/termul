@@ -261,11 +261,11 @@ export function PaneContent({
                             <AgentIcon agentId={terminal.agentId!} className="h-16 w-16" />
                           </span>
                           <span className="text-sm text-muted-foreground">
-                            Starting {terminal.agentName ?? terminal.name}…
+                            {terminal.agentName ?? terminal.name} を起動中…
                           </span>
                         </>
                       ) : (
-                        <span className="text-sm text-muted-foreground">Connecting…</span>
+                        <span className="text-sm text-muted-foreground">接続中…</span>
                       )}
                     </div>
                   )
@@ -321,7 +321,7 @@ export function PaneContent({
                           />
                         </span>
                         <span className="text-sm text-muted-foreground">
-                          Starting {terminal.agentName ?? terminal.name}…
+                          {terminal.agentName ?? terminal.name} を起動中…
                         </span>
                       </div>
                     )}
@@ -417,7 +417,7 @@ export function PaneContent({
           className="absolute inset-0 z-30 flex flex-col bg-background/95 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
-          aria-label="Agent launcher"
+          aria-label="エージェントランチャー"
           onKeyDown={(e) => {
             if (e.key === 'Escape') useWorkspaceStore.getState().hideAgentLauncher()
           }}

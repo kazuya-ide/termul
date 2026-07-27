@@ -96,7 +96,7 @@ export function FileTreeNode({
           isIgnored && 'opacity-50',
           isSelected && 'bg-accent text-accent-foreground'
         )}
-        title={isIgnored ? `${entry.name} (git-ignored)` : undefined}
+        title={isIgnored ? `${entry.name} (Git管理対象外)` : undefined}
         style={{ paddingLeft: depth * 16 + 4 }}
         onClick={handleClick}
         onContextMenu={(e) => onContextMenu(e, entry)}

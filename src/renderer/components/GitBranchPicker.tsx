@@ -22,9 +22,9 @@ function sanitizeBranchName(name: string): string {
 function formatBranchLoadError(error: string, code?: string): string {
   switch (code) {
     case 'NOT_A_GIT_REPO':
-      return 'This folder is not a git repository.'
+      return 'このフォルダは git リポジトリではありません。'
     case 'GIT_NOT_FOUND':
-      return 'Git is not installed or not available on PATH.'
+      return 'Git がインストールされていないか、PATH で利用できません。'
     default:
       return error
   }
@@ -86,13 +86,13 @@ export function GitBranchPicker({
         setLoadError(formatBranchLoadError(result.error, result.code))
       } else {
         setBranches([])
-        setLoadError('Failed to load branches.')
+        setLoadError('ブランチの読み込みに失敗しました。')
       }
     } catch (error) {
       if (!isCurrentRequest()) return
 
       setBranches([])
-      setLoadError(error instanceof Error ? error.message : 'Failed to load branches.')
+      setLoadError(error instanceof Error ? error.message : 'ブランチの読み込みに失敗しました。')
     } finally {
       if (isCurrentRequest()) {
         setBranchesLoading(false)
@@ -132,8 +132,8 @@ export function GitBranchPicker({
 
   const emptyListMessage = useMemo((): string | null => {
     if (loadError || branchesLoading) return null
-    if (localBranches.length === 0) return 'No branches yet.'
-    if (branchSearch.trim()) return 'No branches match your search.'
+    if (localBranches.length === 0) return 'ブランチがまだありません。'
+    if (branchSearch.trim()) return '検索条件に一致するブランチがありません。'
     return null
   }, [branchSearch, branchesLoading, loadError, localBranches.length])
 
@@ -160,10 +160,10 @@ export function GitBranchPicker({
       await gitApi.checkoutBranch(repoPath, branch.name, branch.isRemote)
       const checkedOut = resolveCheckedOutBranch(branch)
       handleBranchChanged(checkedOut)
-      toast.success(`Switched to ${checkedOut}`)
+      toast.success(`${checkedOut} に切り替えました`)
       setOpen(false)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to switch branch')
+      toast.error(error instanceof Error ? error.message : 'ブランチの切り替えに失敗しました')
     } finally {
       setIsSwitching(false)
     }
@@ -171,17 +171,17 @@ export function GitBranchPicker({
 
   const handleCreateBranch = async (): Promise<void> => {
     if (branchesLoading) {
-      toast.error('Wait for branches to finish loading')
+      toast.error('ブランチの読み込みが完了するまでお待ちください')
       return
     }
     if (loadError) {
-      toast.error('Branches must load successfully before creating a new branch')
+      toast.error('新しいブランチを作成するには、ブランチの読み込みが成功している必要があります')
       return
     }
 
     const sanitized = sanitizeBranchName(newBranchName.trim())
     if (!sanitized) {
-      toast.error('Enter a valid branch name')
+      toast.error('有効なブランチ名を入力してください')
       return
     }
 
@@ -189,16 +189,16 @@ export function GitBranchPicker({
     try {
       await gitApi.createBranch(repoPath, sanitized)
       handleBranchChanged(sanitized)
-      toast.success(`Created and checked out ${sanitized}`)
+      toast.success(`${sanitized} を作成してチェックアウトしました`)
       setOpen(false)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to create branch')
+      toast.error(error instanceof Error ? error.message : 'ブランチの作成に失敗しました')
     } finally {
       setIsSwitching(false)
     }
   }
 
-  const displayLabel = currentBranch ?? 'detached'
+  const displayLabel = currentBranch ?? 'デタッチド'
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -206,7 +206,7 @@ export function GitBranchPicker({
         <button
           type="button"
           className={statusBarTriggerClass}
-          aria-label="Switch git branch"
+          aria-label="Git ブランチを切り替え"
           disabled={isSwitching}
         >
           <GitBranch size={14} className="mr-1.5" />
@@ -231,7 +231,7 @@ export function GitBranchPicker({
               type="text"
               value={branchSearch}
               onChange={(e) => setBranchSearch(e.target.value)}
-              placeholder="Search branches..."
+              placeholder="ブランチを検索..."
               className="w-full bg-secondary border border-border rounded pl-7 pr-3 py-1.5 text-xs text-foreground focus:ring-1 focus:ring-primary outline-none placeholder:text-muted-foreground"
               autoFocus
             />
@@ -242,7 +242,7 @@ export function GitBranchPicker({
           {branchesLoading ? (
             <div className="flex items-center gap-2 px-3 py-4 text-xs text-muted-foreground">
               <Loader2 size={14} className="animate-spin" />
-              Loading branches...
+              ブランチを読み込み中...
             </div>
           ) : loadError ? (
             <div className="px-3 py-4 text-center space-y-2">
@@ -256,7 +256,7 @@ export function GitBranchPicker({
                 className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <RefreshCw size={12} />
-                Retry
+                再試行
               </button>
             </div>
           ) : emptyListMessage ? (
@@ -279,14 +279,14 @@ export function GitBranchPicker({
                 )}
                 title={
                   branch.hasOtherWorktree
-                    ? 'This branch is checked out in another worktree'
+                    ? 'このブランチは別の worktree でチェックアウトされています'
                     : undefined
                 }
               >
                 <GitBranch size={10} className="flex-shrink-0" />
                 <span className="truncate flex-1">{branch.name}</span>
                 {branch.isCurrent && (
-                  <span className="text-[10px] text-muted-foreground">current</span>
+                  <span className="text-[10px] text-muted-foreground">現在</span>
                 )}
                 {branch.hasOtherWorktree && (
                   <span className="text-[10px] text-muted-foreground">worktree</span>
@@ -307,7 +307,7 @@ export function GitBranchPicker({
                   if (e.key === 'Enter') void handleCreateBranch()
                   if (e.key === 'Escape') setIsCreatingMode(false)
                 }}
-                placeholder="new-branch-name"
+                placeholder="新しいブランチ名"
                 className="flex-1 bg-secondary border border-border rounded px-2 py-1.5 text-xs text-foreground focus:ring-1 focus:ring-primary outline-none placeholder:text-muted-foreground"
                 autoFocus
                 disabled={isSwitching}
@@ -318,7 +318,7 @@ export function GitBranchPicker({
                 disabled={isSwitching || !canCreateBranch || !newBranchName.trim()}
                 className="text-xs px-2 py-1.5 rounded bg-primary text-primary-foreground disabled:opacity-50"
               >
-                Create
+                作成
               </button>
             </div>
           ) : (
@@ -329,7 +329,7 @@ export function GitBranchPicker({
               className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent/60 rounded transition-colors"
             >
               <Plus size={12} />
-              Create and checkout new branch...
+              新しいブランチを作成してチェックアウト...
             </button>
           )}
         </div>

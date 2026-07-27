@@ -207,7 +207,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
 
   const handleSSHMkdir = useCallback(async () => {
     if (!sshConn.connectionId) return
-    const name = prompt('New folder name:')
+    const name = prompt('新しいフォルダ名:')
     if (!name) return
     const newPath = sshConn.currentPath.endsWith('/')
       ? `${sshConn.currentPath}${name}`
@@ -215,17 +215,17 @@ export default function WorkspaceLayout(): React.JSX.Element {
     try {
       const r = await sshApi.sftpMkdir(sshConn.connectionId, newPath)
       if (r.success) {
-        toast.success(`Created: ${name}`)
+        toast.success(`作成しました: ${name}`)
         sshConn.loadDirectory(sshConn.currentPath)
-      } else toast.error(`Failed: ${r.error}`)
+      } else toast.error(`失敗しました: ${r.error}`)
     } catch (error) {
-      toast.error(`Failed: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error(`失敗しました: ${error instanceof Error ? error.message : String(error)}`)
     }
   }, [sshConn.connectionId, sshConn.currentPath, sshConn.loadDirectory])
 
   const handleSSHCreateFile = useCallback(async () => {
     if (!sshConn.connectionId) return
-    const name = prompt('New file name:')
+    const name = prompt('新しいファイル名:')
     if (!name) return
     const newPath = sshConn.currentPath.endsWith('/')
       ? `${sshConn.currentPath}${name}`
@@ -233,26 +233,31 @@ export default function WorkspaceLayout(): React.JSX.Element {
     try {
       const r = await sshApi.sftpCreateFile(sshConn.connectionId, newPath)
       if (r.success) {
-        toast.success(`Created: ${name}`)
+        toast.success(`作成しました: ${name}`)
         sshConn.loadDirectory(sshConn.currentPath)
-      } else toast.error(`Failed: ${r.error}`)
+      } else toast.error(`失敗しました: ${r.error}`)
     } catch (error) {
-      toast.error(`Failed: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error(`失敗しました: ${error instanceof Error ? error.message : String(error)}`)
     }
   }, [sshConn.connectionId, sshConn.currentPath, sshConn.loadDirectory])
 
   const handleSSHDelete = useCallback(
     async (entry: SFTPEntry) => {
       if (!sshConn.connectionId) return
-      if (!confirm(`Delete ${entry.entryType} "${entry.name}"?`)) return
+      if (
+        !confirm(
+          `${entry.entryType === 'directory' ? 'フォルダ' : 'ファイル'} "${entry.name}" を削除しますか?`
+        )
+      )
+        return
       try {
         const r = await sshApi.sftpDelete(sshConn.connectionId, entry.path)
         if (r.success) {
-          toast.success(`Deleted: ${entry.name}`)
+          toast.success(`削除しました: ${entry.name}`)
           sshConn.loadDirectory(sshConn.currentPath)
-        } else toast.error(`Delete failed: ${r.error}`)
+        } else toast.error(`削除に失敗しました: ${r.error}`)
       } catch (error) {
-        toast.error(`Delete failed: ${error instanceof Error ? error.message : String(error)}`)
+        toast.error(`削除に失敗しました: ${error instanceof Error ? error.message : String(error)}`)
       }
     },
     [sshConn.connectionId, sshConn.currentPath, sshConn.loadDirectory]
@@ -261,17 +266,19 @@ export default function WorkspaceLayout(): React.JSX.Element {
   const handleSSHRename = useCallback(
     async (entry: SFTPEntry) => {
       if (!sshConn.connectionId) return
-      const newName = prompt(`Rename "${entry.name}" to:`, entry.name)
+      const newName = prompt(`"${entry.name}" の新しい名前:`, entry.name)
       if (!newName || newName === entry.name) return
       const pp = entry.path.substring(0, entry.path.lastIndexOf('/'))
       try {
         const r = await sshApi.sftpRename(sshConn.connectionId, entry.path, `${pp}/${newName}`)
         if (r.success) {
-          toast.success(`Renamed: ${entry.name} → ${newName}`)
+          toast.success(`名前を変更しました: ${entry.name} → ${newName}`)
           sshConn.loadDirectory(sshConn.currentPath)
-        } else toast.error(`Rename failed: ${r.error}`)
+        } else toast.error(`名前の変更に失敗しました: ${r.error}`)
       } catch (error) {
-        toast.error(`Rename failed: ${error instanceof Error ? error.message : String(error)}`)
+        toast.error(
+          `名前の変更に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+        )
       }
     },
     [sshConn.connectionId, sshConn.currentPath, sshConn.loadDirectory]
@@ -434,7 +441,8 @@ export default function WorkspaceLayout(): React.JSX.Element {
           return
         }
 
-        const message = error instanceof Error ? error.message : 'Failed to watch project directory'
+        const message =
+          error instanceof Error ? error.message : 'プロジェクトディレクトリの監視に失敗しました'
         useFileExplorerStore.getState().setRootPath(nextRootPath)
         useFileExplorerStore.getState().setRootLoadError({
           message,
@@ -800,7 +808,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
         maxTerminalsPerProject: maxTerminals
       })
       if (!result.success) {
-        toast.error(result.error || 'Failed to create terminal')
+        toast.error(result.error || 'ターミナルの作成に失敗しました')
       }
     },
     [
@@ -831,7 +839,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
       }
     )
     if (!result.success) {
-      toast.error(result.error || 'Failed to launch agent')
+      toast.error(result.error || 'エージェントの起動に失敗しました')
     }
   }, [activeProjectId, activeProject?.envVars, maxTerminals])
 
@@ -952,7 +960,9 @@ export default function WorkspaceLayout(): React.JSX.Element {
           e.preventDefault()
           void updatePanelVisibility('fileExplorerVisible', !isExplorerVisible).catch((error) => {
             toast.error(
-              error instanceof Error ? error.message : 'Failed to update file explorer visibility'
+              error instanceof Error
+                ? error.message
+                : 'ファイルエクスプローラーの表示切り替えに失敗しました'
             )
           })
         }
@@ -965,7 +975,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
           e.stopPropagation()
           void updatePanelVisibility('sidebarVisible', !isSidebarVisible).catch((error) => {
             toast.error(
-              error instanceof Error ? error.message : 'Failed to update sidebar visibility'
+              error instanceof Error ? error.message : 'サイドバーの表示切り替えに失敗しました'
             )
           })
         }
@@ -1175,7 +1185,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
         case 'sidebarToggle':
           void updatePanelVisibility('sidebarVisible', !isSidebarVisible).catch((error) => {
             toast.error(
-              error instanceof Error ? error.message : 'Failed to update sidebar visibility'
+              error instanceof Error ? error.message : 'サイドバーの表示切り替えに失敗しました'
             )
           })
           break
@@ -1207,7 +1217,9 @@ export default function WorkspaceLayout(): React.JSX.Element {
           const result = await terminalApi.kill(terminalToClose.ptyId)
           if (!result.success) {
             console.error('Failed to close terminal PTY:', result.error)
-            toast.error(result.error || 'Failed to close terminal process. Please try again.')
+            toast.error(
+              result.error || 'ターミナルプロセスの終了に失敗しました。もう一度お試しください。'
+            )
             return false
           }
         }
@@ -1312,7 +1324,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
     if (dirtyCloseFilePath) {
       const saved = await useEditorStore.getState().saveFile(dirtyCloseFilePath)
       if (!saved) {
-        toast.error('Failed to save file. Changes were not discarded.')
+        toast.error('ファイルの保存に失敗しました。変更は破棄されていません。')
         setDirtyCloseFilePath(null)
         return
       }
@@ -1339,7 +1351,9 @@ export default function WorkspaceLayout(): React.JSX.Element {
     await useEditorStore.getState().saveAllDirty()
     const remaining = useEditorStore.getState().getDirtyFileCount()
     if (remaining > 0) {
-      toast.error('Some files failed to save. Please try again or discard changes.')
+      toast.error(
+        '一部のファイルの保存に失敗しました。もう一度お試しいただくか、変更を破棄してください。'
+      )
       return
     }
     await closeAppWithPersistenceFlush()
@@ -1370,7 +1384,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
     // Persist empty array first, then clear in-memory on success
     const result = await persistenceApi.write(`projects/${activeProjectId}/command-history`, [])
     if (!result.success) {
-      toast.error(`Failed to clear history: ${result.error}`)
+      toast.error(`履歴のクリアに失敗しました: ${result.error}`)
       throw new Error(result.error)
     }
     // Only clear in-memory state after successful persistence
@@ -1397,7 +1411,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
             <div className="flex-1 flex flex-col min-w-0">
               <TitleBar />
               <div className="flex-1 flex items-center justify-center">
-                <div className="text-muted-foreground text-sm">Loading...</div>
+                <div className="text-muted-foreground text-sm">読み込み中...</div>
               </div>
             </div>
           </div>
@@ -1470,17 +1484,16 @@ export default function WorkspaceLayout(): React.JSX.Element {
                             <FolderKanban className="w-24 h-24 text-muted-foreground/50" />
                           </div>
                           <h2 className="text-xl font-semibold text-foreground mb-2">
-                            No Projects Yet
+                            プロジェクトがまだありません
                           </h2>
                           <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-                            Create your first project to organize your terminals, snapshots, and
-                            commands
+                            最初のプロジェクトを作成して、ターミナル・スナップショット・コマンドを整理しましょう
                           </p>
                           <button
                             onClick={() => setIsNewProjectModalOpen(true)}
                             className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium shadow-sm hover:shadow"
                           >
-                            Create Your First Project
+                            最初のプロジェクトを作成
                           </button>
                         </motion.div>
                       </div>
@@ -1624,10 +1637,10 @@ export default function WorkspaceLayout(): React.JSX.Element {
       {sshPasswordPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-background border border-border rounded-lg shadow-lg w-[360px] p-4">
-            <h3 className="text-sm font-semibold mb-1">SSH Password</h3>
+            <h3 className="text-sm font-semibold mb-1">SSHパスワード</h3>
             <p className="text-xs text-muted-foreground mb-3">
-              Enter password for{' '}
-              <span className="font-medium">{sshPasswordPrompt.profileName}</span>
+              <span className="font-medium">{sshPasswordPrompt.profileName}</span>{' '}
+              のパスワードを入力
             </p>
             <input
               type="password"
@@ -1640,7 +1653,7 @@ export default function WorkspaceLayout(): React.JSX.Element {
                   setSSHPasswordInput('')
                 }
               }}
-              placeholder="Password"
+              placeholder="パスワード"
               autoFocus
               className="w-full px-3 py-1.5 text-sm bg-muted border border-border rounded focus:outline-none focus:ring-1 focus:ring-ring"
             />
@@ -1652,13 +1665,13 @@ export default function WorkspaceLayout(): React.JSX.Element {
                 }}
                 className="px-3 py-1.5 text-xs rounded border border-border hover:bg-accent"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleSSHPasswordSubmit}
                 className="px-3 py-1.5 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                Connect
+                接続
               </button>
             </div>
           </div>
@@ -1668,12 +1681,12 @@ export default function WorkspaceLayout(): React.JSX.Element {
       {/* Close Terminal Confirmation */}
       <ConfirmDialog
         isOpen={closeConfirmTerminal !== null}
-        title="Close Terminal"
-        message={`Are you sure you want to close "${
-          terminalToClose?.name || 'this terminal'
-        }"? Any running processes will be terminated.`}
-        confirmLabel="Close"
-        cancelLabel="Cancel"
+        title="ターミナルを閉じる"
+        message={`"${
+          terminalToClose?.name || 'このターミナル'
+        }" を閉じてもよろしいですか? 実行中のプロセスは終了されます。`}
+        confirmLabel="閉じる"
+        cancelLabel="キャンセル"
         variant="danger"
         isLoading={closeConfirmLoading}
         onConfirm={handleConfirmCloseTerminal}
@@ -1687,18 +1700,18 @@ export default function WorkspaceLayout(): React.JSX.Element {
             disabled={closeConfirmLoading}
             className="rounded border-border bg-background"
           />
-          Don't ask again when closing terminals
+          ターミナルを閉じる際に次回から確認しない
         </label>
       </ConfirmDialog>
 
       {/* Dirty File Close Confirmation */}
       <ConfirmDialog
         isOpen={dirtyCloseFilePath !== null}
-        title="Unsaved Changes"
-        message={`Save changes to "${dirtyCloseFilePath?.split(/[\\/]/).pop() ?? ''}" before closing?`}
-        confirmLabel="Save"
-        cancelLabel="Cancel"
-        secondaryAction={{ label: 'Discard', onClick: handleDiscardAndClose }}
+        title="未保存の変更"
+        message={`"${dirtyCloseFilePath?.split(/[\\/]/).pop() ?? ''}" を閉じる前に変更を保存しますか?`}
+        confirmLabel="保存"
+        cancelLabel="キャンセル"
+        secondaryAction={{ label: '破棄', onClick: handleDiscardAndClose }}
         onConfirm={handleSaveThenClose}
         onCancel={handleCancelDirtyClose}
       />
@@ -1706,12 +1719,12 @@ export default function WorkspaceLayout(): React.JSX.Element {
       {/* App Close Unsaved Files Confirmation */}
       <ConfirmDialog
         isOpen={isAppCloseDialogOpen}
-        title="Unsaved Changes"
-        message={`You have ${appCloseDirtyCount} unsaved file${appCloseDirtyCount !== 1 ? 's' : ''}. Save changes before closing?`}
-        confirmLabel="Save All"
-        cancelLabel="Cancel"
+        title="未保存の変更"
+        message={`未保存のファイルが ${appCloseDirtyCount}件 あります。閉じる前に変更を保存しますか?`}
+        confirmLabel="すべて保存"
+        cancelLabel="キャンセル"
         secondaryAction={{
-          label: "Don't Save",
+          label: '保存しない',
           onClick: handleDiscardAllAndClose
         }}
         onConfirm={handleSaveAllAndClose}

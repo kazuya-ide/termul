@@ -74,7 +74,7 @@ export function ColorPickerPopover({
       className="fixed z-50 bg-card border border-border rounded-lg shadow-lg p-3"
       style={{ left: position.left, top: position.top }}
     >
-      <p className="text-xs text-muted-foreground mb-2">Select Color</p>
+      <p className="text-xs text-muted-foreground mb-2">色を選択</p>
       <div className="flex gap-2 flex-wrap">
         {availableColors.map((color) => {
           const colors = getColorClasses(color)

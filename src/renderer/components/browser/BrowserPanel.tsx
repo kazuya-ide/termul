@@ -27,7 +27,7 @@ interface BrowserPanelProps {
 
 const DEFAULT_URL = 'https://www.google.com'
 const ANNOTATION_UNAVAILABLE_MESSAGE =
-  'Annotation mode is not available on this page due to security policies'
+  'セキュリティ上の制約により、このページでは注釈モードを使用できません。'
 
 export function BrowserPanel({ browserTabId, isVisible }: BrowserPanelProps): React.JSX.Element {
   const url = useBrowserSessionStore((state) => state.tabs.get(browserTabId)?.url || DEFAULT_URL)

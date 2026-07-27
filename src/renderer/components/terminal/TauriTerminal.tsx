@@ -252,7 +252,7 @@ export function TauriTerminal(): React.JSX.Element {
     return (
       <div className="flex-1 flex items-center justify-center bg-terminal-bg text-red-400 p-4">
         <div className="text-center">
-          <p className="text-lg font-semibold mb-2">Terminal Error</p>
+          <p className="text-lg font-semibold mb-2">ターミナルエラー</p>
           <p className="text-sm text-red-300">{errorMsg}</p>
         </div>
       </div>
@@ -263,7 +263,7 @@ export function TauriTerminal(): React.JSX.Element {
     <div className="flex-1 relative bg-terminal-bg">
       {status === 'loading' && (
         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm z-10">
-          Loading terminal...
+          ターミナルを読み込み中...
         </div>
       )}
       <div ref={containerRef} className="absolute inset-0 px-4 py-0.5 pb-1 bg-terminal-bg" />

@@ -25,17 +25,17 @@ export function SSHWorkspace({ profile, conn }: SSHWorkspaceProps): React.JSX.El
             {conn.isConnected ? (
               <span className="flex items-center gap-1 text-3xs text-green-500">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                Connected
+                接続済み
               </span>
             ) : conn.isConnectingStatus || conn.isConnecting ? (
               <span className="flex items-center gap-1 text-3xs text-yellow-500">
                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                Connecting
+                接続中
               </span>
             ) : (
               <span className="flex items-center gap-1 text-3xs text-muted-foreground">
                 <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
-                Disconnected
+                切断済み
               </span>
             )}
           </div>
@@ -46,7 +46,7 @@ export function SSHWorkspace({ profile, conn }: SSHWorkspaceProps): React.JSX.El
                 className="px-2 py-0.5 text-3xs rounded border border-border hover:bg-destructive/10 hover:text-destructive flex items-center gap-1"
               >
                 <WifiOff className="h-3 w-3" />
-                Disconnect
+                切断
               </button>
             ) : (
               <button
@@ -55,7 +55,7 @@ export function SSHWorkspace({ profile, conn }: SSHWorkspaceProps): React.JSX.El
                 className="px-2 py-0.5 text-3xs rounded bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-1 disabled:opacity-50"
               >
                 <Terminal className="h-3 w-3" />
-                {conn.isConnecting ? 'Connecting...' : 'Connect'}
+                {conn.isConnecting ? '接続中...' : '接続'}
               </button>
             )}
           </div>
@@ -68,14 +68,14 @@ export function SSHWorkspace({ profile, conn }: SSHWorkspaceProps): React.JSX.El
           ) : editingFile && !conn.connectionId ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center px-6">
               <Terminal className="h-10 w-10 text-muted-foreground/20" />
-              <p className="text-sm text-muted-foreground">Reconnecting to load editor...</p>
+              <p className="text-sm text-muted-foreground">エディタを読み込むため再接続中...</p>
               <button
                 onClick={conn.handleConnect}
                 disabled={conn.isConnecting}
                 className="px-4 py-1.5 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-1.5 disabled:opacity-50"
               >
                 <Terminal className="h-3.5 w-3.5" />
-                {conn.isConnecting ? 'Connecting...' : 'Reconnect'}
+                {conn.isConnecting ? '接続中...' : '再接続'}
               </button>
             </div>
           ) : conn.localTerminalPtyId ? (
@@ -91,9 +91,9 @@ export function SSHWorkspace({ profile, conn }: SSHWorkspaceProps): React.JSX.El
             <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center px-6">
               <Terminal className="h-10 w-10 text-muted-foreground/20" />
               <div>
-                <p className="text-sm text-muted-foreground">SSH Workspace</p>
+                <p className="text-sm text-muted-foreground">SSHワークスペース</p>
                 <p className="text-xs text-muted-foreground/60 mt-1">
-                  Connect to start working with this server
+                  このサーバーで作業を始めるには接続してください
                 </p>
               </div>
               <button
@@ -102,7 +102,7 @@ export function SSHWorkspace({ profile, conn }: SSHWorkspaceProps): React.JSX.El
                 className="px-4 py-1.5 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-1.5 disabled:opacity-50"
               >
                 <Terminal className="h-3.5 w-3.5" />
-                {conn.isConnecting ? 'Connecting...' : 'Connect & Open Terminal'}
+                {conn.isConnecting ? '接続中...' : '接続してターミナルを開く'}
               </button>
             </div>
           )}

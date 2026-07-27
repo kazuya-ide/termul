@@ -55,10 +55,10 @@ interface CommandPaletteProps {
 type CommandCategory = 'workspace' | 'navigation' | 'projects' | 'tools'
 
 const COMMAND_CATEGORY_LABELS: Record<CommandCategory, string> = {
-  workspace: 'Workspace',
-  navigation: 'Navigation',
-  projects: 'Projects',
-  tools: 'Tools'
+  workspace: 'ワークスペース',
+  navigation: 'ナビゲーション',
+  projects: 'プロジェクト',
+  tools: 'ツール'
 }
 
 const COMMAND_CATEGORY_ORDER: CommandCategory[] = ['projects', 'workspace', 'navigation', 'tools']
@@ -121,8 +121,8 @@ export function CommandPalette({
               id: 'new-terminal',
               category: 'workspace' as const,
               icon: <Terminal aria-hidden="true" size={16} />,
-              label: 'New Terminal',
-              description: 'Open a new shell in the active pane',
+              label: '新規ターミナル',
+              description: 'アクティブなパネルで新しいシェルを開く',
               keywords: ['shell', 'console', 'pty', 'workspace'],
               execute: onAddTerminal
             }
@@ -134,8 +134,8 @@ export function CommandPalette({
               id: 'show-agent-launcher',
               category: 'workspace' as const,
               icon: <Bot aria-hidden="true" size={16} />,
-              label: 'Agent Launcher',
-              description: 'Show the agent launcher prompt in the active pane',
+              label: 'エージェントランチャー',
+              description: 'アクティブなパネルにエージェントランチャーのプロンプトを表示',
               keywords: ['agent', 'ai', 'claude', 'codex', 'prompt', 'launcher'],
               shortcut: getShortcutLabel?.('newTerminal'),
               execute: onShowAgentLauncher
@@ -148,8 +148,8 @@ export function CommandPalette({
               id: 'launch-agent',
               category: 'workspace' as const,
               icon: <Bot aria-hidden="true" size={16} />,
-              label: 'Launch Agent',
-              description: "Open a CLI agent's TUI in the active pane",
+              label: 'エージェントを起動',
+              description: 'アクティブなパネルでCLIエージェントのTUIを開く',
               keywords: ['agent', 'ai', 'claude', 'codex', 'gemini', 'cursor', 'opencode', 'cli'],
               execute: onLaunchAgent
             }
@@ -161,8 +161,8 @@ export function CommandPalette({
               id: 'new-browser-tab',
               category: 'workspace' as const,
               icon: <Globe aria-hidden="true" size={16} />,
-              label: 'New Browser Tab',
-              description: 'Open a browser tab in the active pane',
+              label: '新規ブラウザタブ',
+              description: 'アクティブなパネルでブラウザタブを開く',
               keywords: ['web', 'url', 'workspace'],
               shortcut: getShortcutLabel?.('newBrowserTab'),
               execute: onNewBrowserTab
@@ -175,8 +175,8 @@ export function CommandPalette({
               id: 'save-snapshot',
               category: 'workspace' as const,
               icon: <Save aria-hidden="true" size={16} />,
-              label: 'Save Workspace Snapshot',
-              description: 'Capture the current workspace layout',
+              label: 'ワークスペースのスナップショットを保存',
+              description: '現在のワークスペースの配置を記録',
               keywords: ['snapshot', 'checkpoint', 'layout', 'save'],
               execute: onSaveSnapshot
             }
@@ -188,8 +188,8 @@ export function CommandPalette({
               id: 'open-project-settings',
               category: 'navigation' as const,
               icon: <Settings aria-hidden="true" size={16} />,
-              label: 'Project Settings',
-              description: 'Configure the active project workspace',
+              label: 'プロジェクト設定',
+              description: 'アクティブなプロジェクトのワークスペースを設定',
               keywords: ['settings', 'project', 'configure', 'config'],
               execute: onOpenProjectSettings
             }
@@ -201,8 +201,8 @@ export function CommandPalette({
               id: 'open-app-preferences',
               category: 'navigation' as const,
               icon: <SlidersHorizontal aria-hidden="true" size={16} />,
-              label: 'App Preferences',
-              description: 'Open global application preferences',
+              label: 'アプリの環境設定',
+              description: 'アプリ全体の環境設定を開く',
               keywords: ['preferences', 'prefs', 'settings', 'app', 'global'],
               execute: onOpenAppPreferences
             }
@@ -215,7 +215,7 @@ export function CommandPalette({
           <Layers aria-hidden="true" size={16} className={getColorClasses(project.color).text} />
         ),
         label: project.name,
-        description: project.path ?? 'Switch active workspace project',
+        description: project.path ?? 'アクティブなワークスペースのプロジェクトを切り替え',
         keywords: ['project', 'switch', project.name, project.path].filter(
           (keyword): keyword is string => Boolean(keyword)
         ),
@@ -229,8 +229,8 @@ export function CommandPalette({
               id: 'open-command-history',
               category: 'tools' as const,
               icon: <History aria-hidden="true" size={16} />,
-              label: 'Command History',
-              description: 'Review and reuse recent terminal commands',
+              label: 'コマンド履歴',
+              description: '直近のターミナルコマンドを確認・再利用',
               keywords: ['history', 'recent', 'terminal', 'commands', 'shell'],
               shortcut: getShortcutLabel?.('commandHistory'),
               execute: onOpenCommandHistory
@@ -243,8 +243,8 @@ export function CommandPalette({
               id: 'change-color-theme',
               category: 'tools' as const,
               icon: <Palette aria-hidden="true" size={16} />,
-              label: 'Change Color Theme',
-              description: 'Preview and apply a UI color theme',
+              label: 'カラーテーマを変更',
+              description: 'UIのカラーテーマをプレビュー・適用',
               keywords: ['theme', 'color', 'appearance', 'palette', 'dark', 'dracula', 'nord'],
               shortcut: getShortcutLabel?.('colorThemePicker'),
               execute: onOpenThemePicker
@@ -257,8 +257,8 @@ export function CommandPalette({
               id: 'open-shortcut-menu',
               category: 'tools' as const,
               icon: <Keyboard aria-hidden="true" size={16} />,
-              label: 'Open Shortcut Menu',
-              description: 'View and edit common keyboard shortcuts',
+              label: 'ショートカットメニューを開く',
+              description: 'よく使うキーボードショートカットを確認・編集',
               keywords: ['keyboard', 'shortcuts', 'hotkeys', 'keys'],
               execute: onOpenShortcutMenu
             }
@@ -422,9 +422,9 @@ export function CommandPalette({
           )}
           <button
             type="button"
-            aria-label={isPinned ? `Unpin ${cmd.label}` : `Pin ${cmd.label}`}
+            aria-label={isPinned ? `${cmd.label} のピン留めを解除` : `${cmd.label} をピン留め`}
             aria-pressed={isPinned}
-            title={isPinned ? 'Unpin' : 'Pin'}
+            title={isPinned ? 'ピン留めを解除' : 'ピン留め'}
             onMouseDown={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -472,22 +472,22 @@ export function CommandPalette({
             >
               <CommandInput
                 ref={inputRef}
-                placeholder="Search commands, projects, settings..."
+                placeholder="コマンド、プロジェクト、設定を検索..."
                 value={query}
                 onValueChange={setQuery}
                 className="h-10 py-2 text-sm"
               />
               <CommandList className="max-h-[52vh] px-1 py-1">
-                <CommandEmpty>No commands found.</CommandEmpty>
+                <CommandEmpty>コマンドが見つかりません。</CommandEmpty>
 
                 {pinnedCommands.length > 0 && query === '' && (
-                  <CommandGroup heading="Pinned">
+                  <CommandGroup heading="ピン留め">
                     {pinnedCommands.map((cmd) => renderCommandItem(cmd, 'pinned'))}
                   </CommandGroup>
                 )}
 
                 {recentCommands.length > 0 && query === '' && (
-                  <CommandGroup heading="Recent">
+                  <CommandGroup heading="最近使った">
                     {recentCommands.map((cmd) => renderCommandItem(cmd, 'recent'))}
                   </CommandGroup>
                 )}
@@ -503,15 +503,15 @@ export function CommandPalette({
                 <span className="flex items-center gap-3">
                   <span className="flex items-center">
                     <kbd className="mr-1 rounded bg-secondary px-1 text-foreground">↑↓</kbd>
-                    Navigate
+                    移動
                   </span>
                   <span className="flex items-center">
                     <kbd className="mr-1 rounded bg-secondary px-1 text-foreground">↵</kbd>
-                    Select
+                    選択
                   </span>
                   <span className="flex items-center">
                     <kbd className="mr-1 rounded bg-secondary px-1 text-foreground">Esc</kbd>
-                    Close
+                    閉じる
                   </span>
                 </span>
               </div>

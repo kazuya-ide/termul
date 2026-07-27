@@ -25,8 +25,8 @@ export function ConfirmDialog({
   title,
   message,
   children,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel = '確認',
+  cancelLabel = 'キャンセル',
   secondaryAction,
   variant = 'default',
   isLoading = false,
@@ -125,7 +125,7 @@ export function ConfirmDialog({
                     : 'bg-primary text-primary-foreground hover:bg-primary/90'
                 )}
               >
-                {isLoading ? 'Loading...' : confirmLabel}
+                {isLoading ? '読み込み中…' : confirmLabel}
               </button>
             </div>
           </motion.div>

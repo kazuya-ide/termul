@@ -59,7 +59,7 @@ export function AnnotationExportModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl w-full">
         <DialogHeader>
-          <DialogTitle>Export Annotations</DialogTitle>
+          <DialogTitle>注釈の書き出し</DialogTitle>
         </DialogHeader>
 
         <Tabs
@@ -86,13 +86,13 @@ export function AnnotationExportModal({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="compact" className="text-xs">
-                    Compact
+                    簡潔
                   </SelectItem>
                   <SelectItem value="standard" className="text-xs">
-                    Standard
+                    標準
                   </SelectItem>
                   <SelectItem value="detailed" className="text-xs">
-                    Detailed
+                    詳細
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -103,7 +103,7 @@ export function AnnotationExportModal({
               variant="outline"
               className={`h-8 text-xs gap-1.5 ${copyState === 'error' ? 'text-red-500 border-red-300' : ''}`}
               onClick={handleCopy}
-              aria-label={copyState === 'error' ? 'Copy failed' : undefined}
+              aria-label={copyState === 'error' ? 'コピーに失敗しました' : undefined}
             >
               {copyState === 'copied' ? (
                 <Check size={14} className="text-green-500" />
@@ -112,7 +112,7 @@ export function AnnotationExportModal({
               ) : (
                 <Copy size={14} />
               )}
-              {copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Failed' : 'Copy'}
+              {copyState === 'copied' ? 'コピー済み' : copyState === 'error' ? '失敗' : 'コピー'}
             </Button>
           </div>
 

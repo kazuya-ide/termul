@@ -103,7 +103,7 @@ function AgentRow({ agent, platformArch }: AgentRowProps): React.JSX.Element {
         await deleteAgentConfig(configId)
       }
     } catch (err) {
-      toast.error(`Failed to ${next ? 'enable' : 'disable'} ${agent.name}: ${String(err)}`)
+      toast.error(`${agent.name} の${next ? '有効化' : '無効化'}に失敗しました: ${String(err)}`)
     }
   }
 
@@ -113,11 +113,11 @@ function AgentRow({ agent, platformArch }: AgentRowProps): React.JSX.Element {
   const warmBadge: { label: string; tone: 'ready' | 'auth' | 'muted' } | null = !enabled
     ? null
     : warmState.connected
-      ? { label: 'Ready', tone: 'ready' }
+      ? { label: '準備完了', tone: 'ready' }
       : warmState.needsAuth
-        ? { label: 'Auth required', tone: 'auth' }
+        ? { label: '認証が必要', tone: 'auth' }
         : warmState.warming
-          ? { label: 'Warming…', tone: 'muted' }
+          ? { label: '起動中…', tone: 'muted' }
           : null
 
   return (
@@ -161,10 +161,10 @@ function AgentRow({ agent, platformArch }: AgentRowProps): React.JSX.Element {
             {derived.kind === 'needs-install'
               ? derived.archiveUrl
                 ? installing
-                  ? 'Downloading and installing…'
-                  : 'Turn on to download the release binary for your platform.'
-                : 'Install the binary manually, then add a custom agent.'
-              : 'Not available for your platform.'}
+                  ? 'ダウンロードとインストール中…'
+                  : 'オンにするとお使いの環境向けのバイナリをダウンロードします。'
+                : 'バイナリを手動でインストールしてから、カスタムエージェントを追加してください。'
+              : 'お使いの環境では利用できません。'}
           </p>
         )}
       </div>
@@ -174,7 +174,7 @@ function AgentRow({ agent, platformArch }: AgentRowProps): React.JSX.Element {
           checked={enabled}
           disabled={(!canEnable && !enabled) || installing}
           onCheckedChange={handleToggle}
-          aria-label={`Enable ${agent.name}`}
+          aria-label={`${agent.name} を有効化`}
         />
       </div>
     </div>
@@ -211,14 +211,16 @@ export function AcpAgentsSettings(): React.JSX.Element {
         <Input
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filter agents…"
+          placeholder="エージェントを絞り込む…"
           className="h-8 pl-8 text-sm"
         />
       </div>
 
       <div className="max-h-80 space-y-2 overflow-y-auto pr-1">
         {visible.length === 0 ? (
-          <p className="py-4 text-center text-xs text-muted-foreground">No agents match.</p>
+          <p className="py-4 text-center text-xs text-muted-foreground">
+            一致するエージェントがありません。
+          </p>
         ) : (
           visible.map((agent) => (
             <AgentRow key={agent.id} agent={agent} platformArch={platformArch} />

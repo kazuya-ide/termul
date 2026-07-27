@@ -60,7 +60,7 @@ export function RemoteAccessPopover(): React.JSX.Element {
     setOpenError(null)
     const result = await openerApi.openUrlWithSystemBrowser(url)
     if (!result.success) {
-      const message = result.error ?? 'Failed to open URL in browser'
+      const message = result.error ?? 'ブラウザでURLを開けませんでした'
       setOpenError(message)
       toast.error(message)
     }
@@ -72,25 +72,25 @@ export function RemoteAccessPopover(): React.JSX.Element {
         <button
           type="button"
           className={statusBarTriggerClass}
-          aria-label="Remote terminal access"
+          aria-label="リモートターミナルアクセス"
           aria-pressed={isRunning}
         >
           <Monitor size={14} className={cn('mr-0', isRunning ? 'text-green-300' : undefined)} />
-          {isRunning && <span className="sr-only">Remote access enabled</span>}
+          {isRunning && <span className="sr-only">リモートアクセス有効</span>}
         </button>
       </PopoverTrigger>
       <PopoverContent side="top" align="end" className="w-96 p-4">
         <div className="space-y-4">
           <div>
-            <h4 className="font-medium text-sm text-foreground">Remote Terminal Access</h4>
+            <h4 className="font-medium text-sm text-foreground">リモートターミナルアクセス</h4>
             <p className="text-xs text-muted-foreground mt-1">
-              Access your active terminals from a web browser over HTTP + WebSocket.
+              HTTP・WebSocket経由で、Webブラウザから起動中のターミナルにアクセスできます。
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-secondary-foreground mb-2">
-              Listen on
+              リッスン先
             </label>
             <select
               value={remoteBindMode}
@@ -106,24 +106,24 @@ export function RemoteAccessPopover(): React.JSX.Element {
             </select>
             <p className="text-xs text-muted-foreground mt-1">
               {REMOTE_BIND_MODE_OPTIONS.find((o) => o.value === remoteBindMode)?.description}
-              {isRunning && <> Stop the server to change the bind address.</>}
+              {isRunning && <> バインドアドレスを変更するには、サーバーを停止してください。</>}
             </p>
           </div>
 
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <div className="text-sm text-foreground">Enable remote access</div>
+              <div className="text-sm text-foreground">リモートアクセスを有効化</div>
               <div className="text-xs text-muted-foreground mt-0.5">
                 {remoteBindMode === 'all'
-                  ? 'Starts a server on 0.0.0.0 (all network interfaces)'
-                  : 'Starts a server on 127.0.0.1 (this machine only)'}
+                  ? '0.0.0.0（すべてのネットワークインターフェース）でサーバーを起動します'
+                  : '127.0.0.1（このマシンのみ）でサーバーを起動します'}
               </div>
             </div>
             <Switch
               checked={isRunning}
               disabled={remoteBusy}
               onCheckedChange={(checked) => void handleRemoteToggle(checked)}
-              aria-label="Toggle remote terminal access"
+              aria-label="リモートターミナルアクセスを切り替え"
             />
           </div>
 
@@ -139,19 +139,19 @@ export function RemoteAccessPopover(): React.JSX.Element {
               <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-md px-3 py-2">
                 <ShieldAlert className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>
-                  Anyone who can reach this address can run commands on this machine. There is no
-                  auth token — only same-origin browser checks apply.{' '}
+                  このアドレスにアクセスできる人は誰でもこのマシンでコマンドを実行できます。認証トークンはなく、
+                  同一オリジンのブラウザチェックのみが適用されます。{' '}
                   {remoteStatus?.bindMode === 'all' ? (
                     <>
-                      The server listens on <strong>all interfaces</strong>; devices on your LAN can
-                      connect using this machine&apos;s IP and the port below.
+                      サーバーは<strong>すべてのインターフェース</strong>
+                      で待ち受けます。LAN上のデバイスは、このマシンのIPアドレスと下のポートを使って接続できます。
                     </>
                   ) : (
                     <>
-                      The server listens on <strong>localhost only</strong>. To reach it from
-                      another device, use a tunnel (e.g.{' '}
-                      <code className="text-2xs">cloudflared</code>) or switch to &quot;All
-                      interfaces&quot; and restart.
+                      サーバーは<strong>localhostのみ</strong>
+                      で待ち受けます。他のデバイスからアクセスするには、トンネル（例:{' '}
+                      <code className="text-2xs">cloudflared</code>
+                      ）を使うか、「すべてのインターフェース」に 切り替えて再起動してください。
                     </>
                   )}
                 </span>
@@ -159,19 +159,19 @@ export function RemoteAccessPopover(): React.JSX.Element {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">Bind host</div>
+                  <div className="text-xs text-muted-foreground mb-1">バインドホスト</div>
                   <div className="text-sm font-mono text-foreground bg-secondary/50 border border-border rounded-md px-3 py-2">
                     {remoteStatus?.bindHost ?? '—'}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">Port</div>
+                  <div className="text-xs text-muted-foreground mb-1">ポート</div>
                   <div className="text-sm font-mono text-foreground bg-secondary/50 border border-border rounded-md px-3 py-2">
                     {remoteStatus?.port ?? '—'}
                   </div>
                 </div>
                 <div className="col-span-2">
-                  <div className="text-xs text-muted-foreground mb-1">Open on this machine</div>
+                  <div className="text-xs text-muted-foreground mb-1">このマシンで開く</div>
                   <div className="text-sm font-mono text-foreground bg-secondary/50 border border-border rounded-md px-3 py-2 truncate">
                     {url.replace(/^https?:\/\//, '')}
                   </div>
@@ -180,16 +180,16 @@ export function RemoteAccessPopover(): React.JSX.Element {
 
               {remoteStatus?.bindMode === 'all' && (
                 <p className="text-xs text-muted-foreground">
-                  On other devices, open{' '}
+                  他のデバイスでは{' '}
                   <span className="font-mono">
                     http://&lt;this-machine-ip&gt;:{remoteStatus.port}
                   </span>{' '}
-                  (replace with your LAN IP).
+                  を開いてください（&lt;this-machine-ip&gt; はLAN IPに置き換え）。
                 </p>
               )}
 
               <div>
-                <div className="text-xs text-muted-foreground mb-1">Open in browser</div>
+                <div className="text-xs text-muted-foreground mb-1">ブラウザで開く</div>
                 <div className="flex items-center gap-2">
                   <input
                     readOnly
@@ -201,10 +201,10 @@ export function RemoteAccessPopover(): React.JSX.Element {
                     type="button"
                     onClick={() => void handleCopyRemote(url)}
                     className="shrink-0 inline-flex items-center gap-1 text-sm bg-secondary hover:bg-secondary/80 border border-border rounded-md px-3 py-2 transition-colors"
-                    aria-label="Copy URL"
+                    aria-label="URLをコピー"
                   >
                     {copiedUrl ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copiedUrl ? 'Copied' : 'Copy'}
+                    {copiedUrl ? 'コピー済み' : 'コピー'}
                   </button>
                 </div>
                 <button
@@ -213,11 +213,11 @@ export function RemoteAccessPopover(): React.JSX.Element {
                   className="mt-2 w-full inline-flex items-center justify-center gap-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-3 py-2 transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Open in browser
+                  ブラウザで開く
                 </button>
                 {openError && <p className="text-xs text-destructive mt-1">{openError}</p>}
                 <p className="text-xs text-muted-foreground mt-1">
-                  Open this URL in a browser to see your projects and terminals. No token required.
+                  このURLをブラウザで開くと、プロジェクトとターミナルを確認できます。トークンは不要です。
                 </p>
               </div>
             </div>

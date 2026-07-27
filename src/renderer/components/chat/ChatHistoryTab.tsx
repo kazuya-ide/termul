@@ -31,7 +31,7 @@ export function ChatHistoryTab(): React.JSX.Element {
         await openHistorySession(id)
         addAgentChatTab(id)
       } catch (err) {
-        toast.error(`Failed to open chat: ${String(err)}`)
+        toast.error(`チャットを開けませんでした: ${String(err)}`)
       }
     },
     [addAgentChatTab, openHistorySession]
@@ -40,7 +40,7 @@ export function ChatHistoryTab(): React.JSX.Element {
   const handleDelete = useCallback(
     (id: string) => {
       void deleteHistorySession(id).catch((err) => {
-        toast.error(`Failed to delete chat: ${String(err)}`)
+        toast.error(`チャットの削除に失敗しました: ${String(err)}`)
       })
     },
     [deleteHistorySession]
@@ -57,7 +57,7 @@ export function ChatHistoryTab(): React.JSX.Element {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search chats…"
+            placeholder="チャットを検索…"
             className="w-full rounded-md bg-background pl-7 pr-2 py-1 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/40"
           />
         </div>
@@ -66,10 +66,12 @@ export function ChatHistoryTab(): React.JSX.Element {
       <div className="flex-1 overflow-y-auto py-1">
         {sessionIndex.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-6 text-center text-xs text-muted-foreground opacity-70">
-            No chats yet. Start one with the New Chat button.
+            チャットがまだありません。「新しいチャット」ボタンから始めてください。
           </div>
         ) : groups.length === 0 ? (
-          <div className="px-3 py-4 text-center text-xs text-muted-foreground">No matches.</div>
+          <div className="px-3 py-4 text-center text-xs text-muted-foreground">
+            一致するチャットがありません。
+          </div>
         ) : (
           groups.map(({ group, entries }) => (
             <div key={group}>
@@ -93,8 +95,8 @@ export function ChatHistoryTab(): React.JSX.Element {
                   </button>
                   <button
                     type="button"
-                    aria-label="Delete chat"
-                    title="Delete chat"
+                    aria-label="チャットを削除"
+                    title="チャットを削除"
                     onClick={() => handleDelete(entry.id)}
                     className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-background/50"
                   >

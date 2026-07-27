@@ -45,23 +45,23 @@ function setReminderForTomorrow(): void {
 export function showUpdateToast(version: string, releaseNotes?: string): void {
   const isAur = isAurUpdateMode()
 
-  toast.success(`Update available: version ${version}`, {
+  toast.success(`更新があります: バージョン ${version}`, {
     duration: 30000,
     description: releaseNotes
-      ? `What's new:\n${releaseNotes.slice(0, 100)}${releaseNotes.length > 100 ? '...' : ''}`
+      ? `新機能:\n${releaseNotes.slice(0, 100)}${releaseNotes.length > 100 ? '...' : ''}`
       : isAur
-        ? 'A new version is available. Update with yay.'
-        : 'A new version is available for download.',
+        ? '新しいバージョンがあります。yay で更新してください。'
+        : '新しいバージョンをダウンロードできます。',
     action: {
       label: (
         <div className="flex items-center gap-2">
           {isAur ? <Terminal size={14} /> : <Download size={14} />}
-          <span>{isAur ? 'Use yay' : 'Download'}</span>
+          <span>{isAur ? 'yay を使う' : 'ダウンロード'}</span>
         </div>
       ),
       onClick: async () => {
         if (isAur) {
-          toast.info('Run in terminal', {
+          toast.info('ターミナルで実行', {
             description: 'yay -S termul-manager'
           })
           return
@@ -72,13 +72,16 @@ export function showUpdateToast(version: string, releaseNotes?: string): void {
           await downloadUpdate()
           const downloadError = updaterStore.getState().error
           if (downloadError) {
-            toast.error('Update download failed', {
+            toast.error('更新のダウンロードに失敗しました', {
               description: downloadError
             })
           }
         } catch (error) {
-          toast.error('Update download failed', {
-            description: error instanceof Error ? error.message : 'Unexpected error during download'
+          toast.error('更新のダウンロードに失敗しました', {
+            description:
+              error instanceof Error
+                ? error.message
+                : 'ダウンロード中に予期しないエラーが発生しました'
           })
         }
       }
@@ -87,7 +90,7 @@ export function showUpdateToast(version: string, releaseNotes?: string): void {
       label: (
         <div className="flex items-center gap-2">
           <Clock size={14} />
-          <span>Remind Me</span>
+          <span>後で通知</span>
         </div>
       ),
       onClick: () => {
@@ -101,14 +104,14 @@ export function showUpdateToast(version: string, releaseNotes?: string): void {
  * Show a toast notification when update is downloaded
  */
 export function showUpdateDownloadedToast(version: string): void {
-  toast.success(`Update ready to install`, {
+  toast.success(`更新の準備ができました`, {
     duration: 30000,
-    description: `Version ${version} has been downloaded. Install now to apply it — the app will restart and any running terminal sessions will close.`,
+    description: `バージョン ${version} のダウンロードが完了しました。今すぐインストールすると適用されます — アプリが再起動し、実行中のターミナルセッションはすべて終了します。`,
     action: {
       label: (
         <div className="flex items-center gap-2">
           <Download size={14} />
-          <span>Install &amp; Restart</span>
+          <span>インストールして再起動</span>
         </div>
       ),
       onClick: async () => {
@@ -116,13 +119,13 @@ export function showUpdateDownloadedToast(version: string): void {
           const hasActiveTerminals = hasActiveTerminalSessions()
           const confirmed = await confirm(
             hasActiveTerminals
-              ? `Termul will install version ${version} and restart. Your running terminal sessions will be closed. Continue?`
-              : `Termul will install version ${version} and restart now. Continue?`,
+              ? `Termul はバージョン ${version} をインストールして再起動します。実行中のターミナルセッションは終了します。続けますか？`
+              : `Termul はバージョン ${version} をインストールしてすぐに再起動します。続けますか？`,
             {
-              title: 'Install update',
+              title: '更新をインストール',
               kind: 'warning',
-              okLabel: 'Install & Restart',
-              cancelLabel: 'Not now'
+              okLabel: 'インストールして再起動',
+              cancelLabel: '後で'
             }
           )
           if (!confirmed) return
@@ -131,13 +134,16 @@ export function showUpdateDownloadedToast(version: string): void {
           await installAndRestart()
           const installError = updaterStore.getState().error
           if (installError) {
-            toast.error('Update install failed', {
+            toast.error('更新のインストールに失敗しました', {
               description: installError
             })
           }
         } catch (error) {
-          toast.error('Update install failed', {
-            description: error instanceof Error ? error.message : 'Unexpected error during install'
+          toast.error('更新のインストールに失敗しました', {
+            description:
+              error instanceof Error
+                ? error.message
+                : 'インストール中に予期しないエラーが発生しました'
           })
         }
       }
@@ -151,9 +157,9 @@ export function showUpdateDownloadedToast(version: string): void {
 function showDownloadProgressToast(version: string, progress: number): void {
   const progressId = `download-progress-${version}`
 
-  toast.loading(`Downloading update ${version}...`, {
+  toast.loading(`バージョン ${version} をダウンロード中...`, {
     id: progressId,
-    description: `${progress.toFixed(0)}% complete`,
+    description: `${progress.toFixed(0)}% 完了`,
     duration: Infinity
   })
 }
@@ -248,16 +254,16 @@ export function useManualUpdateToast() {
   const skip = () => {
     if (version) {
       skipVersion(version)
-      toast.info(`Skipped version ${version}`, {
-        description: 'You will not be notified about this version again.'
+      toast.info(`バージョン ${version} をスキップしました`, {
+        description: 'このバージョンについては今後通知されません。'
       })
     }
   }
 
   const remindTomorrow = () => {
     setReminderForTomorrow()
-    toast.info('Reminder set', {
-      description: 'We will remind you about the update tomorrow.'
+    toast.info('リマインダーを設定しました', {
+      description: '明日、更新についてお知らせします。'
     })
   }
 

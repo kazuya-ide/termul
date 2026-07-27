@@ -575,7 +575,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
       }
 
       if (!result?.success) {
-        toast.error(result?.error || 'Operation failed')
+        toast.error(result?.error || '操作に失敗しました')
         submitFailedRef.current = true
         return
       }
@@ -593,7 +593,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
       setInlineInput(null)
       setInputValue('')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Unknown error')
+      toast.error(err instanceof Error ? err.message : '不明なエラー')
       submitFailedRef.current = true
     } finally {
       isSubmittingRef.current = false
@@ -619,7 +619,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
     })
 
     if (!result.success) {
-      toast.error(`Failed to delete ${deleteConfirm.path}: ${result.error}`)
+      toast.error(`${deleteConfirm.path} の削除に失敗しました: ${result.error}`)
       return
     }
 
@@ -704,7 +704,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
           )
         })
       } catch {
-        toast.warning('File opened, but failed to focus target line')
+        toast.warning('ファイルを開きましたが、対象の行にフォーカスできませんでした')
       }
     },
     [searchLastCompletedQuery, selectPath]
@@ -788,7 +788,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
     setContextMenu(null)
     const activeProjectId = useProjectStore.getState().activeProjectId
     if (!activeProjectId) {
-      toast.error('No active project')
+      toast.error('アクティブなプロジェクトがありません')
       return
     }
 
@@ -796,7 +796,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
     try {
       terminalStore.addTerminal('Terminal', activeProjectId, 'powershell', dirPath)
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to open terminal'
+      const message = error instanceof Error ? error.message : 'ターミナルの起動に失敗しました'
       toast.error(message)
     }
   }, [])
@@ -806,7 +806,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
     setContextMenu(null)
     const result = await openerApi.openWithExternalApp(filePath)
     if (!result.success) {
-      toast.error(`Failed to open file: ${result.error}`)
+      toast.error(`ファイルのオープンに失敗しました: ${result.error}`)
     }
   }, [])
 
@@ -815,7 +815,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
     setContextMenu(null)
     const result = await openerApi.revealInFileManager(path)
     if (!result.success) {
-      toast.error(`Failed to reveal in file manager: ${result.error}`)
+      toast.error(`ファイルマネージャーでの表示に失敗しました: ${result.error}`)
     }
   }, [])
 
@@ -857,11 +857,13 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 h-10 border-b border-border flex-shrink-0 rounded-t-xl">
-        <span className="text-xs tracking-wider text-sidebar-foreground uppercase">Explorer</span>
+        <span className="text-xs tracking-wider text-sidebar-foreground uppercase">
+          エクスプローラー
+        </span>
         <button
           onClick={collapseAll}
           className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
-          title="Collapse All"
+          title="すべて折りたたむ"
         >
           <ChevronsDownUp size={14} />
         </button>
@@ -877,16 +879,16 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
             type="text"
             value={normalizedSearchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search files and content…"
+            placeholder="ファイルと内容を検索…"
             className="w-full rounded-none border-0 bg-transparent py-1 pl-7 pr-7 text-xs text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-0"
-            aria-label="Search files and content"
+            aria-label="ファイルと内容を検索"
           />
           {hasSearchInput && (
             <button
               onClick={() => resetSearch()}
               className="absolute right-0 top-1/2 inline-flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
-              title="Clear search"
-              aria-label="Clear search"
+              title="検索をクリア"
+              aria-label="検索をクリア"
             >
               <X size={11} />
             </button>
@@ -897,24 +899,26 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
       {/* Tree / Search Results */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden py-1">
         {!rootPath && (
-          <div className="px-3 py-4 text-sm text-muted-foreground">No project selected</div>
+          <div className="px-3 py-4 text-sm text-muted-foreground">
+            プロジェクトが選択されていません
+          </div>
         )}
 
         {rootPath && rootLoadError && (
           <div className="px-3 py-4 space-y-2">
-            <p className="text-sm text-red-400">Failed to load project files.</p>
+            <p className="text-sm text-red-400">プロジェクトファイルの読み込みに失敗しました。</p>
             <p className="text-xs text-muted-foreground break-words">{rootLoadError.message}</p>
             <button
               onClick={handleRootRetry}
               className="px-2 py-1 text-xs rounded bg-secondary text-foreground hover:bg-secondary/80"
             >
-              Retry
+              再試行
             </button>
           </div>
         )}
 
         {rootPath && !rootEntries && !rootLoadError && (
-          <div className="px-3 py-4 text-sm text-muted-foreground">Loading...</div>
+          <div className="px-3 py-4 text-sm text-muted-foreground">読み込み中...</div>
         )}
 
         {rootPath &&
@@ -945,27 +949,27 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
               <div className="rounded-md border border-border/70 bg-background/60 px-2 py-1.5 text-3xs leading-relaxed text-muted-foreground">
                 <p className="text-3xs font-medium text-foreground">
                   {searchLoading
-                    ? `Searching for “${trimmedSearchQuery}”…`
+                    ? `「${trimmedSearchQuery}」を検索中…`
                     : hasPartialSearchError
-                      ? `Partial results for “${trimmedSearchQuery}”`
+                      ? `「${trimmedSearchQuery}」の一部の結果`
                       : searchError
-                        ? 'Search unavailable'
+                        ? '検索を利用できません'
                         : isSearchTooShort
-                          ? 'Keep typing to start searching'
+                          ? '入力を続けると検索が始まります'
                           : showSearchEmptyState
-                            ? `No matches for “${trimmedSearchQuery}”`
-                            : `Updating results for “${trimmedSearchQuery}”…`}
+                            ? `「${trimmedSearchQuery}」に一致する結果はありません`
+                            : `「${trimmedSearchQuery}」の結果を更新中…`}
                 </p>
                 <p className="mt-0.5">
                   {hasPartialSearchError
-                    ? `${searchError} Showing the matches that were found before the search stopped.`
+                    ? `${searchError} 検索が停止するまでに見つかった一致を表示しています。`
                     : searchError
                       ? searchError
                       : isSearchTooShort
-                        ? 'Type at least 2 characters to search file names and content.'
+                        ? 'ファイル名と内容を検索するには2文字以上入力してください。'
                         : showSearchEmptyState
-                          ? 'Try a different term or a shorter phrase to broaden the search.'
-                          : 'Finishing the latest search before showing refreshed matches.'}
+                          ? '別の語句や短いフレーズを試すと検索範囲が広がります。'
+                          : '最新の検索が完了すると、更新された結果が表示されます。'}
                 </p>
               </div>
             )}
@@ -973,24 +977,20 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
             {(searchTruncated || searchFailedFiles > 0) && (
               <div className="rounded-md border border-border/70 bg-background/60 px-2 py-1.5 text-3xs leading-relaxed text-muted-foreground">
                 {searchTruncated
-                  ? 'Results were truncated for performance.'
-                  : 'Some files could not be fully searched.'}
+                  ? 'パフォーマンスのため、結果は一部省略されました。'
+                  : '一部のファイルは完全に検索できませんでした。'}
                 {searchFailedFiles > 0
-                  ? ` ${searchFailedFiles} file${searchFailedFiles === 1 ? ' was' : 's were'} skipped.`
+                  ? ` ${searchFailedFiles}件のファイルをスキップしました。`
                   : ''}
                 {searchScannedFiles > 0
-                  ? ` Scanned ${searchScannedFiles} file${searchScannedFiles === 1 ? '' : 's'}.`
+                  ? ` ${searchScannedFiles}件のファイルをスキャンしました。`
                   : ''}
               </div>
             )}
 
             {hasAnySearchResults && (
               <div className="rounded-lg border border-border/70 bg-card/25 p-1 shadow-sm">
-                <div
-                  className="grid grid-cols-2 gap-1"
-                  role="tablist"
-                  aria-label="Search result types"
-                >
+                <div className="grid grid-cols-2 gap-1" role="tablist" aria-label="検索結果の種類">
                   <button
                     onClick={() => {
                       userSelectedTabRef.current = true
@@ -1007,8 +1007,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
                     aria-selected={searchResultTab === 'content'}
                   >
                     {searchLoading && <LoaderCircle size={10} className="animate-spin" />}
-                    Content{' '}
-                    <span className="text-muted-foreground">{safeSearchResults.length}</span>
+                    内容 <span className="text-muted-foreground">{safeSearchResults.length}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -1026,7 +1025,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
                     aria-selected={searchResultTab === 'files'}
                   >
                     {searchLoading && <LoaderCircle size={10} className="animate-spin" />}
-                    Files{' '}
+                    ファイル{' '}
                     <span className="text-muted-foreground">
                       {fileNameMatchesPending ? '…' : safeSearchFileNameMatches.length}
                     </span>
@@ -1093,8 +1092,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
                             </span>
                           </div>
                           <span className="shrink-0 text-4xs text-muted-foreground">
-                            {fileResult.matches.length} hit
-                            {fileResult.matches.length === 1 ? '' : 's'}
+                            {fileResult.matches.length} 件
                           </span>
                         </div>
                       </button>
@@ -1121,7 +1119,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
                             onClick={() => toggleExpandedSearchResult(fileResult.filePath)}
                             className="px-2 py-0.5 text-3xs text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
                           >
-                            Show {hiddenCount} more
+                            他 {hiddenCount} 件を表示
                           </button>
                         )}
                         {isExpanded && fileResult.matches.length > 3 && (
@@ -1130,7 +1128,7 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
                             onClick={() => toggleExpandedSearchResult(fileResult.filePath)}
                             className="px-2 py-0.5 text-3xs text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
                           >
-                            Show less
+                            表示を減らす
                           </button>
                         )}
                       </div>
@@ -1165,9 +1163,9 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
               placeholder={
                 inlineInput.mode === 'create'
                   ? inlineInput.type === 'file'
-                    ? 'File name...'
-                    : 'Folder name...'
-                  : 'New name...'
+                    ? 'ファイル名...'
+                    : 'フォルダ名...'
+                  : '新しい名前...'
               }
             />
           </div>
@@ -1179,8 +1177,8 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
         onMouseDown={handleResizeMouseDown}
         onKeyDown={handleResizeKeyDown}
         className={`absolute ${side === 'right' ? 'left-0' : 'right-0'} top-0 h-full w-1 cursor-col-resize bg-transparent hover:bg-primary/20`}
-        title="Drag to resize explorer"
-        aria-label="Resize file explorer"
+        title="ドラッグしてエクスプローラーの幅を変更"
+        aria-label="エクスプローラーの幅を変更"
         role="separator"
         aria-controls="file-explorer-panel"
         aria-valuenow={explorerWidth}
@@ -1217,20 +1215,20 @@ export function FileExplorer({ side = 'right' }: FileExplorerProps): React.JSX.E
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-card border border-border rounded-lg p-4 shadow-xl max-w-sm">
             <p className="text-sm text-foreground mb-4">
-              Delete &quot;{deleteConfirm.name}&quot;? This cannot be undone.
+              「{deleteConfirm.name}」を削除しますか?この操作は取り消せません。
             </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setDeleteConfirm(null)}
                 className="px-3 py-1.5 text-sm rounded bg-secondary text-foreground hover:bg-secondary/80"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleDeleteConfirm}
                 className="px-3 py-1.5 text-sm rounded bg-red-600 text-white hover:bg-red-700"
               >
-                Delete
+                削除
               </button>
             </div>
           </div>

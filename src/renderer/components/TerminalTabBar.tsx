@@ -170,7 +170,7 @@ export function TerminalTabBar({
         <button
           onClick={onNewTerminal}
           className="h-7 w-7 flex items-center justify-center rounded-l hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors border-r border-border/50"
-          title="New terminal (default shell)"
+          title="新しいターミナル (デフォルトのシェル)"
         >
           <Plus size={12} />
         </button>
@@ -179,7 +179,7 @@ export function TerminalTabBar({
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="h-7 w-5 flex items-center justify-center rounded-r hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-              title="Select shell"
+              title="シェルを選択"
             >
               <ChevronDown size={12} />
             </button>
@@ -206,13 +206,17 @@ export function TerminalTabBar({
                         <TerminalIcon size={12} />
                         <span>{shell.displayName}</span>
                         {shell.name === defaultShell && (
-                          <span className="ml-auto text-xs text-muted-foreground">(default)</span>
+                          <span className="ml-auto text-xs text-muted-foreground">
+                            (デフォルト)
+                          </span>
                         )}
                       </button>
                     ))}
                   </div>
                 ) : (
-                  <div className="px-3 py-2 text-sm text-muted-foreground">No shells detected</div>
+                  <div className="px-3 py-2 text-sm text-muted-foreground">
+                    シェルが見つかりません
+                  </div>
                 )}
               </div>
             )}
@@ -309,17 +313,17 @@ function TerminalTab({ terminal, isActive, onSelect, onClose, onRename }: Termin
 
   const contextMenuItems: ContextMenuItem[] = [
     {
-      label: 'Rename',
+      label: '名前を変更',
       icon: <Edit2 size={12} />,
       onClick: handleRenameFromMenu
     },
     {
-      label: 'Close',
+      label: '閉じる',
       icon: <X size={12} />,
       onClick: onClose
     },
     {
-      label: 'Kill Process',
+      label: 'プロセスを強制終了',
       icon: <Skull size={12} />,
       onClick: onClose,
       variant: 'danger'

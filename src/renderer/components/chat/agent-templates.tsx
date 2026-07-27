@@ -175,7 +175,7 @@ export const AGENT_TEMPLATES: AgentTemplate[] = [
   },
   {
     id: 'custom',
-    label: 'Custom',
+    label: 'カスタム',
     notes: 'Define your own command, arguments, and environment.',
     config: { name: '', command: '', args: [], env: {}, allowTerminal: false }
   }

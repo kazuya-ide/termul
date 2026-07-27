@@ -54,8 +54,8 @@ export function IconPicker({ value, onChange }: IconPickerProps): React.JSX.Elem
         type="button"
         onClick={() => setOpen(true)}
         className="shrink-0"
-        title="Choose icon"
-        aria-label="Choose icon"
+        title="アイコンを選択"
+        aria-label="アイコンを選択"
       >
         {triggerIcon}
       </button>
@@ -63,7 +63,7 @@ export function IconPicker({ value, onChange }: IconPickerProps): React.JSX.Elem
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[400px] max-h-[70vh]">
           <DialogHeader>
-            <DialogTitle className="text-sm">Choose icon</DialogTitle>
+            <DialogTitle className="text-sm">アイコンを選択</DialogTitle>
           </DialogHeader>
 
           <div className="overflow-y-auto max-h-[50vh] -mx-2 px-2">
@@ -78,8 +78,8 @@ export function IconPicker({ value, onChange }: IconPickerProps): React.JSX.Elem
                     ? 'border-primary/60 bg-primary/10 text-foreground ring-2 ring-primary/30'
                     : 'border-border hover:bg-secondary'
                 )}
-                title="No icon"
-                aria-label="No icon"
+                title="アイコンなし"
+                aria-label="アイコンなし"
                 aria-pressed={!value}
               >
                 —

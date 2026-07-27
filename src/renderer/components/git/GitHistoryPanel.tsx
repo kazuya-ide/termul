@@ -96,7 +96,7 @@ export function GitHistoryPanel({ cwd, isVisible }: GitHistoryPanelProps): React
       <div className="p-3 border-b border-border flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <History size={15} className="text-primary" />
-          Git History
+          コミット履歴
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -106,8 +106,8 @@ export function GitHistoryPanel({ cwd, isVisible }: GitHistoryPanelProps): React
             />
             <input
               type="text"
-              placeholder="Filter commits..."
-              aria-label="Filter commits"
+              placeholder="コミットを絞り込み..."
+              aria-label="コミットを絞り込み"
               className="w-44 bg-secondary/50 border-none rounded-md py-1.5 pl-8 pr-3 text-xs focus:ring-1 focus:ring-primary outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,8 +119,8 @@ export function GitHistoryPanel({ cwd, isVisible }: GitHistoryPanelProps): React
             className="h-8 w-8"
             onClick={() => refreshLog(cwd)}
             disabled={isLoading}
-            title="Refresh history"
-            aria-label="Refresh history"
+            title="履歴を更新"
+            aria-label="履歴を更新"
           >
             <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
           </Button>
@@ -130,7 +130,7 @@ export function GitHistoryPanel({ cwd, isVisible }: GitHistoryPanelProps): React
       {commits === undefined && isLoading ? (
         <div className="flex-1 flex items-center justify-center text-muted-foreground">
           <RefreshCw className="animate-spin mr-2" size={16} />
-          Loading history...
+          履歴を読み込み中...
         </div>
       ) : (commits?.length ?? 0) === 0 ? (
         <EmptyState error={error} />
@@ -194,7 +194,7 @@ export function GitHistoryPanel({ cwd, isVisible }: GitHistoryPanelProps): React
             <div style={{ paddingLeft: isFiltering ? undefined : graphWidth }}>
               {isFiltering && filteredCommits.length === 0 ? (
                 <div className="px-4 py-8 text-center text-xs text-muted-foreground">
-                  No commits match "{searchQuery}"
+                  "{searchQuery}" に一致するコミットはありません
                 </div>
               ) : (
                 (isFiltering ? filteredCommits : layout.rows.map((r) => r.commit)).map((commit) => (
@@ -259,11 +259,11 @@ function EmptyState({ error }: { error: string | null }): React.JSX.Element {
       <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center mb-4 text-muted-foreground/50">
         <History size={24} />
       </div>
-      <h3 className="text-sm font-medium text-foreground mb-1">No commit history</h3>
+      <h3 className="text-sm font-medium text-foreground mb-1">コミット履歴がありません</h3>
       <p className="text-xs max-w-[260px]">
         {error
-          ? 'This folder may not be a Git repository, or git is unavailable.'
-          : 'There are no commits to show yet. Make your first commit to see it here.'}
+          ? 'このフォルダは Git リポジトリではないか、git が利用できません。'
+          : 'まだコミットがありません。最初のコミットを作成すると、ここに表示されます。'}
       </p>
     </div>
   )

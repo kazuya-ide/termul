@@ -31,8 +31,8 @@ function sanitizeNotificationText(
  *
  * Notification format:
  *   Title: <project name>  (or "Termul" if project unknown)
- *   Body:  <terminal name> — DONE
- *          or <terminal name> — Failed (exit code: N) for non-zero exit
+ *   Body:  <terminal name> — 完了 (DONE)
+ *          or <terminal name> — 失敗 (終了コード: N) for non-zero exit
  */
 export function useTerminalExitNotification(): void {
   useEffect(() => {
@@ -63,7 +63,9 @@ export function useTerminalExitNotification(): void {
       const terminalName = sanitizeNotificationText(terminal.name)
 
       const body =
-        exitCode === 0 ? `${terminalName} — DONE` : `${terminalName} — Failed (exit ${exitCode})`
+        exitCode === 0
+          ? `${terminalName} — 完了`
+          : `${terminalName} — 失敗 (終了コード ${exitCode})`
 
       sendDesktopNotification(title, body)
     })

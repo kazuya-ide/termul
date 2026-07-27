@@ -132,8 +132,8 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
 
   // Validate form
   const validate = useCallback((): string | null => {
-    if (!isGitRepo) return 'Project is not a git repository'
-    if (isWorktreeOperationLocked) return 'Another worktree operation is in progress'
+    if (!isGitRepo) return 'プロジェクトが Git リポジトリではありません'
+    if (isWorktreeOperationLocked) return '別の作業ツリー操作が進行中です'
 
     // Simple path: when creating a new branch and the Advanced branch field is empty,
     // derive the branch from the worktree name.
@@ -146,23 +146,22 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
       (w: Worktree) => w.branch === branch || w.name === worktreeName
     )
     if (existingWorktree) {
-      return `A worktree for branch "${branch}" already exists`
+      return `ブランチ "${branch}" の作業ツリーは既に存在します`
     }
 
     if (branchType === 'new') {
-      if (!effectiveNewBranch) return 'Name is required'
+      if (!effectiveNewBranch) return '名前は必須です'
       // A name was entered but sanitized to nothing (e.g. "---") — it's invalid, not missing.
-      if (!sanitizeBranchName(effectiveNewBranch).trim())
-        return 'Name contains no usable characters'
+      if (!sanitizeBranchName(effectiveNewBranch).trim()) return '名前に使用できる文字がありません'
     } else {
-      if (!selectedBranch) return 'Select a branch'
+      if (!selectedBranch) return 'ブランチを選択してください'
     }
 
-    if (!worktreeName.trim()) return 'Name is required'
+    if (!worktreeName.trim()) return '名前は必須です'
 
     // Check for path length (Windows MAX_PATH = 260)
     const targetPath = `${projectPath}/.termul/worktrees/${worktreeName}/`
-    if (targetPath.length > 240) return 'Path too long'
+    if (targetPath.length > 240) return 'パスが長すぎます'
 
     return null
   }, [
@@ -245,33 +244,33 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
               const failed = symlinkResult.data.filter((r) => r.status === 'failed').length
               if (failed > 0) {
                 toast({
-                  title: 'Worktree created with symlink warnings',
-                  description: `${created} symlink(s) created, ${skipped} skipped, ${failed} failed.`
+                  title: '作業ツリーを作成しました（シンボリックリンクに警告あり）',
+                  description: `シンボリックリンク ${created} 件作成、${skipped} 件スキップ、${failed} 件失敗。`
                 })
               } else {
                 toast({
-                  title: 'Worktree created',
-                  description: `"${result.data.name}" created on branch "${result.data.branch}" with ${created} symlink(s).`
+                  title: '作業ツリーを作成しました',
+                  description: `"${result.data.name}" をブランチ "${result.data.branch}" に作成しました（シンボリックリンク ${created} 件）。`
                 })
               }
             } else {
               // Symlink creation failed but worktree was created successfully
               toast({
-                title: 'Worktree created',
-                description: `"${result.data.name}" created on branch "${result.data.branch}". Symlink setup had issues.`
+                title: '作業ツリーを作成しました',
+                description: `"${result.data.name}" をブランチ "${result.data.branch}" に作成しました。シンボリックリンクの設定で問題が発生しました。`
               })
             }
           } catch {
             // Symlink failure is non-blocking
             toast({
-              title: 'Worktree created',
-              description: `"${result.data.name}" created on branch "${result.data.branch}". Symlink setup skipped.`
+              title: '作業ツリーを作成しました',
+              description: `"${result.data.name}" をブランチ "${result.data.branch}" に作成しました。シンボリックリンクの設定はスキップされました。`
             })
           }
         } else {
           toast({
-            title: 'Worktree created',
-            description: `"${result.data.name}" created successfully on branch "${result.data.branch}".`
+            title: '作業ツリーを作成しました',
+            description: `"${result.data.name}" をブランチ "${result.data.branch}" に作成しました。`
           })
         }
 
@@ -280,22 +279,23 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
         const outcome = await activateAndOpenTerminal(projectId, newWorktree.id, result.data.path)
         if (outcome.status === 'no-pane') {
           toast({
-            title: 'Worktree ready — terminal not opened',
-            description: 'No active pane to open a terminal in. Switch to a workspace pane first.'
+            title: '作業ツリーの準備が完了しました — ターミナルは開かれていません',
+            description:
+              'ターミナルを開くアクティブなペインがありません。先にワークスペースのペインに切り替えてください。'
           })
         } else if (outcome.status === 'spawn-failed') {
           toast({
-            title: 'Worktree ready — terminal not opened',
-            description: outcome.error || 'Could not open a terminal in the new worktree.'
+            title: '作業ツリーの準備が完了しました — ターミナルは開かれていません',
+            description: outcome.error || '新しい作業ツリーでターミナルを開けませんでした。'
           })
         }
 
         onClose()
       } else {
-        setValidationError(!result.success ? result.error : 'Failed to create worktree')
+        setValidationError(!result.success ? result.error : '作業ツリーの作成に失敗しました')
         toast({
-          title: 'Failed to create worktree',
-          description: !result.success ? result.error : 'Unknown error',
+          title: '作業ツリーの作成に失敗しました',
+          description: !result.success ? result.error : '不明なエラー',
           variant: 'destructive'
         })
       }
@@ -303,7 +303,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
       const msg = String(err)
       setValidationError(msg)
       toast({
-        title: 'Error creating worktree',
+        title: '作業ツリー作成エラー',
         description: msg,
         variant: 'destructive'
       })
@@ -342,8 +342,8 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
 
   // Path preview
   const pathPreview = projectPath
-    ? `${projectPath}/.termul/worktrees/${worktreeName || '<name>'}/`
-    : '<select a project>'
+    ? `${projectPath}/.termul/worktrees/${worktreeName || '<名前>'}/`
+    : '<プロジェクトを選択してください>'
 
   if (!project) return null
 
@@ -370,7 +370,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
             <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-secondary/50">
               <div className="flex items-center gap-2">
                 <GitBranch size={14} className="text-primary" />
-                <h3 className="text-sm font-semibold text-foreground">New Worktree</h3>
+                <h3 className="text-sm font-semibold text-foreground">新規作業ツリー</h3>
               </div>
               <button
                 onClick={onClose}
@@ -385,7 +385,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
               {/* Project name (read-only) */}
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Project
+                  プロジェクト
                 </label>
                 <input
                   type="text"
@@ -397,16 +397,16 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
 
               {/* Worktree name — primary, only required field for the simple path */}
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Name</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">名前</label>
                 <input
                   type="text"
                   value={worktreeName}
                   onChange={(e) => setWorktreeName(e.target.value)}
-                  placeholder="e.g. try-new-hero"
+                  placeholder="例: try-new-hero"
                   className="w-full bg-secondary border border-border rounded px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
                 />
                 <p className="text-3xs text-muted-foreground mt-0.5">
-                  A separate place to work. Your main project stays untouched.
+                  作業用の別の場所です。メインのプロジェクトはそのまま残ります。
                 </p>
               </div>
 
@@ -418,7 +418,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                 aria-expanded={showAdvanced}
               >
                 <GitBranch size={12} aria-hidden="true" />
-                <span>Advanced (branch options)</span>
+                <span>詳細設定（ブランチオプション）</span>
                 <span className="text-3xs" aria-hidden="true">
                   {showAdvanced ? '▼' : '▶'}
                 </span>
@@ -429,7 +429,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                   {/* Branch type toggle */}
                   <div>
                     <label className="block text-xs font-medium text-muted-foreground mb-1">
-                      Branch Type
+                      ブランチの種類
                     </label>
                     <div className="flex gap-2">
                       <button
@@ -441,7 +441,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                             : 'bg-secondary text-muted-foreground border-border hover:bg-muted'
                         )}
                       >
-                        New Branch
+                        新規ブランチ
                       </button>
                       <button
                         onClick={() => setBranchType('existing')}
@@ -452,7 +452,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                             : 'bg-secondary text-muted-foreground border-border hover:bg-muted'
                         )}
                       >
-                        Existing Branch
+                        既存のブランチ
                       </button>
                     </div>
                   </div>
@@ -461,12 +461,12 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                   {branchType === 'existing' && (
                     <div>
                       <label className="block text-xs font-medium text-muted-foreground mb-1">
-                        Select Branch
+                        ブランチを選択
                       </label>
                       {branchesLoading ? (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
                           <Loader2 size={14} className="animate-spin" />
-                          Loading branches...
+                          ブランチを読み込み中...
                         </div>
                       ) : (
                         <>
@@ -480,7 +480,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                               type="text"
                               value={branchSearch}
                               onChange={(e) => setBranchSearch(e.target.value)}
-                              placeholder="Search branches..."
+                              placeholder="ブランチを検索..."
                               className="w-full bg-secondary border border-border rounded pl-7 pr-3 py-1 text-xs text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
                             />
                           </div>
@@ -492,13 +492,13 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                               onChange={(e) => setShowRemoteBranches(e.target.checked)}
                               className="rounded border-border"
                             />
-                            Show remote branches
+                            リモートブランチを表示
                           </label>
                           {/* Branch list */}
                           <div className="max-h-32 overflow-y-auto border border-border rounded bg-secondary/50">
                             {sortedBranches.length === 0 ? (
                               <div className="p-2 text-xs text-muted-foreground text-center">
-                                No branches found
+                                ブランチが見つかりません
                               </div>
                             ) : (
                               sortedBranches.map((branch) => (
@@ -515,11 +515,11 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                                   <GitBranch size={10} className="mr-1.5 flex-shrink-0" />
                                   <span className="truncate flex-1">{branch.name}</span>
                                   {branch.isCurrent && (
-                                    <span className="text-3xs text-primary ml-1">current</span>
+                                    <span className="text-3xs text-primary ml-1">現在</span>
                                   )}
                                   {branch.isRemote && (
                                     <span className="text-3xs text-muted-foreground ml-1">
-                                      remote
+                                      リモート
                                     </span>
                                   )}
                                 </button>
@@ -536,7 +536,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                     <>
                       <div>
                         <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Branch Name <span className="text-muted-foreground/60">(optional)</span>
+                          ブランチ名 <span className="text-muted-foreground/60">（任意）</span>
                         </label>
                         <input
                           type="text"
@@ -549,24 +549,24 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                         />
                         <p className="text-3xs text-muted-foreground mt-0.5">
                           {newBranchName && sanitizeBranchName(newBranchName) !== newBranchName
-                            ? `Will be sanitized to: ${sanitizeBranchName(newBranchName)}`
-                            : 'Defaults to the name above.'}
+                            ? `次の形式に変換されます: ${sanitizeBranchName(newBranchName)}`
+                            : '上の名前がデフォルトで使用されます。'}
                         </p>
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Start Reference{' '}
-                          <span className="text-muted-foreground/60">(optional)</span>
+                          起点（Start Reference）{' '}
+                          <span className="text-muted-foreground/60">（任意）</span>
                         </label>
                         <input
                           type="text"
                           value={startRef}
                           onChange={(e) => setStartRef(e.target.value)}
-                          placeholder="HEAD, main, or a commit hash"
+                          placeholder="HEAD、main、またはコミットハッシュ"
                           className="w-full bg-secondary border border-border rounded px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
                         />
                         <p className="text-3xs text-muted-foreground mt-0.5">
-                          Defaults to HEAD if not specified
+                          指定しない場合は HEAD が使用されます
                         </p>
                       </div>
                     </>
@@ -577,7 +577,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
               {/* Path preview */}
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Path Preview
+                  パスのプレビュー
                 </label>
                 <code className="block text-3xs text-muted-foreground bg-secondary/50 border border-border rounded px-3 py-1.5 overflow-x-auto whitespace-nowrap">
                   {pathPreview}
@@ -592,7 +592,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                     className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Link2 size={12} />
-                    <span>Symlink Directories ({project.symlinkDirs.length})</span>
+                    <span>シンボリックリンクディレクトリ ({project.symlinkDirs.length})</span>
                     <span className="text-3xs">{showSymlinkSection ? '▼' : '▶'}</span>
                   </button>
                   {showSymlinkSection && (
@@ -620,8 +620,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                         </label>
                       ))}
                       <p className="text-3xs text-muted-foreground mt-1">
-                        Checked directories will be symlinked from the project root into the
-                        worktree.
+                        チェックしたディレクトリは、プロジェクトのルートから作業ツリーへシンボリックリンクされます。
                       </p>
                     </div>
                   )}
@@ -640,7 +639,8 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
               {!isGitRepo && (
                 <div className="flex items-start gap-2 text-xs text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
                   <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
-                  This project is not a git repository. Worktrees require a git repo.
+                  このプロジェクトは Git リポジトリではありません。作業ツリーには Git
+                  リポジトリが必要です。
                 </div>
               )}
             </div>
@@ -651,7 +651,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
                 onClick={onClose}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={() => void handleCreate()}
@@ -660,7 +660,7 @@ export function NewWorktreeModal({ isOpen, onClose, projectId }: NewWorktreeModa
               >
                 {isCreating && <Loader2 size={12} className="animate-spin" />}
                 {!isCreating && <Terminal size={12} />}
-                {isCreating ? 'Creating...' : 'Create & open'}
+                {isCreating ? '作成中...' : '作成して開く'}
               </button>
             </div>
           </motion.div>

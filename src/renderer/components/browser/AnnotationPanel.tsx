@@ -61,7 +61,7 @@ function truncateForDisplay(value: string, maxLength: number): string {
 
 function AnnotationElementDetails({ geometry }: { geometry: ElementGeometry }): React.JSX.Element {
   const selectorPreview = truncateForDisplay(geometry.selector, 60)
-  const textPreview = truncateForDisplay(geometry.textContent, 80) || '(no text)'
+  const textPreview = truncateForDisplay(geometry.textContent, 80) || '(テキストなし)'
 
   return (
     <div className="space-y-2">
@@ -94,7 +94,7 @@ function AnnotationElementDetails({ geometry }: { geometry: ElementGeometry }): 
           </div>
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-md whitespace-pre-wrap break-words text-xs">
-          {geometry.textContent || '(no text)'}
+          {geometry.textContent || '(テキストなし)'}
         </TooltipContent>
       </Tooltip>
     </div>
@@ -164,7 +164,7 @@ function AnnotationItem({
             onDelete(annotation.id)
           }}
           className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
-          title="Delete annotation"
+          title="削除"
         >
           <Trash2 size={12} />
         </button>
@@ -187,7 +187,7 @@ function AnnotationItem({
           <Textarea
             value={draftDescription}
             onChange={(e) => setDraftDescription(e.target.value)}
-            placeholder="Add a description..."
+            placeholder="説明を入力..."
             className="min-h-[60px] text-xs"
           />
           <div className="flex justify-end gap-1">
@@ -200,10 +200,10 @@ function AnnotationItem({
                 setIsEditing(false)
               }}
             >
-              Cancel
+              キャンセル
             </Button>
             <Button size="sm" className="h-7 text-xs" onClick={handleSave}>
-              Save
+              保存
             </Button>
           </div>
         </div>
@@ -217,7 +217,7 @@ function AnnotationItem({
           className="text-xs text-foreground cursor-text min-h-[1.5em] hover:bg-secondary/50 rounded px-1 -mx-1 transition-colors"
         >
           {annotation.description || (
-            <span className="text-muted-foreground italic">Click to add description...</span>
+            <span className="text-muted-foreground italic">クリックして説明を追加...</span>
           )}
         </div>
       )}
@@ -306,7 +306,7 @@ export function AnnotationPanel({
     <div className="w-72 border-l border-border bg-background flex flex-col shrink-0 motion-safe:animate-slide-in">
       <div className="px-3 py-2 border-b border-border bg-card space-y-1.5">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium">Annotations</h3>
+          <h3 className="text-sm font-medium">注釈</h3>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -315,24 +315,24 @@ export function AnnotationPanel({
                 type="button"
                 onClick={onExitAnnotationMode}
                 className="h-7 w-7 p-0"
-                aria-label="Exit annotation mode"
+                aria-label="注釈モードを終了"
               >
                 <X size={14} />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">Exit annotation mode</TooltipContent>
+            <TooltipContent side="bottom">終了</TooltipContent>
           </Tooltip>
         </div>
 
         <div
           role="toolbar"
-          aria-label="Annotation tools"
+          aria-label="注釈ツール"
           className="flex items-center gap-1"
           onKeyDown={handleToolbarKeyDown}
         >
           <div
             role="group"
-            aria-label="Annotation mode"
+            aria-label="注釈モード"
             className="flex items-center rounded-md border border-border bg-background overflow-hidden"
           >
             <Tooltip>
@@ -344,12 +344,12 @@ export function AnnotationPanel({
                   aria-pressed={annotationSubMode === 'draw'}
                   onClick={() => onChangeAnnotationSubMode('draw')}
                   className="h-7 w-7 p-0 motion-safe:transition-all motion-safe:duration-150"
-                  aria-label="Draw rectangle annotations"
+                  aria-label="長方形の注釈を描画"
                 >
                   <Square size={13} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">Draw rectangle</TooltipContent>
+              <TooltipContent side="bottom">長方形を描画</TooltipContent>
             </Tooltip>
 
             <Tooltip>
@@ -364,7 +364,7 @@ export function AnnotationPanel({
                     disabled={selectDisabled}
                     className="h-7 w-7 p-0 motion-safe:transition-all motion-safe:duration-150"
                     aria-label={
-                      selectDisabled ? 'Select unavailable on this page' : 'Select elements'
+                      selectDisabled ? 'このページでは選択操作は利用できません' : '要素を選択'
                     }
                   >
                     <Crosshair size={13} />
@@ -372,7 +372,7 @@ export function AnnotationPanel({
                 </span>
               </TooltipTrigger>
               <TooltipContent side="bottom">
-                {selectDisabled ? 'Annotation unavailable on this page' : 'Select elements'}
+                {selectDisabled ? 'このページでは注釈は利用できません' : '要素を選択'}
               </TooltipContent>
             </Tooltip>
           </div>
@@ -385,12 +385,12 @@ export function AnnotationPanel({
                 type="button"
                 onClick={onAddNote}
                 className="h-7 w-7 p-0 motion-safe:transition-all motion-safe:duration-150 hover:bg-primary/10"
-                aria-label="Add page note"
+                aria-label="ページにメモを追加"
               >
                 <StickyNote size={13} />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">Add page note</TooltipContent>
+            <TooltipContent side="bottom">ページにメモを追加</TooltipContent>
           </Tooltip>
 
           <div className="flex-1" />
@@ -404,26 +404,26 @@ export function AnnotationPanel({
                 onClick={onExport}
                 disabled={!hasAnnotations}
                 className="h-7 w-7 p-0 motion-safe:transition-all motion-safe:duration-150 hover:bg-primary/10"
-                aria-label={hasAnnotations ? 'Export annotations' : 'No annotations to export'}
+                aria-label={hasAnnotations ? '注釈を書き出し' : '書き出す注釈がありません'}
               >
                 <FileDown size={13} />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-              {hasAnnotations ? 'Export annotations' : 'No annotations to export'}
+              {hasAnnotations ? '書き出し' : '書き出す注釈がありません'}
             </TooltipContent>
           </Tooltip>
         </div>
 
         <p className="text-3xs text-muted-foreground">
-          Session-scoped: annotations last until app close
+          セッション限定: アプリを終了すると注釈は消えます
         </p>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
         {annotations.length === 0 ? (
           <div className="text-xs text-muted-foreground text-center py-8">
-            No annotations on this page.
+            このページに注釈はありません。
           </div>
         ) : (
           annotations.map((annotation) => (

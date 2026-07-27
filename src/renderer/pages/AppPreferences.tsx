@@ -69,119 +69,128 @@ import {
 } from '@/types/settings'
 
 const APP_PREF_CATEGORIES: SettingsCategory[] = [
-  { id: 'appearance', label: 'Terminal Appearance', icon: <Palette size={16} /> },
-  { id: 'shell', label: 'Default Shell', icon: <Terminal size={16} /> },
-  { id: 'behavior', label: 'Terminal Behavior', icon: <Sliders size={16} /> },
-  { id: 'project-defaults', label: 'New Project Defaults', icon: <Monitor size={16} /> },
-  { id: 'ai-agents', label: 'AI Agents', icon: <Bot size={16} /> },
-  { id: 'shortcuts', label: 'Keyboard Shortcuts', icon: <Keyboard size={16} /> },
-  { id: 'updates', label: 'Updates', icon: <Download size={16} /> },
-  { id: 'diagnostics', label: 'Diagnostics & Logs', icon: <FileText size={16} /> },
-  { id: 'reset', label: 'Reset Settings', icon: <RotateCcw size={16} /> }
+  { id: 'appearance', label: 'ターミナルの見た目', icon: <Palette size={16} /> },
+  { id: 'shell', label: '既定のシェル', icon: <Terminal size={16} /> },
+  { id: 'behavior', label: 'ターミナルの動作', icon: <Sliders size={16} /> },
+  { id: 'project-defaults', label: '新規プロジェクトの既定値', icon: <Monitor size={16} /> },
+  { id: 'ai-agents', label: 'AIエージェント', icon: <Bot size={16} /> },
+  { id: 'shortcuts', label: 'キーボードショートカット', icon: <Keyboard size={16} /> },
+  { id: 'updates', label: 'アップデート', icon: <Download size={16} /> },
+  { id: 'diagnostics', label: '診断とログ', icon: <FileText size={16} /> },
+  { id: 'reset', label: '設定のリセット', icon: <RotateCcw size={16} /> }
 ]
 
 const APP_PREF_SEARCH_INDEX: SettingsSearchEntry[] = [
   {
     categoryId: 'appearance',
-    label: 'Font Family',
-    description: 'Choose a monospace font for terminal text.',
-    keywords: ['typeface', 'monospace']
+    label: 'フォントファミリー',
+    description: 'ターミナルのテキストに使う等幅フォントを選択します。',
+    keywords: ['typeface', 'monospace', 'フォント', '書体', '等幅フォント']
   },
   {
     categoryId: 'appearance',
-    label: 'Font Size',
-    description: 'Adjust terminal text size.',
-    keywords: ['text size', 'zoom']
+    label: 'フォントサイズ',
+    description: 'ターミナルのテキストサイズを調整します。',
+    keywords: ['text size', 'zoom', 'フォントサイズ', '文字サイズ']
   },
   {
     categoryId: 'appearance',
-    label: 'UI Zoom Level',
-    description: 'Zoom the entire interface (50–300%).',
-    keywords: ['ui zoom', 'zoom', 'interface scale', 'window zoom', 'magnify']
+    label: 'UIズームレベル',
+    description: '画面全体を50〜300%の範囲で拡大縮小します。',
+    keywords: [
+      'ui zoom',
+      'zoom',
+      'interface scale',
+      'window zoom',
+      'magnify',
+      'ズーム',
+      '拡大縮小',
+      '画面拡大'
+    ]
   },
   {
     categoryId: 'appearance',
-    label: 'Scrollback Buffer Size',
-    description: 'Number of lines to keep in terminal history.',
-    keywords: ['history', 'lines', 'memory']
+    label: 'スクロールバックのバッファサイズ',
+    description: 'ターミナルの履歴として保持する行数です。',
+    keywords: ['history', 'lines', 'memory', '履歴', '行数', 'バッファ']
   },
   {
     categoryId: 'appearance',
-    label: 'Max Terminals Per Project',
-    description: 'Maximum number of terminal tabs allowed per project.',
-    keywords: ['tabs', 'limit']
+    label: 'プロジェクトあたりの最大ターミナル数',
+    description: '1つのプロジェクトで開けるターミナルタブの最大数です。',
+    keywords: ['tabs', 'limit', 'タブ', '上限', '最大数']
   },
   {
     categoryId: 'appearance',
-    label: 'Terminal Renderer',
-    description: 'GPU-accelerated rendering for terminal output.',
-    keywords: ['webgl', 'dom', 'gpu']
+    label: 'ターミナルレンダラー',
+    description: 'ターミナル出力のGPUアクセラレーション描画です。',
+    keywords: ['webgl', 'dom', 'gpu', 'レンダラー', '描画']
   },
   {
     categoryId: 'shell',
-    label: 'Default Shell',
-    description: 'Set the default shell for new terminals.',
-    keywords: ['bash', 'zsh', 'powershell', 'fish']
+    label: '既定のシェル',
+    description: '新しいターミナルで使う既定のシェルを設定します。',
+    keywords: ['bash', 'zsh', 'powershell', 'fish', 'シェル', '既定']
   },
   {
     categoryId: 'behavior',
-    label: 'Open Terminal Links In',
-    description: 'Choose how URLs from terminal output open.',
-    keywords: ['url', 'links', 'browser']
+    label: 'ターミナルのリンクを開く方法',
+    description: 'ターミナル出力内のURLの開き方を選択します。',
+    keywords: ['url', 'links', 'browser', 'リンク', 'ブラウザ']
   },
   {
     categoryId: 'behavior',
-    label: 'Orphan Detection',
-    description: 'Automatically clean up terminals that have been inactive.',
-    keywords: ['cleanup', 'inactive', 'timeout']
+    label: 'オーファン検出',
+    description: '非アクティブなターミナルを自動的に片付けます。',
+    keywords: ['cleanup', 'inactive', 'timeout', '自動終了', '非アクティブ', 'クリーンアップ']
   },
   {
     categoryId: 'behavior',
-    label: 'Timeout Before Cleanup',
-    description: 'Duration before inactive terminals are cleaned up.',
-    keywords: ['orphan', 'inactive']
+    label: '片付けまでのタイムアウト',
+    description: '非アクティブなターミナルが片付けられるまでの時間です。',
+    keywords: ['orphan', 'inactive', 'タイムアウト', '時間']
   },
   {
     categoryId: 'project-defaults',
-    label: 'Default Color',
-    description: 'New projects will use this color by default.',
-    keywords: ['theme', 'appearance']
+    label: '既定の色',
+    description: '新規プロジェクトはこの色を既定で使用します。',
+    keywords: ['theme', 'appearance', '色', 'テーマ']
   },
   {
     categoryId: 'ai-agents',
-    label: 'AI Agents',
-    description: 'Enable ACP coding agents from the registry.',
-    keywords: ['acp', 'agent', 'coding assistant']
+    label: 'AIエージェント',
+    description: 'レジストリからACPコーディングエージェントを有効化します。',
+    keywords: ['acp', 'agent', 'coding assistant', 'エージェント', 'コーディング支援']
   },
   {
     categoryId: 'shortcuts',
-    label: 'Keyboard Shortcuts',
-    description: 'Customize keyboard shortcuts to match your workflow.',
-    keywords: ['hotkeys', 'bindings', 'keybindings']
+    label: 'キーボードショートカット',
+    description: '作業スタイルに合わせてキーボードショートカットをカスタマイズします。',
+    keywords: ['hotkeys', 'bindings', 'keybindings', 'ショートカット', 'キー割り当て']
   },
   {
     categoryId: 'updates',
-    label: 'Check for Updates',
-    description: 'Manage application updates and version information.',
-    keywords: ['version', 'upgrade']
+    label: 'アップデートを確認',
+    description: 'アプリケーションのアップデートとバージョン情報を管理します。',
+    keywords: ['version', 'upgrade', 'アップデート', 'バージョン']
   },
   {
     categoryId: 'updates',
-    label: 'Auto-update',
-    description: 'Automatically check for updates.',
-    keywords: ['automatic', 'version']
+    label: '自動アップデート',
+    description: 'アップデートを自動的に確認します。',
+    keywords: ['automatic', 'version', '自動更新', '自動確認']
   },
   {
     categoryId: 'diagnostics',
-    label: 'Diagnostics & Logs',
-    description: 'Export or copy application logs to troubleshoot issues.',
-    keywords: ['logs', 'export', 'troubleshoot', 'debug']
+    label: '診断とログ',
+    description: '問題解決のためにアプリケーションログを書き出し・コピーします。',
+    keywords: ['logs', 'export', 'troubleshoot', 'debug', 'ログ', '書き出し', '不具合調査']
   },
   {
     categoryId: 'reset',
-    label: 'Reset Settings',
-    description: 'Restore all settings to their default values.',
-    keywords: ['restore', 'defaults', 'clear']
+    label: '設定のリセット',
+    description: 'すべての設定を既定値に戻します。',
+    keywords: ['restore', 'defaults', 'clear', 'リセット', '初期化', '既定値']
   }
 ]
 
@@ -330,7 +339,7 @@ export default function AppPreferences(): React.JSX.Element {
   }
 
   const formatLastChecked = (date: Date | null): string => {
-    if (!date) return 'Never'
+    if (!date) return '未確認'
     return new Intl.DateTimeFormat('en-US', {
       dateStyle: 'medium',
       timeStyle: 'short'
@@ -344,17 +353,17 @@ export default function AppPreferences(): React.JSX.Element {
         <div className="h-16 flex items-center justify-between px-8 border-b border-border bg-card flex-shrink-0">
           <div>
             <h1 className="text-xl font-semibold text-foreground leading-tight">
-              Application Preferences
+              アプリケーション環境設定
             </h1>
-            <p className="text-xs text-muted-foreground">Configure global application settings</p>
+            <p className="text-xs text-muted-foreground">アプリケーション全体の設定を行います</p>
           </div>
           <button
             onClick={() => {
               navigate('/')
             }}
             className="group flex items-center justify-center h-8 w-8 rounded-md hover:bg-secondary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            title="Close"
-            aria-label="Close preferences"
+            title="閉じる"
+            aria-label="環境設定を閉じる"
           >
             <X size={18} className="text-muted-foreground group-hover:text-foreground" />
           </button>
@@ -366,9 +375,9 @@ export default function AppPreferences(): React.JSX.Element {
           <SettingsSection id="appearance">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Terminal Appearance</h2>
+                <h2 className="text-lg font-medium text-foreground">ターミナルの見た目</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Customize the look and feel of your terminal.
+                  ターミナルの見た目や質感をカスタマイズします。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
@@ -376,7 +385,7 @@ export default function AppPreferences(): React.JSX.Element {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-secondary-foreground">
-                      UI Zoom Level
+                      UIズームレベル
                     </label>
                     <button
                       type="button"
@@ -384,7 +393,7 @@ export default function AppPreferences(): React.JSX.Element {
                       className="text-xs text-primary hover:underline disabled:opacity-50"
                       disabled={uiZoomLevel === UI_ZOOM_DEFAULT}
                     >
-                      Reset to 100%
+                      100%に戻す
                     </button>
                   </div>
                   <div className="flex items-center gap-4">
@@ -402,15 +411,14 @@ export default function AppPreferences(): React.JSX.Element {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Zoom the entire interface (50–300%). Also adjustable with Ctrl+=, Ctrl+-,
-                    Ctrl+0.
+                    画面全体を50〜300%の範囲で拡大縮小します。Ctrl+=、Ctrl+-、Ctrl+0でも調整できます。
                   </p>
                 </div>
 
                 {/* Font Family */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Font Family
+                    フォントファミリー
                   </label>
                   <select
                     value={fontFamily}
@@ -424,14 +432,14 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Choose a monospace font for terminal text.
+                    ターミナルのテキストに使う等幅フォントを選択します。
                   </p>
                 </div>
 
                 {/* Font Size */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Font Size: {fontSize}px
+                    フォントサイズ: {fontSize}px
                   </label>
                   <div className="flex items-center gap-4">
                     <input
@@ -447,14 +455,14 @@ export default function AppPreferences(): React.JSX.Element {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Adjust terminal text size (10-24px).
+                    ターミナルのテキストサイズを調整します（10〜24px）。
                   </p>
                 </div>
 
                 {/* Buffer Size */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Scrollback Buffer Size
+                    スクロールバックのバッファサイズ
                   </label>
                   <select
                     value={bufferSize}
@@ -468,15 +476,15 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Number of lines to keep in terminal history. Higher values use more memory.
-                    Changes apply to new terminals.
+                    ターミナルの履歴として保持する行数です。値が大きいほどメモリを多く使用します。
+                    変更は新しいターミナルに適用されます。
                   </p>
                 </div>
 
                 {/* Max Terminals */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Max Terminals Per Project
+                    プロジェクトあたりの最大ターミナル数
                   </label>
                   <select
                     value={maxTerminals}
@@ -490,14 +498,14 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Maximum number of terminal tabs allowed per project.
+                    1つのプロジェクトで開けるターミナルタブの最大数です。
                   </p>
                 </div>
 
                 {/* Terminal Renderer */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Terminal Renderer
+                    ターミナルレンダラー
                   </label>
                   <select
                     value={terminalRenderer}
@@ -511,15 +519,15 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    GPU-accelerated rendering for terminal output. WebGL provides best performance.
-                    Changes apply to new terminals.
+                    ターミナル出力のGPUアクセラレーション描画です。WebGLが最も高いパフォーマンスを発揮します。
+                    変更は新しいターミナルに適用されます。
                   </p>
                 </div>
 
                 {/* Preview */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Preview
+                    プレビュー
                   </label>
                   <div
                     className="bg-terminal-bg border border-border rounded-md p-4 text-terminal-fg"
@@ -543,15 +551,15 @@ export default function AppPreferences(): React.JSX.Element {
           <SettingsSection id="shell">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Default Shell</h2>
+                <h2 className="text-lg font-medium text-foreground">既定のシェル</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Set the default shell for new terminals.
+                  新しいターミナルで使う既定のシェルを設定します。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Shell
+                    シェル
                   </label>
                   <select
                     value={(() => {
@@ -572,7 +580,7 @@ export default function AppPreferences(): React.JSX.Element {
                     onChange={(e) => handleDefaultShellChange(e.target.value)}
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-shadow"
                   >
-                    <option value="">System Default</option>
+                    <option value="">システムの既定値</option>
                     {availableShells?.available?.map((shell) => (
                       <option key={shell.path} value={shell.path}>
                         {shell.displayName}
@@ -580,7 +588,7 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    This can be overridden per-project in project settings.
+                    プロジェクト設定で個別に上書きできます。
                   </p>
                 </div>
               </div>
@@ -591,15 +599,15 @@ export default function AppPreferences(): React.JSX.Element {
           <SettingsSection id="behavior">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Terminal Behavior</h2>
+                <h2 className="text-lg font-medium text-foreground">ターミナルの動作</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Configure how inactive terminals are managed.
+                  非アクティブなターミナルの管理方法を設定します。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Open Terminal Links In
+                    ターミナルのリンクを開く方法
                   </label>
                   <select
                     value={terminalUrlOpenMode}
@@ -613,21 +621,21 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Choose whether Ctrl/Cmd+Click URLs from terminal output open in your system
-                    browser or a new Termul browser tab.
+                    ターミナル出力内のURLをCtrl/Cmd+クリックした際に、システムのブラウザで開くか
+                    Termulの新しいブラウザタブで開くかを選択します。
                   </p>
                 </div>
 
                 {/* Orphan Detection Toggle */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Orphan Detection
+                    オーファン検出
                   </label>
                   <div className="flex items-center justify-between bg-secondary/30 border border-border rounded-md px-4 py-3">
                     <div className="flex-1">
-                      <div className="text-sm text-foreground">Enable orphan detection</div>
+                      <div className="text-sm text-foreground">オーファン検出を有効にする</div>
                       <div className="text-xs text-muted-foreground mt-0.5">
-                        Automatically clean up terminals that have been inactive
+                        非アクティブなターミナルを自動的に片付けます
                       </div>
                     </div>
                     <button
@@ -650,7 +658,7 @@ export default function AppPreferences(): React.JSX.Element {
                 {/* Timeout Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Timeout Before Cleanup
+                    片付けまでのタイムアウト
                   </label>
                   <select
                     value={orphanDetectionTimeout ?? 600000}
@@ -669,7 +677,7 @@ export default function AppPreferences(): React.JSX.Element {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Terminals inactive for this duration will be cleaned up (only if not displayed).
+                    この時間だけ非アクティブなターミナルは片付けられます（表示されていない場合のみ）。
                   </p>
                 </div>
               </div>
@@ -680,15 +688,15 @@ export default function AppPreferences(): React.JSX.Element {
           <SettingsSection id="project-defaults">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">New Project Defaults</h2>
+                <h2 className="text-lg font-medium text-foreground">新規プロジェクトの既定値</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Set default options for new projects.
+                  新規プロジェクトの既定オプションを設定します。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Default Color
+                    既定の色
                   </label>
                   <div className="flex gap-2 flex-wrap">
                     {availableColors.map((color) => {
@@ -710,7 +718,7 @@ export default function AppPreferences(): React.JSX.Element {
                     })}
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    New projects will use this color by default.
+                    新規プロジェクトはこの色を既定で使用します。
                   </p>
                 </div>
               </div>
@@ -723,11 +731,11 @@ export default function AppPreferences(): React.JSX.Element {
               <div className="w-1/3 pt-1">
                 <div className="flex items-center gap-2">
                   <Bot size={18} className="text-primary" />
-                  <h2 className="text-lg font-medium text-foreground">AI Agents</h2>
+                  <h2 className="text-lg font-medium text-foreground">AIエージェント</h2>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Enable ACP coding agents from the registry. Enabling one warms it in the
-                  background so chats start instantly.
+                  レジストリからACPコーディングエージェントを有効化します。有効にするとバックグラウンドで
+                  ウォームアップされ、チャットがすぐに開始できます。
                 </p>
               </div>
               <div className="w-2/3">
@@ -742,17 +750,17 @@ export default function AppPreferences(): React.JSX.Element {
               <div className="w-1/3 pt-1">
                 <div className="flex items-center gap-2">
                   <Keyboard size={18} className="text-primary" />
-                  <h2 className="text-lg font-medium text-foreground">Keyboard Shortcuts</h2>
+                  <h2 className="text-lg font-medium text-foreground">キーボードショートカット</h2>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Customize keyboard shortcuts to match your workflow.
+                  作業スタイルに合わせてキーボードショートカットをカスタマイズします。
                 </p>
                 <button
                   onClick={() => setIsResetShortcutsDialogOpen(true)}
                   className="mt-4 flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <RotateCcw size={12} />
-                  Reset all shortcuts
+                  すべてのショートカットをリセット
                 </button>
               </div>
               <div className="w-2/3 space-y-4">
@@ -775,17 +783,17 @@ export default function AppPreferences(): React.JSX.Element {
               <div className="w-1/3 pt-1">
                 <div className="flex items-center gap-2">
                   <Download size={18} className="text-primary" />
-                  <h2 className="text-lg font-medium text-foreground">Updates</h2>
+                  <h2 className="text-lg font-medium text-foreground">アップデート</h2>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Manage application updates and version information.
+                  アプリケーションのアップデートとバージョン情報を管理します。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
                 {/* Current Version */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Current Version
+                    現在のバージョン
                   </label>
                   <div className="bg-secondary/30 border border-border rounded-md px-4 py-3">
                     <span className="text-sm font-mono text-foreground">
@@ -798,7 +806,7 @@ export default function AppPreferences(): React.JSX.Element {
                 {updateAvailable && version && (
                   <div>
                     <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                      Update Available
+                      利用可能なアップデート
                     </label>
                     <div
                       className={cn(
@@ -817,14 +825,14 @@ export default function AppPreferences(): React.JSX.Element {
                       />
                       <div className="flex-1">
                         <div className="text-sm font-medium text-foreground">
-                          Version {version} is available!
+                          バージョン {version} が利用可能です！
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5">
                           {isAurUpdater
-                            ? 'Update through AUR with: yay -S termul-manager'
+                            ? 'AUR経由でアップデートしてください: yay -S termul-manager'
                             : isManualUpdateMode
-                              ? 'Automatic update is unavailable. Please download and install the latest version manually.'
-                              : 'A new version is ready to download.'}
+                              ? '自動アップデートは利用できません。最新版を手動でダウンロードしてインストールしてください。'
+                              : '新しいバージョンをダウンロードできます。'}
                         </div>
                       </div>
                     </div>
@@ -835,7 +843,7 @@ export default function AppPreferences(): React.JSX.Element {
                 {updateError && (
                   <div>
                     <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                      Update Error
+                      アップデートエラー
                     </label>
                     <div className="bg-red-500/10 border border-red-500/20 rounded-md px-4 py-3 flex items-center gap-3">
                       <AlertCircle size={18} className="text-red-500 flex-shrink-0" />
@@ -849,7 +857,7 @@ export default function AppPreferences(): React.JSX.Element {
                 {/* Check for Updates Button */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Check for Updates
+                    アップデートを確認
                   </label>
                   <div className="flex items-center gap-2">
                     <button
@@ -858,7 +866,7 @@ export default function AppPreferences(): React.JSX.Element {
                       className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed border border-primary rounded-lg text-sm text-primary-foreground transition-colors"
                     >
                       <Download size={16} />
-                      {isChecking ? 'Checking for updates...' : 'Check for Updates'}
+                      {isChecking ? '確認中…' : 'アップデートを確認'}
                     </button>
                     {updateAvailable && isManualUpdateMode && (
                       <button
@@ -866,13 +874,13 @@ export default function AppPreferences(): React.JSX.Element {
                         className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-500/90 border border-amber-500 rounded-lg text-sm text-white transition-colors"
                       >
                         <ExternalLink size={16} />
-                        Open Download Page
+                        ダウンロードページを開く
                       </button>
                     )}
                   </div>
                   {lastChecked && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Last checked: {formatLastChecked(lastChecked)}
+                      最終確認: {formatLastChecked(lastChecked)}
                     </p>
                   )}
                 </div>
@@ -880,13 +888,15 @@ export default function AppPreferences(): React.JSX.Element {
                 {/* Auto-update Toggle */}
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Auto-update
+                    自動アップデート
                   </label>
                   <div className="flex items-center justify-between bg-secondary/30 border border-border rounded-md px-4 py-3">
                     <div className="flex-1">
-                      <div className="text-sm text-foreground">Automatically check for updates</div>
+                      <div className="text-sm text-foreground">
+                        アップデートを自動的に確認します
+                      </div>
                       <div className="text-xs text-muted-foreground mt-0.5">
-                        When enabled, the app will periodically check for new versions
+                        有効にすると、アプリが定期的に新しいバージョンを確認します
                       </div>
                     </div>
                     <button
@@ -910,15 +920,15 @@ export default function AppPreferences(): React.JSX.Element {
                 {skippedVersion && (
                   <div>
                     <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                      Skipped Version
+                      スキップ中のバージョン
                     </label>
                     <div className="bg-secondary/30 border border-border rounded-md px-4 py-3">
                       <div className="text-sm text-foreground">
-                        You are currently skipping version{' '}
+                        現在スキップ中のバージョン:{' '}
                         <span className="font-mono">{skippedVersion}</span>
                       </div>
                       <div className="text-xs text-muted-foreground mt-0.5">
-                        This version will not be offered again until a newer version is available.
+                        このバージョンは、より新しいバージョンが利用可能になるまで再度案内されません。
                       </div>
                     </div>
                   </div>
@@ -932,10 +942,10 @@ export default function AppPreferences(): React.JSX.Element {
               <div className="w-1/3 pt-1">
                 <div className="flex items-center gap-2">
                   <FileText size={18} className="text-primary" />
-                  <h2 className="text-lg font-medium text-foreground">Diagnostics & Logs</h2>
+                  <h2 className="text-lg font-medium text-foreground">診断とログ</h2>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Export or copy application logs to troubleshoot issues.
+                  問題解決のためにアプリケーションログを書き出し・コピーします。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
@@ -947,9 +957,9 @@ export default function AppPreferences(): React.JSX.Element {
                   >
                     <FolderOpen size={16} className="text-muted-foreground" />
                     <div className="text-left">
-                      <div>Reveal Log Folder</div>
+                      <div>ログフォルダを開く</div>
                       <div className="text-3xs text-muted-foreground font-normal">
-                        Open in file explorer
+                        ファイルエクスプローラーで開きます
                       </div>
                     </div>
                   </button>
@@ -961,9 +971,9 @@ export default function AppPreferences(): React.JSX.Element {
                   >
                     <FileText size={16} className="text-muted-foreground" />
                     <div className="text-left">
-                      <div>Export Log File...</div>
+                      <div>ログファイルを書き出す…</div>
                       <div className="text-3xs text-muted-foreground font-normal">
-                        Save to a custom location
+                        任意の場所に保存します
                       </div>
                     </div>
                   </button>
@@ -975,9 +985,9 @@ export default function AppPreferences(): React.JSX.Element {
                   >
                     <Clipboard size={16} className="text-muted-foreground" />
                     <div className="text-left">
-                      <div>Copy Log Contents</div>
+                      <div>ログ内容をコピー</div>
                       <div className="text-3xs text-muted-foreground font-normal">
-                        Copy logs to clipboard
+                        ログをクリップボードにコピーします
                       </div>
                     </div>
                   </button>
@@ -989,9 +999,9 @@ export default function AppPreferences(): React.JSX.Element {
                   >
                     <Download size={16} className="text-muted-foreground" />
                     <div className="text-left">
-                      <div>Export to Default Directory</div>
+                      <div>既定のフォルダに書き出す</div>
                       <div className="text-3xs text-muted-foreground font-normal">
-                        Save directly to Downloads
+                        ダウンロードフォルダに直接保存します
                       </div>
                     </div>
                   </button>
@@ -1004,9 +1014,9 @@ export default function AppPreferences(): React.JSX.Element {
           <SettingsSection id="reset">
             <div className="flex items-start gap-6 pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Reset Settings</h2>
+                <h2 className="text-lg font-medium text-foreground">設定のリセット</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Restore all settings to their default values.
+                  すべての設定を既定値に戻します。
                 </p>
               </div>
               <div className="w-2/3">
@@ -1015,7 +1025,7 @@ export default function AppPreferences(): React.JSX.Element {
                   className="flex items-center gap-2 px-4 py-2 bg-card hover:bg-secondary border border-border rounded-lg text-sm text-foreground transition-colors"
                 >
                   <RotateCcw size={16} />
-                  Reset to Defaults
+                  既定値に戻す
                 </button>
               </div>
             </div>
@@ -1026,10 +1036,10 @@ export default function AppPreferences(): React.JSX.Element {
       {/* Reset Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isResetDialogOpen}
-        title="Reset Settings"
-        message="Are you sure you want to reset all application settings to their default values? This cannot be undone."
-        confirmLabel="Reset"
-        cancelLabel="Cancel"
+        title="設定のリセット"
+        message="すべてのアプリケーション設定を既定値に戻しますか？この操作は取り消せません。"
+        confirmLabel="リセット"
+        cancelLabel="キャンセル"
         variant="danger"
         onConfirm={handleResetConfirm}
         onCancel={() => setIsResetDialogOpen(false)}
@@ -1038,10 +1048,10 @@ export default function AppPreferences(): React.JSX.Element {
       {/* Reset Shortcuts Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isResetShortcutsDialogOpen}
-        title="Reset Keyboard Shortcuts"
-        message="Are you sure you want to reset all keyboard shortcuts to their default values?"
-        confirmLabel="Reset"
-        cancelLabel="Cancel"
+        title="キーボードショートカットのリセット"
+        message="すべてのキーボードショートカットを既定値に戻しますか？"
+        confirmLabel="リセット"
+        cancelLabel="キャンセル"
         variant="danger"
         onConfirm={handleResetShortcutsConfirm}
         onCancel={() => setIsResetShortcutsDialogOpen(false)}

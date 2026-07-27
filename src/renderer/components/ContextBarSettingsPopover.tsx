@@ -33,31 +33,31 @@ export function ContextBarSettingsPopover(): React.JSX.Element {
       <PopoverTrigger asChild>
         <button
           className="flex items-center hover:bg-white/10 px-2 py-0.5 rounded cursor-pointer transition-colors"
-          aria-label="Context bar settings"
+          aria-label="コンテキストバー設定"
         >
           <Settings size={14} />
         </button>
       </PopoverTrigger>
       <PopoverContent side="top" align="end" className="w-56">
         <div className="space-y-1">
-          <h4 className="font-medium text-sm mb-2">Show in Context Bar</h4>
+          <h4 className="font-medium text-sm mb-2">コンテキストバーに表示</h4>
           <SettingToggle
-            label="Git Branch"
+            label="Gitブランチ"
             checked={settings.showGitBranch}
             onCheckedChange={() => handleToggle('showGitBranch')}
           />
           <SettingToggle
-            label="Git Status"
+            label="Gitステータス"
             checked={settings.showGitStatus}
             onCheckedChange={() => handleToggle('showGitStatus')}
           />
           <SettingToggle
-            label="Working Directory"
+            label="作業ディレクトリ"
             checked={settings.showWorkingDirectory}
             onCheckedChange={() => handleToggle('showWorkingDirectory')}
           />
           <SettingToggle
-            label="Exit Code"
+            label="終了コード"
             checked={settings.showExitCode}
             onCheckedChange={() => handleToggle('showExitCode')}
           />

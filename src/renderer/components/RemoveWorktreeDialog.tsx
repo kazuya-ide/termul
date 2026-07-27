@@ -98,10 +98,10 @@ export function RemoveWorktreeDialog({
   // backend git command to fail. Surfaces an error toast and aborts.
   const ensureProjectPath = useCallback((): boolean => {
     if (!projectPath) {
-      const message = 'Project path is not set'
+      const message = 'プロジェクトのパスが設定されていません'
       setError(message)
       toast({
-        title: 'Failed to remove worktree',
+        title: '作業ツリーの削除に失敗しました',
         description: message,
         variant: 'destructive'
       })
@@ -121,12 +121,12 @@ export function RemoveWorktreeDialog({
       if (result.success) {
         removeWorktree(projectId, worktree.id)
         toast({
-          title: 'Worktree archived',
-          description: `"${worktree.name}" has been archived and can be recovered.`
+          title: '作業ツリーをアーカイブしました',
+          description: `"${worktree.name}" をアーカイブしました。後で復元できます。`
         })
         onClose()
       } else {
-        setError(result.error || 'Failed to archive worktree')
+        setError(result.error || '作業ツリーのアーカイブに失敗しました')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred')
@@ -159,15 +159,15 @@ export function RemoveWorktreeDialog({
       if (result.success) {
         removeWorktree(projectId, worktree.id)
         toast({
-          title: 'Worktree removed',
-          description: `"${worktree.name}" has been permanently removed.`
+          title: '作業ツリーを削除しました',
+          description: `"${worktree.name}" を完全に削除しました。`
         })
         onClose()
       } else {
-        setError(result.error ?? 'Failed to remove worktree')
+        setError(result.error ?? '作業ツリーの削除に失敗しました')
         toast({
-          title: 'Failed to remove worktree',
-          description: result.error ?? 'Unknown error',
+          title: '作業ツリーの削除に失敗しました',
+          description: result.error ?? '不明なエラー',
           variant: 'destructive'
         })
       }
@@ -212,7 +212,7 @@ export function RemoveWorktreeDialog({
             <div className="px-4 py-3 border-b border-border bg-secondary/50">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <AlertTriangle size={14} className="text-amber-500" />
-                Remove Worktree
+                作業ツリーを削除
               </h3>
             </div>
 
@@ -228,7 +228,7 @@ export function RemoveWorktreeDialog({
                 <div className="text-muted-foreground">{worktree.path}</div>
                 {worktree.createdAt && (
                   <div className="text-muted-foreground">
-                    Created: {new Date(worktree.createdAt).toLocaleDateString()}
+                    作成日: {new Date(worktree.createdAt).toLocaleDateString()}
                   </div>
                 )}
               </div>
@@ -237,20 +237,20 @@ export function RemoveWorktreeDialog({
               {dirtyLoading && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Loader2 size={12} className="animate-spin" />
-                  Checking for uncommitted changes...
+                  未コミットの変更を確認中...
                 </div>
               )}
               {hasUncommittedChanges && !dirtyLoading && (
                 <div className="flex items-start gap-2 text-xs text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
                   <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
                   <div>
-                    Uncommitted changes detected:
+                    未コミットの変更が見つかりました:
                     <span className="ml-1">
-                      {dirtyStatus?.modified ?? 0} modified, {dirtyStatus?.staged ?? 0} staged,{' '}
-                      {dirtyStatus?.untracked ?? 0} untracked
+                      変更 {dirtyStatus?.modified ?? 0}件、ステージ済み {dirtyStatus?.staged ?? 0}
+                      件、未追跡 {dirtyStatus?.untracked ?? 0}件
                     </span>
                     <div className="mt-1 text-muted-foreground">
-                      These changes will be lost when the worktree is removed.
+                      これらの変更は作業ツリーを削除すると失われます。
                     </div>
                   </div>
                 </div>
@@ -260,8 +260,8 @@ export function RemoveWorktreeDialog({
               {isMainBranch && (
                 <div className="flex items-start gap-2 text-xs text-red-500 bg-red-500/10 border border-red-500/20 rounded px-3 py-2">
                   <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
-                  This worktree is on the <strong>{worktree.branch}</strong> branch. Are you sure
-                  you want to remove it?
+                  この作業ツリーは <strong>{worktree.branch}</strong> ブランチにあります。
+                  本当に削除してもよろしいですか？
                 </div>
               )}
 
@@ -269,14 +269,15 @@ export function RemoveWorktreeDialog({
               {!isTermulManaged && (
                 <div className="flex items-start gap-2 text-xs text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
                   <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
-                  This worktree was not created by Termul. Removing it may affect other tools.
+                  この作業ツリーは Termul
+                  によって作成されたものではありません。削除すると他のツールに影響する可能性があります。
                 </div>
               )}
 
               {/* Permanent deletion notice */}
               <div className="flex items-start gap-2 text-xs text-muted-foreground bg-secondary/30 border border-border rounded px-3 py-2">
                 <Trash2 size={12} className="flex-shrink-0 mt-0.5" />
-                This will permanently remove the worktree directory. This action cannot be undone.
+                作業ツリーのディレクトリを完全に削除します。この操作は元に戻せません。
               </div>
 
               {/* Error */}
@@ -295,7 +296,7 @@ export function RemoveWorktreeDialog({
                 disabled={isRemoving}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={() => void handleRemove()}
@@ -303,7 +304,7 @@ export function RemoveWorktreeDialog({
                 className="px-3 py-1.5 text-xs font-medium rounded bg-red-500 text-white hover:bg-red-600 shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
                 {isRemoving && <Loader2 size={12} className="animate-spin" />}
-                {isRemoving ? 'Removing...' : 'Remove Worktree'}
+                {isRemoving ? '削除中...' : '作業ツリーを削除'}
               </button>
             </div>
           </motion.div>

@@ -79,10 +79,12 @@ export function SSHFileExplorer({
           })
           setStoreContent(result.data)
         } else {
-          toast.error(`Failed to open: ${result.error}`)
+          toast.error(`開くのに失敗しました: ${result.error}`)
         }
       } catch (error) {
-        toast.error(`Failed to open: ${error instanceof Error ? error.message : String(error)}`)
+        toast.error(
+          `開くのに失敗しました: ${error instanceof Error ? error.message : String(error)}`
+        )
       }
     },
     [connectionId, setStoreFile, setStoreContent]
@@ -156,7 +158,7 @@ export function SSHFileExplorer({
                   handleOpenFile(entry)
                 }}
                 className="p-0.5 rounded hover:bg-accent"
-                title="Edit"
+                title="編集"
               >
                 <FileEdit className="h-3 w-3 text-muted-foreground" />
               </button>
@@ -167,7 +169,7 @@ export function SSHFileExplorer({
                 handleRename(entry)
               }}
               className="p-0.5 rounded hover:bg-accent"
-              title="Rename"
+              title="名前を変更"
             >
               <Pencil className="h-3 w-3 text-muted-foreground" />
             </button>
@@ -177,7 +179,7 @@ export function SSHFileExplorer({
                 handleDelete(entry)
               }}
               className="p-0.5 rounded hover:bg-destructive/20"
-              title="Delete"
+              title="削除"
             >
               <Trash2 className="h-3 w-3 text-muted-foreground" />
             </button>
@@ -201,21 +203,21 @@ export function SSHFileExplorer({
               <button
                 onClick={onMkdir}
                 className="p-1 rounded hover:bg-accent text-muted-foreground"
-                title="New folder"
+                title="新規フォルダ"
               >
                 <FolderPlus className="h-3 w-3" />
               </button>
               <button
                 onClick={onCreateFile}
                 className="p-1 rounded hover:bg-accent text-muted-foreground"
-                title="New file"
+                title="新規ファイル"
               >
                 <FilePlus className="h-3 w-3" />
               </button>
               <button
                 onClick={() => onLoadDir(currentPath)}
                 className="p-1 rounded hover:bg-accent text-muted-foreground"
-                title="Refresh"
+                title="更新"
               >
                 <RefreshCw className="h-3 w-3" />
               </button>
@@ -224,7 +226,7 @@ export function SSHFileExplorer({
             <button
               onClick={onConnect}
               className="p-1 rounded hover:bg-accent text-green-500"
-              title="Connect"
+              title="接続"
             >
               <Wifi className="h-3.5 w-3.5" />
             </button>
@@ -244,23 +246,23 @@ export function SSHFileExplorer({
         {!isConnected ? (
           <div className="flex flex-col items-center justify-center h-full px-4 text-center gap-2">
             <WifiOff className="h-6 w-6 text-muted-foreground/30" />
-            <p className="text-xs text-muted-foreground">Not connected</p>
+            <p className="text-xs text-muted-foreground">未接続</p>
             <button
               onClick={onConnect}
               className="px-3 py-1 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Connect
+              接続
             </button>
           </div>
         ) : !sftpReady ? (
           <div className="flex flex-col items-center justify-center h-full px-4 text-center gap-2">
             <FolderTree className="h-6 w-6 text-muted-foreground/30" />
-            <p className="text-xs text-muted-foreground">SFTP not started</p>
+            <p className="text-xs text-muted-foreground">SFTPが開始されていません</p>
             <button
               onClick={onBrowseFiles}
               className="px-3 py-1 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Browse Files
+              ファイルを閲覧
             </button>
           </div>
         ) : isLoadingRoot ? (
@@ -269,7 +271,7 @@ export function SSHFileExplorer({
           </div>
         ) : entries.length === 0 ? (
           <div className="p-4 text-center">
-            <p className="text-xs text-muted-foreground">Empty directory</p>
+            <p className="text-xs text-muted-foreground">空のディレクトリ</p>
           </div>
         ) : (
           <div className="py-1">{entries.map((e) => renderEntry(e))}</div>

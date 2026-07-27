@@ -189,15 +189,15 @@ export function SettingsLayout({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search settings..."
-              aria-label="Search settings"
+              placeholder="設定を検索…"
+              aria-label="設定を検索"
               className="w-full bg-secondary/50 border border-border rounded-md pl-8 pr-8 py-1.5 text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-shadow"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery('')}
-                aria-label="Clear search"
+                aria-label="検索をクリア"
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5 rounded"
               >
                 <X size={14} />
@@ -206,11 +206,11 @@ export function SettingsLayout({
           </div>
         </div>
 
-        <nav aria-label="Settings categories" className="flex-1 overflow-y-auto p-2 space-y-0.5">
+        <nav aria-label="設定カテゴリ" className="flex-1 overflow-y-auto p-2 space-y-0.5">
           {isSearching ? (
             results.length === 0 ? (
               <p className="px-3 py-4 text-xs text-muted-foreground">
-                No settings match “{query.trim()}”.
+                “{query.trim()}” に一致する設定はありません。
               </p>
             ) : (
               results.map((result) => (

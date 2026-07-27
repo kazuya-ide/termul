@@ -120,7 +120,7 @@ export function useRemoteProjects(): void {
         const projectStore = useProjectStore.getState()
         const project = projectStore.projects.find((p) => p.id === projectId)
         if (!project) {
-          toast.error('Remote: requested project no longer exists')
+          toast.error('リモート: 要求されたプロジェクトは既に存在しません')
           return
         }
 
@@ -134,7 +134,7 @@ export function useRemoteProjects(): void {
 
         const paneId = useWorkspaceStore.getState().activePaneId
         if (!paneId) {
-          toast.error('Remote: no active pane to add a terminal')
+          toast.error('リモート: ターミナルを追加するアクティブなペインがありません')
           return
         }
 
@@ -148,7 +148,7 @@ export function useRemoteProjects(): void {
           maxTerminalsPerProject: maxTerminals
         })
         if (!result.success) {
-          toast.error(result.error || 'Remote: failed to add terminal')
+          toast.error(result.error || 'リモート: ターミナルの追加に失敗しました')
         } else {
           // Republish so the new terminal appears in the web client promptly.
           publish()

@@ -292,8 +292,8 @@ export function MermaidBlock({ source }: MermaidBlockProps): React.JSX.Element {
           type="button"
           className="inline-flex h-7 w-7 items-center justify-center rounded text-xs font-medium hover:bg-accent"
           onClick={handleZoomIn}
-          title="Zoom In"
-          aria-label="Zoom in"
+          title="拡大"
+          aria-label="拡大"
         >
           <ZoomIn className="h-3.5 w-3.5" />
         </button>
@@ -301,8 +301,8 @@ export function MermaidBlock({ source }: MermaidBlockProps): React.JSX.Element {
           type="button"
           className="inline-flex h-7 w-7 items-center justify-center rounded text-xs font-medium hover:bg-accent"
           onClick={handleZoomOut}
-          title="Zoom Out"
-          aria-label="Zoom out"
+          title="縮小"
+          aria-label="縮小"
         >
           <ZoomOut className="h-3.5 w-3.5" />
         </button>
@@ -310,8 +310,8 @@ export function MermaidBlock({ source }: MermaidBlockProps): React.JSX.Element {
           type="button"
           className="inline-flex h-7 w-7 items-center justify-center rounded text-xs font-medium hover:bg-accent"
           onClick={handleReset}
-          title="Reset View"
-          aria-label="Reset view"
+          title="表示をリセット"
+          aria-label="表示をリセット"
         >
           <RotateCcw className="h-3.5 w-3.5" />
         </button>

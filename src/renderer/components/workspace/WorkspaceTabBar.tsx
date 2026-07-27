@@ -199,7 +199,7 @@ function TerminalTabInline({
         <ContextMenu
           items={[
             {
-              label: 'Rename',
+              label: '名前を変更',
               icon: <Edit2 size={12} />,
               onClick: () => {
                 setEditName(terminal.name)
@@ -207,7 +207,7 @@ function TerminalTabInline({
               }
             },
             {
-              label: 'Close',
+              label: '閉じる',
               icon: <XIcon size={12} />,
               onClick: () => {
                 if (!isClosing) {
@@ -216,7 +216,7 @@ function TerminalTabInline({
               }
             },
             {
-              label: 'Kill Process',
+              label: 'プロセスを終了',
               icon: <Skull size={12} />,
               onClick: () => {
                 if (!isClosing) {
@@ -344,17 +344,17 @@ function BrowserTabInline({
   } | null>(null)
   const browserTab = useBrowserSessionStore((state) => state.getTab(tab.browserTabId))
   const label = (() => {
-    if (!browserTab) return 'Browser'
+    if (!browserTab) return 'ブラウザ'
     if (browserTab.title.trim()) return browserTab.title.trim()
     if (browserTab.url) {
       try {
         const parsed = new URL(browserTab.url)
         return parsed.host || parsed.hostname || browserTab.url
       } catch {
-        return browserTab.url.replace(/^https?:\/\//, '').split('/')[0] || 'Browser'
+        return browserTab.url.replace(/^https?:\/\//, '').split('/')[0] || 'ブラウザ'
       }
     }
-    return 'Browser'
+    return 'ブラウザ'
   })()
 
   return (
@@ -412,7 +412,7 @@ function BrowserTabInline({
         <ContextMenu
           items={[
             {
-              label: 'Close',
+              label: '閉じる',
               icon: <XIcon size={12} />,
               onClick: onClose
             }
@@ -484,7 +484,7 @@ function GitTabInline({
         )}
       >
         <GitBranch size={12} className={isActive ? 'text-primary' : ''} />
-        <span className="truncate text-2xs font-medium flex-1">Git Changes</span>
+        <span className="truncate text-2xs font-medium flex-1">Gitの変更</span>
         {totalChanges > 0 && (
           <span
             className={cn(
@@ -512,7 +512,7 @@ function GitTabInline({
         <ContextMenu
           items={[
             {
-              label: 'Close',
+              label: '閉じる',
               icon: <XIcon size={12} />,
               onClick: onClose
             }
@@ -580,7 +580,7 @@ function GitHistoryTabInline({
         )}
       >
         <History size={12} className={isActive ? 'text-primary' : ''} />
-        <span className="truncate text-2xs font-medium flex-1">Git History</span>
+        <span className="truncate text-2xs font-medium flex-1">Git履歴</span>
         <button
           onClick={(e) => {
             e.stopPropagation()
@@ -596,7 +596,7 @@ function GitHistoryTabInline({
         <ContextMenu
           items={[
             {
-              label: 'Close',
+              label: '閉じる',
               icon: <XIcon size={12} />,
               onClick: onClose
             }
@@ -641,7 +641,7 @@ function AgentChatTabInline({
   } | null>(null)
 
   const session = useAcpStore((s) => s.sessions[tab.sessionId])
-  const label = session?.title ?? 'Agent Chat'
+  const label = session?.title ?? 'エージェントチャット'
   const isClosed = session?.status === 'closed'
 
   return (
@@ -693,7 +693,7 @@ function AgentChatTabInline({
         <ContextMenu
           items={[
             {
-              label: 'Close',
+              label: '閉じる',
               icon: <XIcon size={12} />,
               onClick: onClose
             }
@@ -1139,8 +1139,8 @@ export function WorkspaceTabBar({
           <button
             onClick={() => togglePaneFullscreen(paneId)}
             className="h-7 w-7 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-            title={isFullscreenPane ? 'Restore pane layout' : 'Focus pane'}
-            aria-label={isFullscreenPane ? 'Restore pane layout' : 'Focus pane'}
+            title={isFullscreenPane ? 'ペイン配置を復元' : 'ペインにフォーカス'}
+            aria-label={isFullscreenPane ? 'ペイン配置を復元' : 'ペインにフォーカス'}
           >
             {isFullscreenPane ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
           </button>
@@ -1150,7 +1150,7 @@ export function WorkspaceTabBar({
             <button
               onClick={() => setIsTerminalMenuOpen((open) => !open)}
               className="h-7 w-7 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-              title="Open terminal menu"
+              title="ターミナルメニューを開く"
             >
               <TerminalIcon size={12} />
             </button>
@@ -1158,7 +1158,7 @@ export function WorkspaceTabBar({
             {isTerminalMenuOpen && (
               <div className="absolute top-full right-0 mt-1 w-44 bg-popover border border-border rounded-md shadow-lg z-50 overflow-hidden">
                 <div className="px-2.5 py-1 text-2xs font-medium text-muted-foreground bg-secondary/30">
-                  Terminal
+                  ターミナル
                 </div>
                 {loading ? (
                   <div className="py-1 px-2.5 space-y-1.5">
@@ -1179,14 +1179,16 @@ export function WorkspaceTabBar({
                         <TerminalIcon size={11} />
                         <span className="truncate">{shell.displayName}</span>
                         {shell.name === defaultShell && (
-                          <span className="ml-auto text-3xs text-muted-foreground">(default)</span>
+                          <span className="ml-auto text-3xs text-muted-foreground">
+                            (デフォルト)
+                          </span>
                         )}
                       </button>
                     ))}
                   </div>
                 ) : (
                   <div className="px-2.5 py-1.5 text-2xs text-muted-foreground">
-                    No shells detected
+                    シェルが見つかりません
                   </div>
                 )}
               </div>
@@ -1198,7 +1200,7 @@ export function WorkspaceTabBar({
           <button
             onClick={onAddBrowserTab}
             className="h-7 w-7 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-            title="New Browser Tab"
+            title="新規ブラウザタブ"
           >
             <Globe size={12} />
           </button>

@@ -32,73 +32,73 @@ import { useActiveProject, useActiveProjectId, useProjectActions } from '@/store
 import type { EnvVariable, ProjectColor } from '@/types/project'
 
 const PROJECT_SETTINGS_CATEGORIES: SettingsCategory[] = [
-  { id: 'general', label: 'General', icon: <Settings size={16} /> },
-  { id: 'env-vars', label: 'Environment Variables', icon: <KeySquare size={16} /> },
-  { id: 'shell', label: 'Shell Settings', icon: <TerminalSquare size={16} /> },
-  { id: 'symlinks', label: 'Worktree Symlinks', icon: <Link2 size={16} /> },
-  { id: 'emergency', label: 'Emergency Mode', icon: <ShieldAlert size={16} /> }
+  { id: 'general', label: '全般', icon: <Settings size={16} /> },
+  { id: 'env-vars', label: '環境変数', icon: <KeySquare size={16} /> },
+  { id: 'shell', label: 'シェル設定', icon: <TerminalSquare size={16} /> },
+  { id: 'symlinks', label: 'ワークツリーのシンボリックリンク', icon: <Link2 size={16} /> },
+  { id: 'emergency', label: '緊急モード', icon: <ShieldAlert size={16} /> }
 ]
 
 const PROJECT_SETTINGS_SEARCH_INDEX: SettingsSearchEntry[] = [
   {
     categoryId: 'general',
-    label: 'Project Name',
-    description: 'Basic project identification.',
-    keywords: ['rename', 'title']
+    label: 'プロジェクト名',
+    description: 'プロジェクトの基本情報です。',
+    keywords: ['rename', 'title', '名前', '名称変更']
   },
   {
     categoryId: 'general',
-    label: 'Root Directory',
-    description: 'Project location on disk.',
-    keywords: ['path', 'folder', 'location']
+    label: 'ルートディレクトリ',
+    description: 'ディスク上のプロジェクトの場所です。',
+    keywords: ['path', 'folder', 'location', 'パス', 'フォルダ', '場所']
   },
   {
     categoryId: 'general',
-    label: 'Color & Appearance',
-    description: 'Project color and appearance.',
-    keywords: ['theme', 'color']
+    label: '色と見た目',
+    description: 'プロジェクトの色と見た目です。',
+    keywords: ['theme', 'color', '色', 'テーマ', '見た目']
   },
   {
     categoryId: 'env-vars',
-    label: 'Environment Variables',
-    description: 'Secrets and config injected into your shell session.',
-    keywords: ['env', 'secrets', 'config', 'dotenv']
+    label: '環境変数',
+    description: 'シェルセッションに渡すシークレットと設定です。',
+    keywords: ['env', 'secrets', 'config', 'dotenv', '環境変数', '秘密情報', '設定']
   },
   {
     categoryId: 'shell',
-    label: 'Default Shell',
-    description: 'Customize the terminal experience for this workspace.',
-    keywords: ['bash', 'zsh', 'powershell']
+    label: '既定のシェル',
+    description: 'このワークスペースのターミナル環境をカスタマイズします。',
+    keywords: ['bash', 'zsh', 'powershell', 'シェル', 'ワークスペース']
   },
   {
     categoryId: 'shell',
-    label: 'Startup Command',
-    description: 'Command to execute when a new terminal session starts.',
-    keywords: ['init', 'startup', 'command']
+    label: '起動コマンド',
+    description: '新しいターミナルセッション開始時に実行するコマンドです。',
+    keywords: ['init', 'startup', 'command', '起動', 'コマンド']
   },
   {
     categoryId: 'symlinks',
-    label: 'Worktree Symlinks',
-    description: 'Directories to symlink from the project root into worktrees.',
-    keywords: ['node_modules', 'gitignore', 'shared dependencies']
+    label: 'ワークツリーのシンボリックリンク',
+    description: 'プロジェクトルートからワークツリーにシンボリックリンクするディレクトリです。',
+    keywords: ['node_modules', 'gitignore', 'shared dependencies', 'シンボリックリンク', '共有']
   },
   {
     categoryId: 'emergency',
-    label: 'Skip Confirmation Dialogs',
-    description: 'Bypass non-essential prompts during worktree operations.',
-    keywords: ['emergency', 'confirm']
+    label: '確認ダイアログをスキップ',
+    description: 'ワークツリー操作中の不要な確認をスキップします。',
+    keywords: ['emergency', 'confirm', '確認', 'スキップ']
   },
   {
     categoryId: 'emergency',
-    label: 'Skip .gitignore Selection',
-    description: 'Use default symlink settings when creating worktrees.',
-    keywords: ['emergency', 'gitignore']
+    label: '.gitignore選択をスキップ',
+    description: 'ワークツリー作成時に既定のシンボリックリンク設定を使用します。',
+    keywords: ['emergency', 'gitignore', 'スキップ']
   },
   {
     categoryId: 'emergency',
-    label: 'Default Branch Prefix',
-    description: 'Prefix for new branch naming.',
-    keywords: ['branch', 'feature', 'hotfix']
+    label: '既定のブランチ接頭辞',
+    description: '新規ブランチ名の接頭辞です。',
+    keywords: ['branch', 'feature', 'hotfix', 'ブランチ', '接頭辞']
   }
 ]
 
@@ -301,8 +301,8 @@ export default function ProjectSettings() {
     setImportWarnings(null)
 
     const fileResult = await dialogApi.selectFile({
-      filters: [{ name: 'Environment Files', extensions: ['env'] }],
-      title: 'Select .env File'
+      filters: [{ name: '環境変数ファイル', extensions: ['env'] }],
+      title: '.envファイルを選択'
     })
 
     // Check if project switched during dialog
@@ -323,14 +323,14 @@ export default function ProjectSettings() {
     }
 
     if (!readResult.success) {
-      setImportError(`Failed to read file: ${readResult.error}`)
+      setImportError(`ファイルの読み込みに失敗しました: ${readResult.error}`)
       return
     }
 
     const parseResult = parseEnvFile(readResult.data.content)
 
     if (parseResult.vars.length === 0 && parseResult.invalidLines.length === 0) {
-      setImportError('The .env file is empty.')
+      setImportError('.envファイルが空です。')
       return
     }
 
@@ -342,12 +342,12 @@ export default function ProjectSettings() {
     if (parseResult.invalidLines.length > 0) {
       const warningDetails = parseResult.invalidLines
         .slice(0, 3)
-        .map((l) => `Line ${l.line}: ${l.content}`)
+        .map((l) => `${l.line}行目: ${l.content}`)
         .join('\n')
       const moreCount =
-        parseResult.invalidLines.length > 3 ? ` (+${parseResult.invalidLines.length - 3} more)` : ''
+        parseResult.invalidLines.length > 3 ? ` （他${parseResult.invalidLines.length - 3}件）` : ''
       setImportWarnings(
-        `Imported ${parseResult.vars.length} variables.\nSkipped ${parseResult.invalidLines.length} invalid line(s):\n${warningDetails}${moreCount}`
+        `${parseResult.vars.length}件の変数を読み込みました。\n無効な行を${parseResult.invalidLines.length}件スキップしました:\n${warningDetails}${moreCount}`
       )
     }
   }
@@ -363,13 +363,13 @@ export default function ProjectSettings() {
             </div>
             <div>
               <h1 className="text-xl font-semibold text-foreground leading-tight">
-                Project Settings
+                プロジェクト設定
               </h1>
               <p className="text-xs text-muted-foreground">
-                Configuration for{' '}
                 <span className="font-semibold text-secondary-foreground">
                   {activeProject?.name}
-                </span>
+                </span>{' '}
+                の設定
               </p>
             </div>
           </div>
@@ -382,8 +382,8 @@ export default function ProjectSettings() {
               }
             }}
             className="group flex items-center justify-center h-8 w-8 rounded-md hover:bg-secondary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            title="Close"
-            aria-label="Close project settings"
+            title="閉じる"
+            aria-label="プロジェクト設定を閉じる"
           >
             <X size={18} className="text-muted-foreground group-hover:text-foreground" />
           </button>
@@ -398,15 +398,15 @@ export default function ProjectSettings() {
           <SettingsSection id="general">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">General</h2>
+                <h2 className="text-lg font-medium text-foreground">全般</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Basic project identification and location.
+                  プロジェクトの基本情報と場所です。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Project Name
+                    プロジェクト名
                   </label>
                   <input
                     type="text"
@@ -421,7 +421,7 @@ export default function ProjectSettings() {
 
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Root Directory
+                    ルートディレクトリ
                   </label>
                   <div className="flex gap-2">
                     <input
@@ -443,17 +443,17 @@ export default function ProjectSettings() {
                       }}
                       className="px-4 py-2 bg-card hover:bg-secondary border border-border rounded-md text-sm text-foreground transition-colors shadow-sm"
                     >
-                      Browse
+                      参照
                     </button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Changing the root directory only affects new terminals.
+                    ルートディレクトリの変更は新しいターミナルにのみ反映されます。
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-3">
-                    Color & Appearance
+                    色と見た目
                   </label>
                   <div className="flex gap-2 flex-wrap">
                     {availableColors.map((color) => {
@@ -485,22 +485,22 @@ export default function ProjectSettings() {
           <SettingsSection id="env-vars">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Environment Variables</h2>
+                <h2 className="text-lg font-medium text-foreground">環境変数</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Secrets and config injected into your shell session. Secret values are cleared on
-                  app restart until secure storage is added.
+                  シェルセッションに渡すシークレットと設定です。シークレットの値はセキュアストレージが
+                  追加されるまでアプリ再起動時にクリアされます。
                 </p>
                 <button
                   onClick={addEnvVar}
                   className="mt-4 text-xs flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
                 >
-                  <Plus size={14} className="mr-1" /> Add Variable
+                  <Plus size={14} className="mr-1" /> 変数を追加
                 </button>
                 <button
                   onClick={handleImportEnvFile}
                   className="mt-2 text-xs flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
                 >
-                  <Upload size={14} className="mr-1" /> Import from .env
+                  <Upload size={14} className="mr-1" /> .envから読み込む
                 </button>
                 {importError && <p className="mt-2 text-xs text-destructive">{importError}</p>}
                 {importWarnings && (
@@ -513,10 +513,10 @@ export default function ProjectSettings() {
                 <div className="bg-secondary/30 rounded-lg border border-border overflow-hidden">
                   <div className="grid grid-cols-[1fr_1.5fr_auto] gap-px bg-border">
                     <div className="label-section bg-secondary/80 px-4 py-2 text-muted-foreground">
-                      Key
+                      キー
                     </div>
                     <div className="label-section bg-secondary/80 px-4 py-2 text-muted-foreground">
-                      Value
+                      値
                     </div>
                     <div className="bg-secondary/80 w-10"></div>
 
@@ -546,7 +546,7 @@ export default function ProjectSettings() {
                               setEnvVars(newVars)
                               setHasChanges(true)
                             }}
-                            placeholder="Value"
+                            placeholder="値"
                             className={cn(
                               'w-full bg-transparent border-none text-sm font-mono focus:ring-0 px-2 py-1',
                               envVar.isSecret ? 'text-muted-foreground' : 'text-green-400'
@@ -573,15 +573,15 @@ export default function ProjectSettings() {
           <SettingsSection id="shell">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Shell Settings</h2>
+                <h2 className="text-lg font-medium text-foreground">シェル設定</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Customize the terminal experience for this workspace.
+                  このワークスペースのターミナル環境をカスタマイズします。
                 </p>
               </div>
               <div className="w-2/3 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary-foreground mb-2">
-                    Default Shell
+                    既定のシェル
                   </label>
                   {shellsLoading ? (
                     <Skeleton className="w-full h-10" />
@@ -602,7 +602,7 @@ export default function ProjectSettings() {
                             </option>
                           ))
                         ) : (
-                          <option value="">No shells detected</option>
+                          <option value="">シェルが検出されませんでした</option>
                         )}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
@@ -619,12 +619,13 @@ export default function ProjectSettings() {
           <SettingsSection id="symlinks">
             <div className="flex items-start gap-6 border-b border-border pb-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Worktree Symlinks</h2>
+                <h2 className="text-lg font-medium text-foreground">
+                  ワークツリーのシンボリックリンク
+                </h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Directories to symlink from the project root into worktrees. This allows shared
-                  dependencies (like{' '}
-                  <code className="text-xs bg-secondary/50 px-1 rounded">node_modules</code>) across
-                  worktrees without reinstalling.
+                  プロジェクトルートからワークツリーへシンボリックリンクするディレクトリです。これにより
+                  <code className="text-xs bg-secondary/50 px-1 rounded">node_modules</code>
+                  などの共有依存関係を、再インストールせずにワークツリー間で使えます。
                 </p>
                 <div className="mt-4 space-y-2">
                   <button
@@ -636,13 +637,13 @@ export default function ProjectSettings() {
                       size={14}
                       className={`mr-1 ${symlinkLoading ? 'animate-spin' : ''}`}
                     />
-                    Sync from .gitignore
+                    .gitignoreから同期
                   </button>
                   <button
                     onClick={addSymlinkDir}
                     className="text-xs flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
                   >
-                    <Plus size={14} className="mr-1" /> Add Directory
+                    <Plus size={14} className="mr-1" /> ディレクトリを追加
                   </button>
                 </div>
               </div>
@@ -650,8 +651,8 @@ export default function ProjectSettings() {
                 <div className="bg-secondary/30 rounded-lg border border-border p-3 space-y-2">
                   {symlinkDirs.length === 0 ? (
                     <p className="text-xs text-muted-foreground text-center py-4">
-                      No symlink directories configured. Click "Sync from .gitignore" to
-                      auto-detect.
+                      シンボリックリンクのディレクトリが設定されていません。「.gitignoreから同期」を
+                      クリックすると自動検出します。
                     </p>
                   ) : (
                     symlinkDirs.map((dir, index) => (
@@ -661,7 +662,7 @@ export default function ProjectSettings() {
                           type="text"
                           value={dir}
                           onChange={(e) => updateSymlinkDir(index, e.target.value)}
-                          placeholder="e.g. node_modules"
+                          placeholder="例: node_modules"
                           className="flex-1 bg-secondary/50 border border-border rounded px-2 py-1 text-sm font-mono text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
                         />
                         <button
@@ -682,9 +683,9 @@ export default function ProjectSettings() {
           <SettingsSection id="emergency">
             <div className="flex items-start gap-6">
               <div className="w-1/3 pt-1">
-                <h2 className="text-lg font-medium text-foreground">Emergency Mode</h2>
+                <h2 className="text-lg font-medium text-foreground">緊急モード</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Power-user workflow settings for incident response and rapid worktree operations.
+                  インシデント対応や素早いワークツリー操作のためのパワーユーザー向けワークフロー設定です。
                 </p>
               </div>
               <div className="w-2/3">
@@ -692,10 +693,10 @@ export default function ProjectSettings() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-foreground">
-                        Skip Confirmation Dialogs
+                        確認ダイアログをスキップ
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Bypass non-essential prompts during worktree operations.
+                        ワークツリー操作中の不要な確認をスキップします。
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -713,10 +714,10 @@ export default function ProjectSettings() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-foreground">
-                        Skip .gitignore Selection
+                        .gitignore選択をスキップ
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Use default symlink settings when creating worktrees.
+                        ワークツリー作成時に既定のシンボリックリンク設定を使用します。
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -733,7 +734,7 @@ export default function ProjectSettings() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-1">
-                      Default Branch Prefix
+                      既定のブランチ接頭辞
                     </label>
                     <input
                       type="text"
@@ -745,7 +746,7 @@ export default function ProjectSettings() {
                       className="w-full bg-secondary/50 border border-border rounded-md px-3 py-2 text-sm font-mono text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Prefix for new branch naming (e.g. "feature/", "hotfix/").
+                      新規ブランチ名の接頭辞です（例:「feature/」「hotfix/」）。
                     </p>
                   </div>
                 </div>
@@ -759,20 +760,20 @@ export default function ProjectSettings() {
           <div className="absolute bottom-0 left-0 right-0 p-4 bg-card border-t border-border flex justify-end items-center gap-4 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
             <span className="text-sm text-muted-foreground mr-auto flex items-center">
               <Info size={14} className="mr-2 text-yellow-500" />
-              <span className="opacity-80">You have unsaved changes</span>
+              <span className="opacity-80">保存されていない変更があります</span>
             </span>
             <button
               onClick={() => setHasChanges(false)}
               className="px-4 py-2 text-sm font-medium text-secondary-foreground hover:text-foreground hover:bg-secondary rounded transition-colors"
             >
-              Discard
+              破棄
             </button>
             <button
               onClick={handleSave}
               className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2 px-6 rounded shadow-lg shadow-primary/20 transition-all flex items-center"
             >
               <Save size={14} className="mr-2" />
-              Save Changes
+              変更を保存
             </button>
           </div>
         )}
@@ -786,10 +787,10 @@ export default function ProjectSettings() {
 
       <ConfirmDialog
         isOpen={isCloseConfirmOpen}
-        title="Unsaved Changes"
-        message={`You have unsaved changes in ${activeProject?.name ?? 'this project'}. Leaving will discard them.`}
-        confirmLabel="Leave"
-        cancelLabel="Cancel"
+        title="保存されていない変更"
+        message={`${activeProject?.name ?? 'このプロジェクト'} に保存されていない変更があります。移動すると変更内容は破棄されます。`}
+        confirmLabel="移動する"
+        cancelLabel="キャンセル"
         variant="danger"
         onConfirm={() => {
           setIsCloseConfirmOpen(false)

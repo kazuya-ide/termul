@@ -58,18 +58,18 @@ export function FileTreeContextMenu({
 }: FileTreeContextMenuProps): React.JSX.Element {
   const items: ContextMenuItem[] = []
   const isDir = entry.type === 'directory'
-  const selectionLabel = selectedCount > 1 ? ` (${selectedCount})` : ''
+  const selectionSuffix = selectedCount > 1 ? `（${selectedCount}件）` : ''
 
   // New File/Folder (directories only)
   if (isDir) {
     items.push(
       {
-        label: 'New File',
+        label: '新規ファイル',
         icon: <FilePlus size={14} />,
         onClick: () => onNewFile(entry.path)
       },
       {
-        label: 'New Folder',
+        label: '新規フォルダ',
         icon: <FolderPlus size={14} />,
         onClick: () => onNewFolder(entry.path)
       },
@@ -80,12 +80,12 @@ export function FileTreeContextMenu({
   // Clipboard operations
   items.push(
     {
-      label: `Copy${selectionLabel}`,
+      label: `コピー${selectionSuffix}`,
       icon: <Copy size={14} />,
       onClick: () => onCopy()
     },
     {
-      label: `Cut${selectionLabel}`,
+      label: `切り取り${selectionSuffix}`,
       icon: <Scissors size={14} />,
       onClick: () => onCut()
     }
@@ -94,7 +94,7 @@ export function FileTreeContextMenu({
   // Paste (only when clipboard has content and we're on a directory)
   if (hasClipboardContent && isDir) {
     items.push({
-      label: 'Paste',
+      label: '貼り付け',
       icon: <ClipboardPaste size={14} />,
       onClick: () => onPaste(entry.path)
     })
@@ -102,26 +102,26 @@ export function FileTreeContextMenu({
 
   items.push(
     {
-      label: `Duplicate${selectionLabel}`,
+      label: `複製${selectionSuffix}`,
       icon: <Files size={14} />,
       onClick: () => onDuplicate()
     },
     { type: 'separator' },
     {
-      label: `Rename${selectedCount > 1 ? ' (1 item)' : ''}`,
+      label: `名前を変更${selectedCount > 1 ? '（1件のみ）' : ''}`,
       icon: <Edit2 size={14} />,
       onClick: () => onRename(entry),
       disabled: selectedCount > 1
     },
     {
-      label: `Delete${selectionLabel}`,
+      label: `削除${selectionSuffix}`,
       icon: <Trash2 size={14} />,
       onClick: () => onDelete(entry),
       variant: 'danger'
     },
     { type: 'separator' },
     {
-      label: 'Copy Path',
+      label: 'パスをコピー',
       icon: <Copy size={14} />,
       onClick: () => onCopyPath(entry.path)
     }
@@ -133,7 +133,7 @@ export function FileTreeContextMenu({
   // Open in Terminal (directories only)
   if (isDir) {
     items.push({
-      label: 'Open in Terminal',
+      label: 'ターミナルで開く',
       icon: <Terminal size={14} />,
       onClick: () => onOpenInTerminal(entry.path)
     })
@@ -142,7 +142,7 @@ export function FileTreeContextMenu({
   // Open with External App (files only)
   if (!isDir) {
     items.push({
-      label: 'Open with External App',
+      label: '外部アプリで開く',
       icon: <ExternalLink size={14} />,
       onClick: () => onOpenWithExternal(entry.path)
     })
@@ -150,7 +150,7 @@ export function FileTreeContextMenu({
 
   // Show in File Manager (always visible)
   items.push({
-    label: 'Show in File Manager',
+    label: 'ファイルマネージャーで表示',
     icon: <FolderOpen size={14} />,
     onClick: () => onShowInFileManager(entry.path)
   })

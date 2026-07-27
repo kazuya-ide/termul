@@ -530,7 +530,7 @@ function ConnectedTerminalComponent({
         }
       } catch (error) {
         console.error('[Terminal File Link Open Failed]', error)
-        toast.error('Failed to open file from terminal output.')
+        toast.error('ターミナルの出力からのファイルのオープンに失敗しました。')
       }
     }
 
@@ -542,7 +542,7 @@ function ConnectedTerminalComponent({
       event.preventDefault()
 
       if (!isSupportedTerminalUrl(url)) {
-        toast.error('Only http/https URLs are supported from terminal output.')
+        toast.error('ターミナルの出力からはhttp/https URLのみサポートされています。')
         return
       }
 
@@ -550,7 +550,7 @@ function ConnectedTerminalComponent({
         await openTerminalUrl(url)
       } catch (error) {
         console.error('[Terminal URL Link Open Failed]', error)
-        toast.error('Failed to open URL from terminal output.')
+        toast.error('ターミナルの出力からのURLのオープンに失敗しました。')
       }
     }
 

@@ -120,8 +120,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       if (oldestPath) {
         newFiles.delete(oldestPath)
       } else {
-        toast.warning('Too many open tabs', {
-          description: 'Close a tab or save your changes to open more files.'
+        toast.warning('タブが多すぎます', {
+          description: 'タブを閉じるか、変更を保存してから新しいファイルを開いてください。'
         })
         return
       }

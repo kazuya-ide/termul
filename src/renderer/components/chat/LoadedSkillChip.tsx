@@ -17,14 +17,14 @@ export function LoadedSkillChip({
   return (
     <div className={cn('flex items-start gap-2 border-b border-border/40 px-4 py-1.5', className)}>
       <span className="min-w-0 flex-1 text-xs text-muted-foreground">
-        Skill: <span className="font-medium text-foreground break-words">{skill.name}</span>
+        スキル: <span className="font-medium text-foreground break-words">{skill.name}</span>
       </span>
       <button
         type="button"
         onClick={onRemove}
         className="ml-auto shrink-0 rounded p-0.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-        aria-label="Remove loaded skill"
-        title="Remove skill"
+        aria-label="スキルを削除"
+        title="スキルを削除"
       >
         <X size={12} />
       </button>

@@ -32,7 +32,7 @@ export function TableOfContents({
       <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <List className="h-4 w-4" />
-          <span>Contents</span>
+          <span>目次</span>
         </div>
 
         <DropdownMenu>
@@ -41,8 +41,8 @@ export function TableOfContents({
               variant="ghost"
               size="icon"
               className="h-7 w-7"
-              title="TOC settings"
-              aria-label="TOC settings"
+              title="目次の設定"
+              aria-label="目次の設定"
             >
               <Settings2 className="h-4 w-4" />
             </Button>
@@ -64,10 +64,10 @@ export function TableOfContents({
 
       {headings.length === 0 ? (
         <div className="flex flex-1 items-center justify-center px-4 text-center text-sm text-muted-foreground">
-          No headings found
+          見出しが見つかりません
         </div>
       ) : (
-        <nav className="flex-1 overflow-auto py-2" aria-label="Table of contents">
+        <nav className="flex-1 overflow-auto py-2" aria-label="目次">
           <ul className="space-y-1 px-2">
             {headings.map((heading) => {
               const isActive = heading.id === activeHeadingId

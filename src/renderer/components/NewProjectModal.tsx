@@ -177,17 +177,17 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
       const operationPromise = runScaffoldAndGit()
       toast.promise(operationPromise, {
         loading: initGit
-          ? `Initializing git and scaffolding ${selectedTemplate.name}...`
-          : `Scaffolding ${selectedTemplate.name}...`,
+          ? `Git を初期化し、${selectedTemplate.name} のひな形を作成中...`
+          : `${selectedTemplate.name} のひな形を作成中...`,
         success: (res) => {
           if (initGit) {
             return res.gitInitSucceeded
-              ? `Git repository initialized and ${selectedTemplate.name} template scaffolded successfully!`
-              : `${selectedTemplate.name} template scaffolded successfully! (Git initialization failed)`
+              ? `Git リポジトリを初期化し、${selectedTemplate.name} テンプレートのひな形作成が完了しました！`
+              : `${selectedTemplate.name} テンプレートのひな形作成が完了しました！（Git の初期化に失敗しました）`
           }
-          return `${selectedTemplate.name} template scaffolded successfully!`
+          return `${selectedTemplate.name} テンプレートのひな形作成が完了しました！`
         },
-        error: (err: Error) => `Setup failed: ${err.message}`
+        error: (err: Error) => `セットアップに失敗しました: ${err.message}`
       })
 
       onClose()
@@ -245,7 +245,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-secondary/50 flex-shrink-0">
-              <h3 className="text-sm font-semibold text-foreground">Create New Project</h3>
+              <h3 className="text-sm font-semibold text-foreground">新規プロジェクトを作成</h3>
               <button
                 onClick={onClose}
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -257,7 +257,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
             <div className="p-4 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Project Template
+                  プロジェクトテンプレート
                 </label>
                 <div className="relative">
                   <select
@@ -286,7 +286,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
               {selectedTemplate.envVars && selectedTemplate.envVars.length > 0 && (
                 <div className="bg-secondary/40 border border-border/60 rounded p-2.5 mt-2">
                   <span className="text-3xs font-semibold text-muted-foreground block mb-1.5">
-                    Included Environment Variables:
+                    含まれる環境変数:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedTemplate.envVars.map((ev) => (
@@ -303,34 +303,34 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
 
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Project Name
+                  プロジェクト名
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="My Project"
+                  placeholder="マイプロジェクト"
                   className="w-full bg-secondary border border-border rounded px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none placeholder-muted-foreground"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Root Directory
+                  ルートディレクトリ
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={path}
                     onChange={(e) => setPath(e.target.value)}
-                    placeholder="No directory selected"
+                    placeholder="ディレクトリが選択されていません"
                     className="flex-1 bg-secondary border border-border rounded px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
                   />
                   <button
                     onClick={handleBrowse}
                     className="bg-secondary hover:bg-muted text-foreground text-xs px-3 rounded border border-border transition-colors"
                   >
-                    Browse
+                    参照
                   </button>
                 </div>
 
@@ -347,7 +347,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
                       htmlFor="init-git"
                       className="text-xs text-muted-foreground select-none cursor-pointer"
                     >
-                      Initialize Git repository in this directory
+                      このディレクトリに Git リポジトリを初期化する
                     </label>
                   </div>
                 )}
@@ -355,7 +355,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
 
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-2">
-                  Color
+                  カラー
                 </label>
                 <div className="flex gap-2 flex-wrap">
                   {availableColors.map((color) => {
@@ -379,7 +379,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
 
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Default Terminal
+                  デフォルトターミナル
                 </label>
                 {shellsLoading ? (
                   <Skeleton className="w-full h-9 rounded" />
@@ -397,7 +397,7 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
                           </option>
                         ))
                       ) : (
-                        <option value="">No shells detected</option>
+                        <option value="">シェルが検出されませんでした</option>
                       )}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
@@ -414,14 +414,14 @@ export function NewProjectModal({ isOpen, onClose, onCreateProject }: NewProject
                 onClick={onClose}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleCreate}
                 disabled={!name.trim() || !path.trim()}
                 className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 shadow-md shadow-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create
+                作成
               </button>
             </div>
           </motion.div>

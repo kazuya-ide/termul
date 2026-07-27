@@ -71,7 +71,7 @@ export function ShellSelector({ onSelectShell, defaultShell, className }: ShellS
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="h-8 px-2 flex items-center justify-center rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors gap-1"
-        title="Select shell"
+        title="シェルを選択"
       >
         <Terminal size={14} />
         <ChevronDown size={12} />
@@ -99,13 +99,13 @@ export function ShellSelector({ onSelectShell, defaultShell, className }: ShellS
                   <Terminal size={14} />
                   <span>{shell.displayName}</span>
                   {shell.name === defaultShell && (
-                    <span className="ml-auto text-xs text-muted-foreground">(default)</span>
+                    <span className="ml-auto text-xs text-muted-foreground">(デフォルト)</span>
                   )}
                 </button>
               ))}
             </div>
           ) : (
-            <div className="px-3 py-2 text-sm text-muted-foreground">No shells detected</div>
+            <div className="px-3 py-2 text-sm text-muted-foreground">シェルが見つかりません</div>
           )}
         </div>
       )}

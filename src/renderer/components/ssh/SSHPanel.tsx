@@ -36,7 +36,7 @@ export function SSHPanel({
         await onConnect(profile.id)
       }
     } catch (error) {
-      toast.error(`Connect failed: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error(`接続に失敗しました: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setConnectingId(null)
     }
@@ -45,16 +45,16 @@ export function SSHPanel({
   const handleDisconnect = async (connectionId: string, profileName: string) => {
     const success = await disconnect(connectionId)
     if (success) {
-      toast.success(`Disconnected from ${profileName}`)
+      toast.success(`${profileName} から切断しました`)
     }
   }
 
   const handleImport = async () => {
     const imported = await importConfig()
     if (imported.length > 0) {
-      toast.success(`Imported ${imported.length} SSH profile(s) from ~/.ssh/config`)
+      toast.success(`~/.ssh/config から ${imported.length} 件のSSHプロファイルをインポートしました`)
     } else {
-      toast.info('No new profiles found in ~/.ssh/config')
+      toast.info('~/.ssh/config に新しいプロファイルは見つかりませんでした')
     }
   }
 
@@ -70,7 +70,7 @@ export function SSHPanel({
           <button
             onClick={() => setShowCredentials(!showCredentials)}
             className="group h-5 w-5 inline-flex items-center justify-center rounded hover:bg-sidebar-accent transition-colors"
-            title={showCredentials ? 'Hide credentials' : 'Show credentials'}
+            title={showCredentials ? '認証情報を隠す' : '認証情報を表示'}
           >
             {showCredentials ? (
               <Eye className="h-3 w-3 text-muted-foreground group-hover:text-foreground" />
@@ -83,7 +83,7 @@ export function SSHPanel({
           <button
             onClick={handleImport}
             className="group h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-sidebar-accent transition-colors"
-            title="Import from ~/.ssh/config"
+            title="~/.ssh/config からインポート"
           >
             <Download className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground" />
           </button>
@@ -93,7 +93,7 @@ export function SSHPanel({
               setShowForm(true)
             }}
             className="group h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-sidebar-accent transition-colors"
-            title="New SSH Profile"
+            title="新規SSHプロファイル"
           >
             <Plus className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground" />
           </button>
@@ -104,7 +104,7 @@ export function SSHPanel({
       <div className="flex-1 overflow-y-auto">
         {profiles.length === 0 ? (
           <div className="px-3 pb-2">
-            <p className="text-xs text-muted-foreground">No profiles yet</p>
+            <p className="text-xs text-muted-foreground">プロファイルがまだありません</p>
           </div>
         ) : (
           <div className="pb-0.5">
@@ -174,7 +174,7 @@ export function SSHPanel({
                         setShowForm(true)
                       }}
                       className="p-1 rounded hover:bg-sidebar-accent text-muted-foreground hover:text-foreground"
-                      title="Edit profile"
+                      title="プロファイルを編集"
                     >
                       <Pencil className="h-3 w-3" />
                     </button>
@@ -187,7 +187,7 @@ export function SSHPanel({
                           }
                         }}
                         className="p-1 rounded hover:bg-destructive/20 text-destructive"
-                        title="Disconnect"
+                        title="切断"
                       >
                         <WifiOff className="h-3 w-3" />
                       </button>
@@ -198,7 +198,7 @@ export function SSHPanel({
                           handleConnect(profile)
                         }}
                         className="p-1 rounded hover:bg-sidebar-accent text-muted-foreground"
-                        title="Connect"
+                        title="接続"
                         disabled={isConnecting}
                       >
                         <Wifi className="h-3 w-3" />

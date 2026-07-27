@@ -63,21 +63,21 @@ export function BrowserControls({ browserTabId }: BrowserControlsProps): React.J
         <button
           onClick={() => browserTabGoBack(browserTabId).catch(console.error)}
           className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-          title="Back"
+          title="戻る"
         >
           <ArrowLeft size={14} />
         </button>
         <button
           onClick={() => browserTabGoForward(browserTabId).catch(console.error)}
           className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-          title="Forward"
+          title="進む"
         >
           <ArrowRight size={14} />
         </button>
         <button
           onClick={() => browserTabReload(browserTabId).catch(console.error)}
           className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-          title="Reload"
+          title="再読み込み"
         >
           <RotateCcw size={14} />
         </button>
@@ -94,7 +94,7 @@ export function BrowserControls({ browserTabId }: BrowserControlsProps): React.J
             onKeyDown={handleKeyDown}
             onBlur={handleNavigate}
             className="flex-1 bg-transparent text-sm text-foreground outline-none min-w-0"
-            placeholder="Enter URL..."
+            placeholder="URLを入力"
           />
         </div>
         <Tooltip>
@@ -102,13 +102,13 @@ export function BrowserControls({ browserTabId }: BrowserControlsProps): React.J
             <button
               onClick={() => browserTabOpenDevtools(browserTabId).catch(console.error)}
               className="p-1.5 rounded shrink-0 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Open debug console"
-              title="Debug Console"
+              aria-label="デバッグコンソールを開く"
+              title="デバッグコンソール"
             >
               <Bug size={14} />
             </button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Debug Console</TooltipContent>
+          <TooltipContent side="bottom">デバッグコンソール</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -121,13 +121,13 @@ export function BrowserControls({ browserTabId }: BrowserControlsProps): React.J
                   ? 'bg-primary text-primary-foreground hover:bg-primary/90 ring-2 ring-primary/30 shadow-sm shadow-primary/20'
                   : 'hover:bg-secondary text-muted-foreground hover:text-foreground'
               )}
-              aria-label={tabAnnotationMode ? 'Disable annotation mode' : 'Enable annotation mode'}
+              aria-label={tabAnnotationMode ? '注釈モードを無効にする' : '注釈モードを有効にする'}
             >
               <Pencil size={14} />
             </button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
-            {tabAnnotationMode ? 'Disable annotation mode' : 'Enable annotation mode'}
+            {tabAnnotationMode ? '注釈モードを無効にする' : '注釈モードを有効にする'}
           </TooltipContent>
         </Tooltip>
       </div>

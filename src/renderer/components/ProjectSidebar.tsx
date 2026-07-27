@@ -336,19 +336,19 @@ export function ProjectSidebar({
         const result = await dialogApi.selectDirectory()
         if (result.success && result.data) {
           const projectPath = result.data
-          const folderName = projectPath.split(/[\\/]/).pop() || 'New Project'
+          const folderName = projectPath.split(/[\\/]/).pop() || '新規プロジェクト'
           const newProject = addProject(folderName, 'blue', projectPath)
           moveProjectToGroup(newProject.id, groupId)
           toast({
-            title: 'Project created',
-            description: `Created project "${folderName}" and added to group.`
+            title: 'プロジェクトを作成しました',
+            description: `"${folderName}" を作成し、グループに追加しました。`
           })
         }
       } catch (err) {
         console.error('Failed to create project:', err)
         toast({
-          title: 'Error',
-          description: 'Failed to create project from folder.',
+          title: 'エラー',
+          description: 'フォルダからのプロジェクト作成に失敗しました。',
           variant: 'destructive'
         })
       }
@@ -423,7 +423,7 @@ export function ProjectSidebar({
           }
         }),
         {
-          label: '+ Import Project...',
+          label: '+ プロジェクトをインポート...',
           value: 'import-project',
           isSelected: false
         }
@@ -431,18 +431,18 @@ export function ProjectSidebar({
 
       return [
         {
-          label: 'Rename Group',
+          label: '名前を変更',
           icon: <Edit2 size={14} />,
           onClick: () => handleStartRenameGroup(groupId)
         },
         {
-          label: 'Change Color',
+          label: '色を変更',
           icon: <Palette size={14} />,
           onClick: () =>
             handleOpenColorPicker(groupId, 'group', groupContextMenu.x, groupContextMenu.y)
         },
         {
-          label: 'Add Project',
+          label: 'プロジェクトを追加',
           icon: <Plus size={14} />,
           submenu: addProjectSubmenu,
           onSubmenuSelect: (projectId: string) => {
@@ -454,12 +454,12 @@ export function ProjectSidebar({
           }
         },
         {
-          label: 'Delete Group (Keep Projects)',
+          label: 'グループを削除（プロジェクトは残す）',
           icon: <Trash2 size={14} />,
           onClick: () => handleConfirmDeleteGroup(groupId, false)
         },
         {
-          label: 'Delete Group & All Projects',
+          label: 'グループとプロジェクトをすべて削除',
           icon: <Trash2 size={14} />,
           onClick: () => handleConfirmDeleteGroup(groupId, true),
           variant: 'danger'
@@ -486,13 +486,13 @@ export function ProjectSidebar({
         const project = useProjectStore.getState().projects.find((p) => p.id === projectId)
         const worktree = project?.worktrees?.find((w) => w.id === worktreeId)
         toast({
-          title: 'Switched worktree',
-          description: `Active worktree switched to "${worktree?.name}". New terminals will open here. Existing terminals remain where they are.`
+          title: '作業ツリーを切り替えました',
+          description: `作業ツリーを "${worktree?.name}" に切り替えました。新しいターミナルはここで開きます。既存のターミナルはそのまま残ります。`
         })
       } else {
         toast({
-          title: 'Switched to project root',
-          description: 'Switched to project root. New terminals will open here.'
+          title: 'プロジェクトルートに切り替えました',
+          description: 'プロジェクトルートに切り替えました。新しいターミナルはここで開きます。'
         })
       }
     },
@@ -510,16 +510,19 @@ export function ProjectSidebar({
     ): Promise<void> => {
       const outcome = await activateAndOpenTerminal(projectId, worktreeId, worktreePath)
       if (outcome.status === 'opened') {
-        toast({ title: 'Terminal opened', description: `Terminal opened in "${worktreeName}"` })
+        toast({
+          title: 'ターミナルを開きました',
+          description: `"${worktreeName}" でターミナルを開きました`
+        })
       } else if (outcome.status === 'no-pane') {
         toast({
-          title: 'No active pane',
-          description: 'Cannot open terminal without an active workspace pane.'
+          title: 'アクティブなペインがありません',
+          description: 'アクティブな作業ペインがないため、ターミナルを開けません。'
         })
       } else {
         toast({
-          title: 'Failed to open terminal',
-          description: outcome.error || 'Could not create a terminal in this worktree.'
+          title: 'ターミナルの起動に失敗しました',
+          description: outcome.error || 'この作業ツリーにターミナルを作成できませんでした。'
         })
       }
     },
@@ -548,14 +551,17 @@ export function ProjectSidebar({
   const handleCopyWorktreePath = useCallback(async (path: string): Promise<void> => {
     try {
       await clipboardApi.writeText(path)
-      toast({ title: 'Path copied', description: path })
+      toast({ title: 'パスをコピーしました', description: path })
     } catch {
       // Fallback: try navigator.clipboard
       try {
         await navigator.clipboard.writeText(path)
-        toast({ title: 'Path copied', description: path })
+        toast({ title: 'パスをコピーしました', description: path })
       } catch {
-        toast({ title: 'Failed to copy path', description: 'Could not copy to clipboard' })
+        toast({
+          title: 'パスのコピーに失敗しました',
+          description: 'クリップボードにコピーできませんでした'
+        })
       }
     }
   }, [])
@@ -581,7 +587,10 @@ export function ProjectSidebar({
 
       const projectPath = useProjectStore.getState().projects.find((p) => p.id === projectId)?.path
       if (!projectPath) {
-        toast({ title: 'Failed to remove worktree', description: 'Project path not found' })
+        toast({
+          title: '作業ツリーの削除に失敗しました',
+          description: 'プロジェクトのパスが見つかりません'
+        })
         return
       }
 
@@ -590,7 +599,10 @@ export function ProjectSidebar({
         const result = await worktreeApi.remove(projectPath, worktree.path, false)
         if (result.success) {
           useProjectStore.getState().removeWorktree(projectId, worktree.id)
-          toast({ title: 'Worktree removed', description: `"${worktree.name}" has been removed.` })
+          toast({
+            title: '作業ツリーを削除しました',
+            description: `"${worktree.name}" を削除しました。`
+          })
           // Reconcile worktrees after removal
           const project = useProjectStore.getState().projects.find((p) => p.id === projectId)
           if (project?.path) {
@@ -618,12 +630,12 @@ export function ProjectSidebar({
           }
         } else {
           toast({
-            title: 'Failed to remove worktree',
-            description: result.error ?? 'Unknown error'
+            title: '作業ツリーの削除に失敗しました',
+            description: result.error ?? '不明なエラー'
           })
         }
       } catch (err) {
-        toast({ title: 'Error removing worktree', description: String(err) })
+        toast({ title: '作業ツリーの削除中にエラーが発生しました', description: String(err) })
       } finally {
         setWorktreeOperationLock(false)
       }
@@ -775,7 +787,7 @@ export function ProjectSidebar({
 
       const items: ContextMenuItem[] = [
         {
-          label: 'Settings',
+          label: '設定',
           icon: <Settings size={14} />,
           onClick: () => {
             selectProject(projectId)
@@ -783,17 +795,17 @@ export function ProjectSidebar({
           }
         },
         {
-          label: 'Rename',
+          label: '名前を変更',
           icon: <Edit2 size={14} />,
           onClick: () => handleStartRename(projectId)
         },
         {
-          label: 'Project Settings',
+          label: 'プロジェクト設定',
           icon: <Settings size={14} />,
           onClick: () => handleOpenSettings(projectId)
         },
         {
-          label: 'Change Color',
+          label: '色を変更',
           icon: <Palette size={14} />,
           onClick: () => handleOpenColorPicker(projectId, 'project', contextMenu.x, contextMenu.y)
         }
@@ -801,7 +813,7 @@ export function ProjectSidebar({
 
       if (shellSubmenu.length > 0) {
         items.push({
-          label: 'Default Shell',
+          label: '既定のシェル',
           icon: <Terminal size={14} />,
           submenu: shellSubmenu,
           onSubmenuSelect: (shellPath: string) => {
@@ -813,7 +825,7 @@ export function ProjectSidebar({
       const currentGroup = groups.find((g) => g.projectIds.includes(projectId))
       const groupSubmenu: ContextMenuSubItem[] = [
         {
-          label: 'No Group (Root)',
+          label: 'グループなし（ルート）',
           value: 'root',
           isSelected: !currentGroup
         },
@@ -823,14 +835,14 @@ export function ProjectSidebar({
           isSelected: currentGroup?.id === g.id
         })),
         {
-          label: '+ Create New Group...',
+          label: '+ 新規グループを作成...',
           value: 'new-group',
           isSelected: false
         }
       ]
 
       items.push({
-        label: 'Move to Group',
+        label: 'グループへ移動',
         icon: <Folder size={14} />,
         submenu: groupSubmenu,
         onSubmenuSelect: (targetGroupId: string) => {
@@ -846,7 +858,7 @@ export function ProjectSidebar({
 
       items.push(
         {
-          label: isGitRepo ? 'New Worktree' : 'New Worktree (no git repo)',
+          label: isGitRepo ? '新規作業ツリー' : '新規作業ツリー（Gitリポジトリではありません）',
           icon: <GitBranch size={14} />,
           onClick: () => {
             if (isGitRepo) setNewWorktreeModal({ isOpen: true, projectId })
@@ -854,12 +866,12 @@ export function ProjectSidebar({
           disabled: !isGitRepo
         },
         {
-          label: 'Archive',
+          label: 'アーカイブ',
           icon: <Archive size={14} />,
           onClick: () => onArchiveProject(projectId)
         },
         {
-          label: 'Delete',
+          label: '削除',
           icon: <Trash2 size={14} />,
           onClick: () => handleConfirmDelete(projectId),
           variant: 'danger' as const
@@ -890,12 +902,12 @@ export function ProjectSidebar({
     (projectId: string): ContextMenuItem[] => {
       return [
         {
-          label: 'Restore',
+          label: '復元',
           icon: <RotateCcw size={14} />,
           onClick: () => onRestoreProject(projectId)
         },
         {
-          label: 'Delete',
+          label: '削除',
           icon: <Trash2 size={14} />,
           onClick: () => handleConfirmDelete(projectId),
           variant: 'danger' as const
@@ -910,24 +922,24 @@ export function ProjectSidebar({
       const canRemove = isWorktreeTermulManaged(worktree)
       return [
         {
-          label: 'Open Terminal Here',
+          label: 'ここでターミナルを開く',
           icon: <Terminal size={14} />,
           onClick: () =>
             void handleOpenTerminalInWorktree(projectId, worktree.id, worktree.path, worktree.name)
         },
         {
-          label: 'Open in File Explorer',
+          label: 'エクスプローラーで開く',
           icon: <FolderOpen size={14} />,
           onClick: () => void handleOpenInFileExplorer(worktree.path)
         },
         {
-          label: 'Copy Path',
+          label: 'パスをコピー',
           icon: <Copy size={14} />,
           onClick: () => void handleCopyWorktreePath(worktree.path)
         },
         { type: 'separator' as const },
         {
-          label: 'Remove Worktree',
+          label: '作業ツリーを削除',
           icon: <Trash2 size={14} />,
           onClick: () => {
             const projectPath = useProjectStore
@@ -935,8 +947,8 @@ export function ProjectSidebar({
               .projects.find((p) => p.id === projectId)?.path
             if (!projectPath) {
               toast({
-                title: 'Failed to remove worktree',
-                description: 'Project path not found',
+                title: '作業ツリーの削除に失敗しました',
+                description: 'プロジェクトのパスが見つかりません',
                 variant: 'destructive'
               })
               return
@@ -1064,21 +1076,21 @@ export function ProjectSidebar({
     <aside className="w-64 bg-sidebar flex flex-col flex-shrink-0 rounded-xl h-full">
       {/* Header with inline + button */}
       <div className="h-9 flex items-center justify-between px-3 border-b border-sidebar-border rounded-t-xl">
-        <span className="label-section text-sidebar-foreground">Projects</span>
+        <span className="label-section text-sidebar-foreground">プロジェクト</span>
         <div className="flex items-center gap-1">
           <button
             onClick={handleCreateGroup}
             className="group h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-sidebar-accent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            title="New Group Folder"
-            aria-label="Create new group folder"
+            title="新規グループフォルダ"
+            aria-label="新規グループフォルダを作成"
           >
             <FolderPlus size={14} className="text-muted-foreground group-hover:text-foreground" />
           </button>
           <button
             onClick={onNewProject}
             className="group h-6 w-6 inline-flex items-center justify-center rounded-md hover:bg-sidebar-accent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            title="New Project"
-            aria-label="Create new project from header"
+            title="新規プロジェクト"
+            aria-label="ヘッダーから新規プロジェクトを作成"
             data-testid="header-new-project"
           >
             <Plus size={14} className="text-muted-foreground group-hover:text-foreground" />
@@ -1098,7 +1110,7 @@ export function ProjectSidebar({
             <input
               ref={searchInputRef}
               type="search"
-              placeholder="Search projects…"
+              placeholder="プロジェクトを検索…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -1109,7 +1121,7 @@ export function ProjectSidebar({
                 }
               }}
               className="w-full rounded-none border-0 bg-transparent py-1 pl-7 pr-7 text-xs text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-0 [&::-webkit-search-cancel-button]:hidden"
-              aria-label="Search projects"
+              aria-label="プロジェクトを検索"
               data-testid="project-search-input"
             />
             {searchQuery && (
@@ -1120,8 +1132,8 @@ export function ProjectSidebar({
                   searchInputRef.current?.focus()
                 }}
                 className="absolute right-0 top-1/2 inline-flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
-                title="Clear search"
-                aria-label="Clear project search"
+                title="検索をクリア"
+                aria-label="プロジェクト検索をクリア"
                 data-testid="project-search-clear"
               >
                 <X size={11} />
@@ -1135,10 +1147,8 @@ export function ProjectSidebar({
       <div className="flex-1 overflow-y-auto py-1" data-group-id="root">
         {projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-6 text-center opacity-60">
-            <p className="text-sm text-muted-foreground">No projects yet</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Create your first project to get started
-            </p>
+            <p className="text-sm text-muted-foreground">プロジェクトがまだありません</p>
+            <p className="text-xs text-muted-foreground mt-1">最初のプロジェクトを作成しましょう</p>
           </div>
         ) : hasNoSearchResults ? (
           <div
@@ -1147,9 +1157,9 @@ export function ProjectSidebar({
             role="status"
             aria-live="polite"
           >
-            <p className="text-sm text-muted-foreground">No projects found</p>
+            <p className="text-sm text-muted-foreground">プロジェクトが見つかりません</p>
             <p className="text-xs text-muted-foreground mt-1 break-words">
-              Nothing matches “{trimmedQuery}”
+              “{trimmedQuery}” に一致する項目はありません
             </p>
           </div>
         ) : (
@@ -1491,14 +1501,14 @@ export function ProjectSidebar({
                   disabled={isSearching}
                   className="label-section w-full flex items-center px-3 py-1.5 text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-default disabled:hover:bg-transparent"
                   aria-expanded={showArchived || isSearching}
-                  aria-label={`Archived projects (${filteredArchivedProjects.length})`}
+                  aria-label={`アーカイブ済みプロジェクト（${filteredArchivedProjects.length}件）`}
                 >
                   {showArchived || isSearching ? (
                     <ChevronDown size={14} className="mr-2" />
                   ) : (
                     <ChevronRight size={14} className="mr-2" />
                   )}
-                  Archived ({filteredArchivedProjects.length})
+                  アーカイブ ({filteredArchivedProjects.length})
                 </button>
                 {(showArchived || isSearching) &&
                   filteredArchivedProjects.map((project) => {
@@ -1560,14 +1570,14 @@ export function ProjectSidebar({
       {/* Group Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={groupDeleteConfirm.isOpen}
-        title="Delete Group Folder"
+        title="グループフォルダを削除"
         message={
           groupDeleteConfirm.deleteProjects
-            ? `Are you sure you want to delete the group folder "${groupDeleteConfirm.groupName}" and all projects inside it? This action cannot be undone.`
-            : `Are you sure you want to delete the group folder "${groupDeleteConfirm.groupName}"? Projects inside this group will be moved to the root folder list.`
+            ? `グループフォルダ "${groupDeleteConfirm.groupName}" と、その中のすべてのプロジェクトを削除します。この操作は元に戻せません。よろしいですか？`
+            : `グループフォルダ "${groupDeleteConfirm.groupName}" を削除しますか？ このグループ内のプロジェクトはルートフォルダへ移動します。`
         }
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
+        confirmLabel="削除"
+        cancelLabel="キャンセル"
         variant="danger"
         onConfirm={handleDeleteGroup}
         onCancel={() =>
@@ -1623,7 +1633,7 @@ export function ProjectSidebar({
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-secondary/50">
-              <h3 className="text-sm font-semibold text-foreground">Project Settings</h3>
+              <h3 className="text-sm font-semibold text-foreground">プロジェクト設定</h3>
               <button
                 onClick={handleCloseSettings}
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -1636,45 +1646,45 @@ export function ProjectSidebar({
             <div className="p-6 space-y-4">
               {/* Name Field */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground">Project Name</label>
+                <label className="text-xs font-medium text-muted-foreground">プロジェクト名</label>
                 <input
                   type="text"
                   value={settingsName}
                   onChange={(e) => setSettingsName(e.target.value)}
                   className="w-full bg-secondary border border-border rounded px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
-                  placeholder="My Project"
+                  placeholder="マイプロジェクト"
                 />
               </div>
 
               {/* Path Field */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground">Project Path</label>
+                <label className="text-xs font-medium text-muted-foreground">
+                  プロジェクトのパス
+                </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={settingsPath}
                     onChange={(e) => setSettingsPath(e.target.value)}
                     className="flex-1 bg-secondary border border-border rounded px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none placeholder-muted-foreground"
-                    placeholder="No directory selected"
+                    placeholder="フォルダが選択されていません"
                   />
                   <button
                     onClick={handleBrowsePath}
                     disabled={settingsPathLoading}
                     className="bg-secondary hover:bg-muted text-foreground text-xs px-3 rounded border border-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Browse
+                    参照
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Optional: leave empty to use default project directory
+                  任意項目：空欄の場合は既定のプロジェクトフォルダを使用します
                 </p>
               </div>
 
               {/* Color Picker */}
               <div className="space-y-2 mt-4">
-                <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Color
-                </label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">色</label>
                 <div className="flex gap-2">
                   {availableColors.map((color) => {
                     const colors = getColorClasses(color)
@@ -1699,7 +1709,7 @@ export function ProjectSidebar({
               {/* Shell Field */}
               <div className="space-y-2">
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
-                  Default Terminal
+                  既定のターミナル
                 </label>
                 {availableShells ? (
                   <div className="relative">
@@ -1730,13 +1740,13 @@ export function ProjectSidebar({
                 onClick={handleCloseSettings}
                 className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Cancel
+                キャンセル
               </button>
               <button
                 onClick={handleSaveSettings}
                 className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 shadow-md shadow-primary/20 transition-colors"
               >
-                Save Changes
+                変更を保存
               </button>
             </div>
           </motion.div>
@@ -1746,10 +1756,10 @@ export function ProjectSidebar({
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={deleteConfirm.isOpen}
-        title="Delete Project"
-        message={`Are you sure you want to delete "${deleteConfirm.projectName}"? This action cannot be undone.`}
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
+        title="プロジェクトを削除"
+        message={`"${deleteConfirm.projectName}" を削除しますか？ この操作は元に戻せません。`}
+        confirmLabel="削除"
+        cancelLabel="キャンセル"
         variant="danger"
         onConfirm={handleDelete}
         onCancel={handleCancelDelete}
@@ -1879,7 +1889,7 @@ const ProjectItem = memo(function ProjectItem({
             : `${colors.borderMuted} hover:bg-sidebar-accent/50`
         )}
         aria-current={isActive ? 'page' : undefined}
-        aria-label={`Project: ${project.name}${isActive ? ' (active)' : ''}`}
+        aria-label={`プロジェクト: ${project.name}${isActive ? '（アクティブ）' : ''}`}
       >
         {/* Expand/collapse chevron for projects with worktrees or git */}
         {hasWorktrees ? (
@@ -1889,7 +1899,7 @@ const ProjectItem = memo(function ProjectItem({
               onToggleExpand()
             }}
             className="h-5 w-5 inline-flex items-center justify-center flex-shrink-0 hover:bg-sidebar-accent rounded transition-colors"
-            aria-label={isExpanded ? 'Collapse worktrees' : 'Expand worktrees'}
+            aria-label={isExpanded ? '作業ツリーを折りたたむ' : '作業ツリーを展開'}
             aria-expanded={isExpanded}
           >
             {isExpanded ? (
@@ -1928,7 +1938,7 @@ const ProjectItem = memo(function ProjectItem({
         {hasError && (
           <span
             className="flex items-center mr-2 text-yellow-500 animate-pulse"
-            title="Terminal crashed"
+            title="ターミナルがクラッシュしました"
           >
             <AlertTriangle size={12} />
           </span>
@@ -1950,8 +1960,8 @@ const ProjectItem = memo(function ProjectItem({
               onSettingsClick()
             }}
             className="h-5 w-5 inline-flex items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-sidebar-accent transition-all mr-2 flex-shrink-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-            title="Project settings"
-            aria-label={`Settings for ${project.name}`}
+            title="プロジェクト設定"
+            aria-label={`${project.name} の設定`}
           >
             <Settings size={12} className="text-muted-foreground" />
           </button>
@@ -1959,7 +1969,7 @@ const ProjectItem = memo(function ProjectItem({
         {!isEditing && hasActivity && (
           <span
             className="flex items-center mr-3"
-            title="Terminal activity"
+            title="ターミナルが動作中"
             style={{ isolation: 'isolate' }}
           >
             <Loader2 size={12} className={'animate-spin text-primary opacity-100'} />
@@ -1983,7 +1993,7 @@ const ProjectItem = memo(function ProjectItem({
               />
               <input
                 type="search"
-                placeholder="Search worktrees…"
+                placeholder="作業ツリーを検索…"
                 value={worktreeSearchQuery}
                 onChange={(e) => setWorktreeSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -1994,14 +2004,14 @@ const ProjectItem = memo(function ProjectItem({
                   }
                 }}
                 className="w-full rounded-none border-0 bg-transparent py-1 pl-7 pr-7 text-xs text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-0 [&::-webkit-search-cancel-button]:hidden"
-                aria-label="Search worktrees"
+                aria-label="作業ツリーを検索"
               />
               {worktreeSearchQuery && (
                 <button
                   onClick={() => setWorktreeSearchQuery('')}
                   className="absolute right-0 top-1/2 inline-flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
-                  title="Clear search"
-                  aria-label="Clear worktree search"
+                  title="検索をクリア"
+                  aria-label="作業ツリー検索をクリア"
                 >
                   <X size={11} />
                 </button>
@@ -2019,7 +2029,7 @@ const ProjectItem = memo(function ProjectItem({
           onClick={() => onWorktreeSelect(null)}
           onOpenTerminal={
             project.path
-              ? () => onOpenTerminalInWorktree(null, project.path as string, 'project root')
+              ? () => onOpenTerminalInWorktree(null, project.path as string, 'プロジェクトルート')
               : undefined
           }
         />
@@ -2085,12 +2095,12 @@ const ProjectItem = memo(function ProjectItem({
             className="w-full flex items-center px-2 py-1 text-xs text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground transition-colors"
             title={
               isWorktreeOperationLocked
-                ? 'Another worktree operation in progress'
-                : 'Create new worktree'
+                ? '他の作業ツリー操作が進行中です'
+                : '新しい作業ツリーを作成'
             }
           >
             <Plus size={10} className="mr-1.5" />
-            New Worktree
+            新規作業ツリー
           </button>
         )}
       </CollapseExpandMotion>
@@ -2147,8 +2157,8 @@ const WorktreeItem = memo(function WorktreeItem({
     : undefined
 
   const tooltip = isRoot
-    ? `Project root (${branch})`
-    : `${name} on ${branch}${path ? ` — ${path}` : ''}${isTermulManaged === false ? ' — External worktree' : ''}`
+    ? `プロジェクトルート（${branch}）`
+    : `${name}（${branch}）${path ? ` — ${path}` : ''}${isTermulManaged === false ? ' — 外部の作業ツリー' : ''}`
 
   return (
     <div
@@ -2173,7 +2183,7 @@ const WorktreeItem = memo(function WorktreeItem({
       )}
       title={tooltip}
       aria-current={isActive ? 'page' : undefined}
-      aria-label={isRoot ? `Project root on ${branch}` : `Worktree ${name} on ${branch}`}
+      aria-label={isRoot ? `${branch} のプロジェクトルート` : `${branch} の作業ツリー: ${name}`}
     >
       <div className="mr-1.5 flex-shrink-0 inline-flex items-center" aria-hidden="true">
         {isRoot ? (
@@ -2182,14 +2192,14 @@ const WorktreeItem = memo(function WorktreeItem({
           <GitBranch size={12} className="text-primary/70" />
         )}
       </div>
-      <span className="truncate flex-1">{isRoot ? 'Root' : name}</span>
+      <span className="truncate flex-1">{isRoot ? 'ルート' : name}</span>
       {!isRoot && <HealthBadge status={healthStatus} />}
       {!isRoot && isTermulManaged === false && (
         <span
           className="text-3xs text-amber-500/70 ml-1"
-          title="External worktree (not created by Termul)"
+          title="外部の作業ツリー（Termulで作成されたものではありません）"
         >
-          ext
+          外部
         </span>
       )}
       {onOpenTerminal && (
@@ -2201,8 +2211,8 @@ const WorktreeItem = memo(function WorktreeItem({
           }}
           onKeyDown={(e) => e.stopPropagation()}
           className="h-5 w-5 inline-flex items-center justify-center rounded opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 hover:bg-sidebar-accent transition-all ml-1 flex-shrink-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-          title={`Open terminal in ${isRoot ? 'project root' : name}`}
-          aria-label={`Open terminal in ${isRoot ? 'project root' : name}`}
+          title={`${isRoot ? 'プロジェクトルート' : name} でターミナルを開く`}
+          aria-label={`${isRoot ? 'プロジェクトルート' : name} でターミナルを開く`}
         >
           <Terminal size={12} className="text-muted-foreground" aria-hidden="true" />
         </button>
@@ -2236,7 +2246,7 @@ function ArchivedProjectItem({
         'w-full flex items-center px-0 py-1 transition-colors group text-left border-l-2 opacity-60 hover:opacity-100',
         colors.borderMuted
       )}
-      aria-label={`Archived project: ${project.name}`}
+      aria-label={`アーカイブ済みプロジェクト: ${project.name}`}
       data-testid={`archived-project-item-${project.id}`}
     >
       <span
@@ -2248,7 +2258,7 @@ function ArchivedProjectItem({
       {hasActivity && (
         <span
           className="flex items-center mr-2"
-          title="Terminal activity"
+          title="ターミナルが動作中"
           style={{ isolation: 'isolate' }}
         >
           <Loader2 size={10} className="animate-spin text-primary opacity-60" />
@@ -2257,7 +2267,7 @@ function ArchivedProjectItem({
       {hasError && (
         <span
           className="flex items-center mr-2 text-yellow-500 animate-pulse"
-          title="Terminal crashed"
+          title="ターミナルがクラッシュしました"
         >
           <AlertTriangle size={10} />
         </span>
@@ -2405,7 +2415,7 @@ function SSHResizableSection({
       <div
         onMouseDown={handleMouseDown}
         className="h-[3px] border-t border-sidebar-border cursor-row-resize hover:bg-primary/30 active:bg-primary/50 transition-colors group flex items-center justify-center"
-        title="Drag to resize"
+        title="ドラッグしてサイズ変更"
       >
         <div className="w-8 h-[2px] rounded-full bg-muted-foreground/0 group-hover:bg-muted-foreground/30 transition-colors" />
       </div>

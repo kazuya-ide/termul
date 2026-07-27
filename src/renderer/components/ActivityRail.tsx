@@ -85,7 +85,7 @@ export function ActivityRail({
     try {
       await updatePanelVisibility('sidebarVisible', !isSidebarVisible)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update sidebar visibility')
+      toast.error(error instanceof Error ? error.message : 'サイドバーの表示切り替えに失敗しました')
     }
   }
 
@@ -97,7 +97,9 @@ export function ActivityRail({
       await updatePanelVisibility('fileExplorerVisible', !isExplorerVisible)
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to update file explorer visibility'
+        error instanceof Error
+          ? error.message
+          : 'ファイルエクスプローラーの表示切り替えに失敗しました'
       )
     }
   }
@@ -107,14 +109,14 @@ export function ActivityRail({
     try {
       await updatePanelVisibility('sshPanelVisible', !isSSHPanelVisible)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update SSH panel visibility')
+      toast.error(error instanceof Error ? error.message : 'SSHパネルの表示切り替えに失敗しました')
     }
   }
 
   return (
     <nav
       className="w-12 flex flex-col items-center bg-background select-none shrink-0"
-      aria-label="Global actions"
+      aria-label="グローバルアクション"
     >
       {/* Brand mark */}
       <div
@@ -133,8 +135,8 @@ export function ActivityRail({
           onOpenCommandPalette?.()
         }}
         className={railButtonClass}
-        title="Projects"
-        aria-label="Open projects"
+        title="プロジェクト"
+        aria-label="プロジェクトを開く"
         disabled={!onOpenCommandPalette}
       >
         <FolderKanban size={18} className="text-muted-foreground" />
@@ -147,8 +149,8 @@ export function ActivityRail({
           onOpenGitChanges?.()
         }}
         className={railButtonClass}
-        title={canOpenGitChanges ? 'Git changes' : 'Git changes (open a project first)'}
-        aria-label="Open git changes"
+        title={canOpenGitChanges ? 'Gitの変更' : 'Gitの変更（先にプロジェクトを開いてください）'}
+        aria-label="Gitの変更を開く"
         disabled={!onOpenGitChanges || !canOpenGitChanges}
       >
         <GitBranch
@@ -164,8 +166,12 @@ export function ActivityRail({
           onOpenAgentChat?.()
         }}
         className={railButtonClass}
-        title={canOpenAgentChat ? 'New agent chat' : 'New agent chat (open a project first)'}
-        aria-label="New agent chat"
+        title={
+          canOpenAgentChat
+            ? '新しいエージェントチャット'
+            : '新しいエージェントチャット（先にプロジェクトを開いてください）'
+        }
+        aria-label="新しいエージェントチャット"
         disabled={!onOpenAgentChat || !canOpenAgentChat}
       >
         <MessageSquarePlus
@@ -181,8 +187,8 @@ export function ActivityRail({
           onOpenGitHistory?.()
         }}
         className={railButtonClass}
-        title={canOpenGitHistory ? 'Git history' : 'Git history (open a project first)'}
-        aria-label="Open git history"
+        title={canOpenGitHistory ? 'Git履歴' : 'Git履歴（先にプロジェクトを開いてください）'}
+        aria-label="Git履歴を開く"
         disabled={!onOpenGitHistory || !canOpenGitHistory}
       >
         <History
@@ -197,8 +203,8 @@ export function ActivityRail({
           void handleToggleSSHPanel(e)
         }}
         className={railButtonClass}
-        title="Toggle SSH panel"
-        aria-label={isSSHPanelVisible ? 'Hide SSH panel' : 'Show SSH panel'}
+        title="SSHパネルの切り替え"
+        aria-label={isSSHPanelVisible ? 'SSHパネルを隠す' : 'SSHパネルを表示'}
         aria-pressed={isSSHPanelVisible}
       >
         <Network
@@ -214,8 +220,8 @@ export function ActivityRail({
             void handleToggleSidebar(e)
           }}
           className={railButtonClass}
-          title="Toggle sidebar"
-          aria-label={isSidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
+          title="サイドバーの切り替え"
+          aria-label={isSidebarVisible ? 'サイドバーを隠す' : 'サイドバーを表示'}
           aria-pressed={isSidebarVisible}
         >
           <PanelLeft
@@ -230,8 +236,10 @@ export function ActivityRail({
             void handleToggleFileExplorer(e)
           }}
           className={railButtonClass}
-          title="Toggle file explorer"
-          aria-label={isExplorerVisible ? 'Hide file explorer' : 'Show file explorer'}
+          title="ファイルエクスプローラーの切り替え"
+          aria-label={
+            isExplorerVisible ? 'ファイルエクスプローラーを隠す' : 'ファイルエクスプローラーを表示'
+          }
           aria-pressed={isExplorerVisible}
         >
           <PanelRight
@@ -253,8 +261,8 @@ export function ActivityRail({
             navigate('/preferences')
           }}
           className={railButtonClass}
-          title="Preferences"
-          aria-label="Open preferences"
+          title="環境設定"
+          aria-label="環境設定を開く"
           aria-current={location.pathname === '/preferences' ? 'page' : undefined}
         >
           <SlidersHorizontal
@@ -276,8 +284,8 @@ export function ActivityRail({
               : undefined
           }
           className={railButtonClass}
-          title="Color themes"
-          aria-label="Color themes"
+          title="カラーテーマ"
+          aria-label="カラーテーマ"
           aria-pressed={onToggleThemePicker ? isThemePickerOpen : undefined}
           aria-disabled={!onToggleThemePicker}
           disabled={!onToggleThemePicker}

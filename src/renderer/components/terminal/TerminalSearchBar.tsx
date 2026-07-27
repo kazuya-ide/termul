@@ -40,13 +40,13 @@ export function TerminalSearchBar({
   const handleFindNext = useCallback(() => {
     if (!query) return
     const found = onFindNext(query)
-    setMatchInfo(found ? 'Match found' : 'No matches')
+    setMatchInfo(found ? '一致しました' : '一致なし')
   }, [query, onFindNext])
 
   const handleFindPrevious = useCallback(() => {
     if (!query) return
     const found = onFindPrevious(query)
-    setMatchInfo(found ? 'Match found' : 'No matches')
+    setMatchInfo(found ? '一致しました' : '一致なし')
   }, [query, onFindPrevious])
 
   const handleKeyDown = useCallback(
@@ -73,7 +73,7 @@ export function TerminalSearchBar({
       // Auto-search as you type
       if (newQuery) {
         const found = onFindNext(newQuery)
-        setMatchInfo(found ? 'Match found' : 'No matches')
+        setMatchInfo(found ? '一致しました' : '一致なし')
       } else {
         setMatchInfo('')
       }
@@ -97,7 +97,7 @@ export function TerminalSearchBar({
             value={query}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Search..."
+            placeholder="検索..."
             className="w-48 px-2 py-1 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary"
           />
 
@@ -109,7 +109,7 @@ export function TerminalSearchBar({
             onClick={handleFindPrevious}
             disabled={!query}
             className="p-1 hover:bg-secondary rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Previous match (Shift+Enter)"
+            title="前の一致 (Shift+Enter)"
           >
             <ChevronUp size={16} />
           </button>
@@ -118,7 +118,7 @@ export function TerminalSearchBar({
             onClick={handleFindNext}
             disabled={!query}
             className="p-1 hover:bg-secondary rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Next match (Enter)"
+            title="次の一致 (Enter)"
           >
             <ChevronDown size={16} />
           </button>
@@ -126,7 +126,7 @@ export function TerminalSearchBar({
           <button
             onClick={onClose}
             className="p-1 hover:bg-secondary rounded"
-            title="Close (Escape)"
+            title="閉じる (Escape)"
           >
             <X size={16} />
           </button>

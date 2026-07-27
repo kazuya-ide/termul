@@ -55,13 +55,13 @@ export function TitleBarShortcutsPopover({
 
   const handleUpdate = (id: string, customKey: string): void => {
     void updateShortcut(id, customKey).catch((error: unknown) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to save shortcut')
+      toast.error(error instanceof Error ? error.message : 'ショートカットの保存に失敗しました')
     })
   }
 
   const handleReset = (id: string): void => {
     void resetShortcut(id).catch((error: unknown) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to reset shortcut')
+      toast.error(error instanceof Error ? error.message : 'ショートカットのリセットに失敗しました')
     })
   }
 
@@ -102,8 +102,8 @@ export function TitleBarShortcutsPopover({
       <button
         type="button"
         className={buttonClassName}
-        title="Keyboard shortcuts"
-        aria-label="Open keyboard shortcuts menu"
+        title="キーボードショートカット"
+        aria-label="キーボードショートカットメニューを開く"
         aria-expanded={isOpen}
         onClick={(event) => {
           event.stopPropagation()
@@ -140,10 +140,10 @@ export function TitleBarShortcutsPopover({
                     className="flex items-center gap-2 text-sm font-semibold text-foreground"
                   >
                     <Keyboard aria-hidden="true" size={15} />
-                    Shortcut Menu
+                    ショートカットメニュー
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    View and edit common workspace shortcuts.
+                    よく使うワークスペースのショートカットを確認・編集します。
                   </p>
                 </div>
                 <button
@@ -159,7 +159,7 @@ export function TitleBarShortcutsPopover({
               <div className="max-h-[52vh] overflow-y-auto px-2 py-2">
                 {quickShortcuts.length === 0 ? (
                   <div className="px-2 py-6 text-center text-xs text-muted-foreground">
-                    No shortcuts available.
+                    利用可能なショートカットがありません。
                   </div>
                 ) : (
                   <div className="space-y-1">

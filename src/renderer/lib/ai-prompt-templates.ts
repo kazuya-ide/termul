@@ -32,8 +32,8 @@ export type TemplateVariable =
 export const BUILT_IN_TEMPLATES: AiPromptTemplate[] = [
   {
     id: 'cursor-default',
-    name: 'Cursor Default',
-    description: 'Standard prompt for Cursor AI editor',
+    name: 'Cursor デフォルト',
+    description: 'Cursor AI エディタ向けの標準プロンプト',
     toolName: 'Cursor',
     template: `I'm working on the {{sourceBranch}} branch in {{projectName}}. The active worktree is at {{worktreePath}}.
 
@@ -50,8 +50,8 @@ Please review the current changes and suggest improvements.`,
   },
   {
     id: 'aider-default',
-    name: 'Aider Default',
-    description: 'Standard prompt for Aider AI coding assistant',
+    name: 'Aider デフォルト',
+    description: 'Aider AI コーディングアシスタント向けの標準プロンプト',
     toolName: 'Aider',
     template: `I'm working on branch {{sourceBranch}} in project {{projectName}}.
 Worktree path: {{worktreePath}}
@@ -67,8 +67,8 @@ Focus on clean, maintainable code changes.`,
   },
   {
     id: 'claude-code-default',
-    name: 'Claude Code Default',
-    description: 'Standard prompt for Claude Code CLI',
+    name: 'Claude Code デフォルト',
+    description: 'Claude Code CLI 向けの標準プロンプト',
     toolName: 'Claude Code',
     template: `Context: Working on {{sourceBranch}} branch in {{projectName}} (worktree: {{worktreePath}})
 

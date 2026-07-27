@@ -76,7 +76,7 @@ function renderContentItem(item: ToolCallContent, key: number): React.JSX.Elemen
         key={key}
         className="rounded border border-border/40 px-2 py-1 text-xs text-muted-foreground"
       >
-        {terminalId ? `Terminal ${terminalId}` : 'Terminal'}
+        {terminalId ? `ターミナル ${terminalId}` : 'ターミナル'}
       </div>
     )
   }
@@ -101,7 +101,7 @@ function ToolCallCardComponent({ toolCall }: ToolCallCardProps): React.JSX.Eleme
       <div className="flex items-center gap-2 px-3 py-1.5">
         <Icon size={13} className="shrink-0 text-muted-foreground" />
         <span className="truncate text-xs font-medium text-foreground">
-          {toolCall.title ?? toolCall.kind ?? 'Tool call'}
+          {toolCall.title ?? toolCall.kind ?? 'ツール呼び出し'}
         </span>
         <span
           className={cn(

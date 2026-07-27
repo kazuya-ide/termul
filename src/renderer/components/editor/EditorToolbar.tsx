@@ -30,7 +30,7 @@ export function EditorToolbar({
             isTocVisible && 'bg-accent text-accent-foreground'
           )}
           onClick={toggleTocVisibility}
-          title="Toggle Table of Contents"
+          title="目次を切り替え"
           aria-pressed={isTocVisible}
         >
           <List size={12} />
@@ -44,17 +44,17 @@ export function EditorToolbar({
           className={cn(
             'h-6 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-secondary'
           )}
-          title={viewMode === 'markdown' ? 'Switch to source mode' : 'Switch to WYSIWYG mode'}
+          title={viewMode === 'markdown' ? 'ソース表示に切り替え' : 'プレビュー表示に切り替え'}
         >
           {viewMode === 'markdown' ? (
             <>
               <Code2 size={12} />
-              <span>Source</span>
+              <span>ソース</span>
             </>
           ) : (
             <>
               <Eye size={12} />
-              <span>Preview</span>
+              <span>プレビュー</span>
             </>
           )}
         </Button>

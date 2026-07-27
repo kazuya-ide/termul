@@ -116,14 +116,14 @@ export function StatusBar({ project }: StatusBarProps): React.JSX.Element {
                       lastExitCode === 0 ? 'bg-green-400' : 'bg-red-400'
                     )}
                   />
-                  Exit: {lastExitCode}
+                  終了コード: {lastExitCode}
                 </StatusItem>
               </div>
             </TooltipTrigger>
             <TooltipContent side="top">
               {lastExitCode === 0
-                ? 'Last command succeeded'
-                : `Last command failed with exit code ${lastExitCode}`}
+                ? '直前のコマンドは正常終了しました'
+                : `直前のコマンドは終了コード ${lastExitCode} で失敗しました`}
             </TooltipContent>
           </Tooltip>
         )}
@@ -136,7 +136,7 @@ export function StatusBar({ project }: StatusBarProps): React.JSX.Element {
               </div>
             </TooltipTrigger>
             <TooltipContent side="top">
-              Update ready to install (version {updateVersion})
+              更新の準備ができました（バージョン {updateVersion}）
             </TooltipContent>
           </Tooltip>
         )}
@@ -190,9 +190,7 @@ function GitStatusIndicator({
             {modified}
           </span>
         </TooltipTrigger>
-        <TooltipContent side="top">
-          {modified} modified {modified === 1 ? 'file' : 'files'}
-        </TooltipContent>
+        <TooltipContent side="top">{`変更ファイル ${modified}件`}</TooltipContent>
       </Tooltip>
     )
   }
@@ -206,9 +204,7 @@ function GitStatusIndicator({
             {staged}
           </span>
         </TooltipTrigger>
-        <TooltipContent side="top">
-          {staged} staged {staged === 1 ? 'file' : 'files'}
-        </TooltipContent>
+        <TooltipContent side="top">{`ステージ済みファイル ${staged}件`}</TooltipContent>
       </Tooltip>
     )
   }
@@ -222,9 +218,7 @@ function GitStatusIndicator({
             {untracked}
           </span>
         </TooltipTrigger>
-        <TooltipContent side="top">
-          {untracked} untracked {untracked === 1 ? 'file' : 'files'}
-        </TooltipContent>
+        <TooltipContent side="top">{`未追跡ファイル ${untracked}件`}</TooltipContent>
       </Tooltip>
     )
   }

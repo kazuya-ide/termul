@@ -28,14 +28,14 @@ export function SSHFileEditor({ connectionId }: SSHFileEditorProps): React.JSX.E
       if (result.success) {
         setStoreFile({ ...editingFile, originalContent: editingContent })
         setConfirmClose(false)
-        toast.success(`Saved: ${editingFile.name}`)
+        toast.success(`保存しました: ${editingFile.name}`)
         setTimeout(() => setSaveAnimating(false), 600)
       } else {
-        toast.error(`Save failed: ${result.error}`)
+        toast.error(`保存に失敗しました: ${result.error}`)
         setSaveAnimating(false)
       }
     } catch (error) {
-      toast.error(`Save failed: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error(`保存に失敗しました: ${error instanceof Error ? error.message : String(error)}`)
       setSaveAnimating(false)
     } finally {
       setIsSaving(false)
@@ -69,14 +69,14 @@ export function SSHFileEditor({ connectionId }: SSHFileEditorProps): React.JSX.E
                     ? 'bg-amber-500/20 text-amber-500'
                     : 'hover:bg-accent text-muted-foreground'
               )}
-              title="Save"
+              title="保存"
             >
               <Save className={cn('h-3 w-3', saveAnimating && 'animate-pulse')} />
             </button>
             <button
               onClick={handleClose}
               className="p-1 rounded hover:bg-accent text-muted-foreground"
-              title="Close"
+              title="閉じる"
             >
               <X className="h-3 w-3" />
             </button>
@@ -93,23 +93,23 @@ export function SSHFileEditor({ connectionId }: SSHFileEditorProps): React.JSX.E
       {confirmClose && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-background border border-border rounded-lg shadow-lg w-[340px] p-4">
-            <h3 className="text-sm font-semibold mb-2">Unsaved Changes</h3>
+            <h3 className="text-sm font-semibold mb-2">未保存の変更</h3>
             <p className="text-xs text-muted-foreground mb-4">
-              &ldquo;{editingFile.name}&rdquo; has unsaved changes.
+              「{editingFile.name}」に未保存の変更があります。
             </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setConfirmClose(false)}
                 className="px-3 py-1.5 text-xs rounded border border-border hover:bg-accent"
               >
-                Continue Editing
+                編集を続ける
               </button>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
                 className="px-3 py-1.5 text-xs rounded bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                Save
+                保存
               </button>
               <button
                 onClick={() => {
@@ -118,7 +118,7 @@ export function SSHFileEditor({ connectionId }: SSHFileEditorProps): React.JSX.E
                 }}
                 className="px-3 py-1.5 text-xs rounded bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                Discard
+                破棄
               </button>
             </div>
           </div>

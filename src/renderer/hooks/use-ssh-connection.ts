@@ -36,9 +36,11 @@ export function useSSHConnection(profile: SSHProfile | null) {
         if (result.success) {
           setEntries(result.data)
           setCurrentPath(path)
-        } else toast.error(`Failed to load: ${result.error}`)
+        } else toast.error(`読み込みに失敗しました: ${result.error}`)
       } catch (error) {
-        toast.error(`Failed to load: ${error instanceof Error ? error.message : String(error)}`)
+        toast.error(
+          `読み込みに失敗しました: ${error instanceof Error ? error.message : String(error)}`
+        )
       } finally {
         setIsLoadingRoot(false)
       }
@@ -130,18 +132,18 @@ export function useSSHConnection(profile: SSHProfile | null) {
           // terminal does not work. The in-app SFTP/file browser (ssh2 backend)
           // still authenticates with the password; the terminal will prompt.
           toast.info(
-            'On Windows, type your password in the terminal when prompted. File browsing connects automatically.'
+            'Windowsでは、ターミナルにパスワードの入力を求められたら入力してください。ファイル閲覧は自動的に接続されます。'
           )
         } else {
           const result = await createAskpassScript(profile.password)
           if (result.success) spawnEnv = { SSH_ASKPASS: result.data, SSH_ASKPASS_REQUIRE: 'force' }
-          else toast.warning(`Password helper unavailable: ${result.error}`)
+          else toast.warning(`パスワードヘルパーを利用できません: ${result.error}`)
         }
       }
 
       const spawnResult = await terminalApi.spawn({ env: spawnEnv })
       if (!spawnResult.success) {
-        toast.error('Failed to create terminal')
+        toast.error('ターミナルの作成に失敗しました')
         return
       }
 
@@ -177,16 +179,16 @@ export function useSSHConnection(profile: SSHProfile | null) {
         setSftpReady(true)
         // connectionId state may not have updated within this tick; pass the id explicitly.
         void loadDirectory('/', backendId)
-        toast.success(`Connected: ${profile.name}`)
+        toast.success(`${profile.name} に接続しました`)
       } else {
         // SSH did not authenticate over the ssh2 backend. Keep the interactive
         // terminal visible (it stays mounted via localTerminalPtyId, so the user
         // can still type a password / read the error and a Disconnect control is
         // shown), but tell the truth in the badge. Cancel the queued command
         // write so it doesn't fire into a terminal the user may be using.
-        const errMsg = sftpResult.success ? 'connection not established' : sftpResult.error
+        const errMsg = sftpResult.success ? '接続が確立されませんでした' : sftpResult.error
         updateConnectionStatusByProfile(profile.id, 'failed', errMsg)
-        toast.error(`SSH connection failed: ${errMsg ?? 'unknown error'}`)
+        toast.error(`SSH接続に失敗しました: ${errMsg ?? '不明なエラー'}`)
       }
     } catch (error) {
       if (profile)
@@ -195,7 +197,7 @@ export function useSSHConnection(profile: SSHProfile | null) {
           'failed',
           error instanceof Error ? error.message : String(error)
         )
-      toast.error(`Connection failed: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error(`接続に失敗しました: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
       setIsConnecting(false)
     }
@@ -226,7 +228,7 @@ export function useSSHConnection(profile: SSHProfile | null) {
     if (!isConnected) {
       setSftpReady(false)
       setEntries([])
-      updateConnectionStatusByProfile(profile.id, 'failed', 'SSH session ended')
+      updateConnectionStatusByProfile(profile.id, 'failed', 'SSHセッションが終了しました')
     }
   }, [profile, isConnected, updateConnectionStatusByProfile])
 
@@ -255,12 +257,12 @@ export function useSSHConnection(profile: SSHProfile | null) {
     setLocalTerminalPtyId(null)
     setSftpReady(false)
     setEntries([])
-    toast.info(`Disconnected: ${profile.name}`)
+    toast.info(`${profile.name} から切断しました`)
   }, [localTerminalPtyId, connection, profile?.id, profile?.name, markDisconnected, profile])
 
   const handleBrowseFiles = useCallback(async () => {
     if (!connectionId) {
-      toast.error('Not connected — open a terminal first')
+      toast.error('未接続です — まずターミナルを開いてください')
       return
     }
     // If SFTP never came up (id still the local placeholder), retry the backend connect.
@@ -281,16 +283,16 @@ export function useSSHConnection(profile: SSHProfile | null) {
         } else {
           // Don't leave the placeholder connection stuck: reflect the failure so
           // the badge and SFTP state are accurate.
-          const errMsg = sftpResult.success ? 'connection not established' : sftpResult.error
+          const errMsg = sftpResult.success ? '接続が確立されませんでした' : sftpResult.error
           updateConnectionStatusByProfile(profile.id, 'failed', errMsg)
           setSftpReady(false)
-          toast.error(`SFTP unavailable: ${errMsg ?? 'connection not established'}`)
+          toast.error(`SFTPを利用できません: ${errMsg ?? '接続が確立されませんでした'}`)
         }
       } catch (error) {
         const errMsg = error instanceof Error ? error.message : String(error)
         updateConnectionStatusByProfile(profile.id, 'failed', errMsg)
         setSftpReady(false)
-        toast.error(`SFTP unavailable: ${errMsg}`)
+        toast.error(`SFTPを利用できません: ${errMsg}`)
       }
       return
     }
@@ -315,10 +317,10 @@ export function useSSHConnection(profile: SSHProfile | null) {
         if (result.success) {
           setChildEntries((prev) => new Map(prev).set(dirPath, result.data))
           setExpandedDirs((prev) => new Set(prev).add(dirPath))
-        } else toast.error(`Permission denied: ${dirPath}`)
+        } else toast.error(`アクセスが拒否されました: ${dirPath}`)
       } catch (error) {
         toast.error(
-          `Failed to load ${dirPath}: ${error instanceof Error ? error.message : String(error)}`
+          `${dirPath} の読み込みに失敗しました: ${error instanceof Error ? error.message : String(error)}`
         )
       } finally {
         setLoadingDirs((prev) => {

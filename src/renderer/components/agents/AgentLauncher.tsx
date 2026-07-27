@@ -263,7 +263,7 @@ export function AgentLauncher({
         }
       )
       if (!result.success) {
-        toast.error(result.error || 'Failed to launch agent')
+        toast.error(result.error || 'エージェントの起動に失敗しました')
         return
       }
       setLoadedSkill(null)
@@ -291,7 +291,7 @@ export function AgentLauncher({
     async (entry: UnifiedAgentEntry | undefined, mode: AgentMode) => {
       if (!entry) return
       if (!activeProjectId) {
-        toast.error('No active project')
+        toast.error('アクティブなプロジェクトがありません')
         return
       }
       if (isLaunching) return
@@ -306,7 +306,7 @@ export function AgentLauncher({
           await launchAcp(entry.acp.id)
         }
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : 'Failed to launch agent')
+        toast.error(err instanceof Error ? err.message : 'エージェントの起動に失敗しました')
       } finally {
         setIsLaunching(false)
       }
@@ -379,7 +379,7 @@ export function AgentLauncher({
   const spawnShellTerminal = useCallback(
     async (shell?: ShellInfo) => {
       if (!activeProjectId) {
-        toast.error('No active project')
+        toast.error('アクティブなプロジェクトがありません')
         return
       }
       if (isSpawningTerminal) return
@@ -394,7 +394,7 @@ export function AgentLauncher({
           maxTerminalsPerProject: maxTerminals
         })
         if (!result.success) {
-          toast.error(result.error || 'Failed to create terminal')
+          toast.error(result.error || 'ターミナルの作成に失敗しました')
         } else {
           useWorkspaceStore.getState().hideAgentLauncher()
         }
@@ -427,9 +427,9 @@ export function AgentLauncher({
         agentId: saved.id,
         mode: 'cli'
       })
-      toast.success(`Added "${def.name}" to your agents`)
+      toast.success(`"${def.name}" をエージェントに追加しました`)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to save agent')
+      toast.error(err instanceof Error ? err.message : 'エージェントの保存に失敗しました')
     }
   }, [])
 
@@ -459,7 +459,7 @@ export function AgentLauncher({
                     <span className="flex items-center gap-1.5">
                       <EntryGlyph entry={selectedEntry} />
                       <span className="max-w-[100px] truncate text-xs font-medium">
-                        {selectedEntry?.name ?? 'Agent'}
+                        {selectedEntry?.name ?? 'エージェント'}
                       </span>
                     </span>
                   </SelectValue>
@@ -472,7 +472,7 @@ export function AgentLauncher({
                       className="flex w-full items-center gap-2 px-2 py-1.5 text-xs text-primary hover:bg-muted/40"
                     >
                       <Settings2 size={12} />
-                      Enable an agent in Settings…
+                      設定でエージェントを有効化…
                     </button>
                   ) : (
                     <>
@@ -497,7 +497,7 @@ export function AgentLauncher({
                       <SelectItem value={AGENT_SELECT_NEW}>
                         <span className="flex items-center gap-2 text-primary">
                           <Plus size={12} />
-                          New custom agent…
+                          新しいカスタムエージェント…
                         </span>
                       </SelectItem>
                     </>
@@ -520,7 +520,7 @@ export function AgentLauncher({
                           : 'text-muted-foreground hover:text-foreground'
                       )}
                       aria-pressed={effectiveMode === mode}
-                      aria-label={`Run as ${mode.toUpperCase()}`}
+                      aria-label={`${mode.toUpperCase()} として実行`}
                     >
                       {mode}
                     </button>
@@ -529,7 +529,7 @@ export function AgentLauncher({
               ) : (
                 <span
                   className="rounded bg-muted/40 px-1.5 py-0.5 text-3xs font-medium uppercase text-muted-foreground"
-                  title={`This agent runs as ${effectiveMode.toUpperCase()}`}
+                  title={`このエージェントは ${effectiveMode.toUpperCase()} として実行されます`}
                 >
                   {effectiveMode}
                 </span>
@@ -545,12 +545,10 @@ export function AgentLauncher({
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={
-                  loadedSkill
-                    ? 'Add a message (optional)…'
-                    : 'Describe what you want… (/ for skills)'
+                  loadedSkill ? 'メッセージを追加（任意）…' : 'やりたいことを入力…（/ でスキル）'
                 }
                 rows={1}
-                aria-label="Agent prompt"
+                aria-label="エージェントへの指示"
                 autoFocus
                 className="min-w-0 resize-none bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground/60"
                 style={{ minHeight: '44px', maxHeight: '120px' }}
@@ -572,8 +570,8 @@ export function AgentLauncher({
                     ? 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                     : 'text-muted-foreground/35'
                 )}
-                aria-label={`Launch ${selectedEntry?.name ?? 'agent'}`}
-                title={isLaunching ? 'Launching…' : `Launch ${selectedEntry?.name ?? 'agent'}`}
+                aria-label={`${selectedEntry?.name ?? 'エージェント'} を起動`}
+                title={isLaunching ? '起動中…' : `${selectedEntry?.name ?? 'エージェント'} を起動`}
               >
                 {isLaunching ? (
                   <Loader2 size={16} className="animate-spin" />
@@ -587,13 +585,13 @@ export function AgentLauncher({
 
         {/* Hint */}
         <span className="text-center text-2xs text-muted-foreground/50">
-          Tab to complete · Enter to launch · Shift+Enter for newline · Esc to dismiss
+          Tab で補完 · Enter で起動 · Shift+Enter で改行 · Esc で閉じる
         </span>
 
         {/* Plain terminal */}
         <div className="flex items-center gap-3 pt-1">
           <div className="h-px flex-1 bg-border/50" aria-hidden />
-          <span className="shrink-0 text-2xs text-muted-foreground/50">or run terminal</span>
+          <span className="shrink-0 text-2xs text-muted-foreground/50">またはターミナルを起動</span>
           <div className="h-px flex-1 bg-border/50" aria-hidden />
         </div>
 
@@ -623,7 +621,7 @@ export function AgentLauncher({
               onClick={() => void spawnShellTerminal()}
             >
               <TerminalIcon size={12} className="opacity-70" />
-              Default terminal
+              デフォルトターミナル
             </Button>
           )}
         </div>
@@ -683,7 +681,7 @@ const EntryGlyph = memo(function EntryGlyph({
       aria-hidden="true"
       className="flex h-4 w-4 items-center justify-center rounded-sm bg-foreground/10 text-4xs font-semibold uppercase"
     >
-      {entry?.name.charAt(0) ?? 'A'}
+      {entry?.name.charAt(0) ?? 'エ'}
     </span>
   )
 })

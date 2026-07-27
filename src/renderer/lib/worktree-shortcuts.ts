@@ -21,64 +21,64 @@ export interface WorktreeShortcut {
 export const WORKTREE_SHORTCUTS: WorktreeShortcut[] = [
   {
     id: 'worktree.create',
-    label: 'Create Worktree',
-    description: 'Open the new worktree creation modal',
+    label: 'ワークツリーを作成',
+    description: '新規ワークツリー作成ダイアログを開きます',
     defaultBinding: 'Ctrl+Shift+N',
     macBinding: 'Cmd+Shift+N',
     category: 'create'
   },
   {
     id: 'worktree.switch-next',
-    label: 'Switch to Next Worktree',
-    description: 'Cycle to the next worktree in the sidebar',
+    label: '次のワークツリーに切替',
+    description: 'サイドバーで次のワークツリーに切り替えます',
     defaultBinding: 'Ctrl+Shift+ArrowDown',
     macBinding: 'Cmd+Shift+ArrowDown',
     category: 'navigate'
   },
   {
     id: 'worktree.switch-prev',
-    label: 'Switch to Previous Worktree',
-    description: 'Cycle to the previous worktree in the sidebar',
+    label: '前のワークツリーに切替',
+    description: 'サイドバーで前のワークツリーに切り替えます',
     defaultBinding: 'Ctrl+Shift+ArrowUp',
     macBinding: 'Cmd+Shift+ArrowUp',
     category: 'navigate'
   },
   {
     id: 'worktree.switch-root',
-    label: 'Switch to Project Root',
-    description: 'Switch active context to the project root directory',
+    label: 'プロジェクトルートに切替',
+    description: 'アクティブなコンテキストをプロジェクトルートディレクトリに切り替えます',
     defaultBinding: 'Ctrl+Shift+Home',
     macBinding: 'Cmd+Shift+Home',
     category: 'navigate'
   },
   {
     id: 'worktree.open-terminal',
-    label: 'Open Terminal in Worktree',
-    description: 'Spawn a new terminal in the active worktree',
+    label: 'ワークツリーでターミナルを開く',
+    description: 'アクティブなワークツリーで新しいターミナルを起動します',
     defaultBinding: 'Ctrl+Shift+T',
     macBinding: 'Cmd+Shift+T',
     category: 'navigate'
   },
   {
     id: 'worktree.archive',
-    label: 'Archive Active Worktree',
-    description: 'Archive the current active worktree',
+    label: 'アクティブなワークツリーをアーカイブ',
+    description: '現在アクティブなワークツリーをアーカイブします',
     defaultBinding: 'Ctrl+Shift+A',
     macBinding: 'Cmd+Shift+A',
     category: 'modify'
   },
   {
     id: 'worktree.merge-to-main',
-    label: 'Merge Worktree to Main',
-    description: 'Start merge workflow: worktree branch → main',
+    label: 'ワークツリーをmainにマージ',
+    description: 'マージ作業を開始します（ワークツリーのブランチ→main）',
     defaultBinding: 'Ctrl+Shift+M',
     macBinding: 'Cmd+Shift+M',
     category: 'merge'
   },
   {
     id: 'worktree.sync-from-main',
-    label: 'Sync Main into Worktree',
-    description: 'Start merge workflow: main → worktree branch',
+    label: 'mainをワークツリーに同期',
+    description: 'マージ作業を開始します（main→ワークツリーのブランチ）',
     defaultBinding: 'Ctrl+Shift+S',
     macBinding: 'Cmd+Shift+S',
     category: 'merge'

@@ -92,10 +92,11 @@ export function CustomAgentDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus size={18} />
-            New Custom Agent
+            新しいカスタムエージェント
           </DialogTitle>
           <DialogDescription>
-            Add a CLI agent to the launcher. Configure how to call it and how prompts are passed.
+            ランチャーに CLI
+            エージェントを追加します。呼び出し方法とプロンプトの渡し方を設定してください。
           </DialogDescription>
         </DialogHeader>
 
@@ -103,7 +104,7 @@ export function CustomAgentDialog({
           {/* Icon + Name row */}
           <div className="flex items-end gap-3">
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs">Icon</Label>
+              <Label className="text-xs">アイコン</Label>
               <IconPicker
                 value={form.icon}
                 onChange={(icon) => setForm((prev) => ({ ...prev, icon }))}
@@ -111,13 +112,13 @@ export function CustomAgentDialog({
             </div>
             <div className="flex-1 flex flex-col gap-1.5">
               <Label htmlFor="agent-name" className="text-xs">
-                Name
+                名前
               </Label>
               <Input
                 id="agent-name"
                 value={form.name}
                 onChange={(e) => update('name', e.target.value)}
-                placeholder="My Agent"
+                placeholder="マイエージェント"
                 className="h-9"
               />
             </div>
@@ -126,13 +127,13 @@ export function CustomAgentDialog({
           {/* Command */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="agent-command" className="text-xs">
-              Command
+              コマンド
             </Label>
             <Input
               id="agent-command"
               value={form.command}
               onChange={(e) => update('command', e.target.value)}
-              placeholder="e.g. claude, codex, my-agent"
+              placeholder="例: claude, codex, my-agent"
               className="h-9 font-mono text-sm"
             />
           </div>
@@ -140,21 +141,21 @@ export function CustomAgentDialog({
           {/* Base Args */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="agent-base-args" className="text-xs">
-              Base arguments{' '}
-              <span className="text-muted-foreground font-normal">(space-separated, optional)</span>
+              基本引数{' '}
+              <span className="text-muted-foreground font-normal">（スペース区切り、任意）</span>
             </Label>
             <Input
               id="agent-base-args"
               value={form.baseArgs}
               onChange={(e) => update('baseArgs', e.target.value)}
-              placeholder="e.g. --interactive"
+              placeholder="例: --interactive"
               className="h-9 font-mono text-sm"
             />
           </div>
 
           {/* Prompt Mode */}
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs">Prompt mode</Label>
+            <Label className="text-xs">プロンプトモード</Label>
             <Select
               value={form.promptMode}
               onValueChange={(v) => update('promptMode', v as AgentPromptMode)}
@@ -163,11 +164,11 @@ export function CustomAgentDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="positional">Positional — prompt appended after args</SelectItem>
+                <SelectItem value="positional">位置引数 — 引数の後にプロンプトを追加</SelectItem>
                 <SelectItem value="flag">
-                  Flag — prompt follows a flag (e.g. -i "prompt")
+                  フラグ — フラグの後にプロンプトを続ける（例: -i "prompt"）
                 </SelectItem>
-                <SelectItem value="none">None — no seed prompt</SelectItem>
+                <SelectItem value="none">なし — 初期プロンプトを使わない</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -176,13 +177,13 @@ export function CustomAgentDialog({
           {form.promptMode === 'flag' && (
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="agent-prompt-flag" className="text-xs">
-                Prompt flag
+                プロンプトフラグ
               </Label>
               <Input
                 id="agent-prompt-flag"
                 value={form.promptFlag}
                 onChange={(e) => update('promptFlag', e.target.value)}
-                placeholder="e.g. -i, --prompt"
+                placeholder="例: -i, --prompt"
                 className="h-9 font-mono text-sm"
               />
             </div>
@@ -198,14 +199,14 @@ export function CustomAgentDialog({
               onOpenChange(false)
             }}
           >
-            Cancel
+            キャンセル
           </Button>
           <Button
             size="sm"
             onClick={() => void handleSave()}
             disabled={saving || !form.name.trim() || !form.command.trim()}
           >
-            {saving ? 'Saving…' : 'Create Agent'}
+            {saving ? '保存中…' : 'エージェントを作成'}
           </Button>
         </div>
       </DialogContent>
