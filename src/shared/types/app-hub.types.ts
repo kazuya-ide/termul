@@ -103,6 +103,23 @@ export const appFrontmatterSchema = z.object({
   todos: looseArray,
   cautions: looseArray,
   changelog: looseArray,
+  // 表示・並び順の補助項目(Termulのカード用)。台帳ハブ側フォームにはまだ入力欄が
+  // 無いため、null/未設定でも壊れないよう optional/デフォルト付きで受ける。
+  // thumbnail: 台帳ハブの registry/assets/ 配下を指す相対パス(例 'assets/craflow.png')。
+  thumbnail: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? null),
+  // pinned: true のカードは一覧の最上段に固定表示する。
+  pinned: z
+    .boolean()
+    .nullish()
+    .transform((v) => v === true),
+  // sort_order: 小さいほど前。未設定(null)は名前順などのフォールバックに回す。
+  sort_order: z
+    .number()
+    .nullish()
+    .transform((v) => v ?? null),
   updated_at: z.string().optional().default('')
 })
 

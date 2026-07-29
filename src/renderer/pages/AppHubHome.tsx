@@ -9,6 +9,7 @@ import {
   FolderOpen,
   Info,
   ListTodo,
+  Pin,
   Play,
   RefreshCw,
   Search,
@@ -26,6 +27,7 @@ import {
   openInVSCode,
   runSafeCommand
 } from '@/lib/app-hub-launch'
+import { loadThumbnailDataUrl, resolveThumbnailPath } from '@/lib/app-hub-thumbnail'
 import { useAppHubProcessStore } from '@/stores/app-hub-process-store'
 import type { PathStatus } from '@/stores/app-hub-store'
 import { useAppHubStore } from '@/stores/app-hub-store'
@@ -38,10 +40,60 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   planned: 'bg-sky-500/15 text-sky-500'
 }
 
+type SortKey = 'name' | 'updated' | 'status' | 'company'
+
+const SORT_OPTIONS: Array<{ value: SortKey; label: string }> = [
+  { value: 'name', label: '名前順' },
+  { value: 'updated', label: '更新が新しい順' },
+  { value: 'status', label: '状態順(稼働中→計画中)' },
+  { value: 'company', label: '会社順' }
+]
+
+// 状態の並び順(稼働中を先頭に)。
+const STATUS_ORDER: Record<string, number> = {
+  production: 0,
+  development: 1,
+  planned: 2,
+  paused: 3,
+  archived: 4
+}
+
+/**
+ * カード一覧の並び替え。どの並び順でも共通で:
+ *  1. pinned(ピン留め)を最上段に固定
+ *  2. sort_order(手動の並び番号。小さいほど前・null は後ろ)
+ *  3. 選んだ並び順キー(名前/更新日/状態/会社)
+ *  4. 最後は名前で安定させる
+ */
+function sortApps(list: AppRecord[], key: SortKey): AppRecord[] {
+  return [...list].sort((a, b) => {
+    const fa = a.frontmatter
+    const fb = b.frontmatter
+    if (fa.pinned !== fb.pinned) return fa.pinned ? -1 : 1
+    const soa = fa.sort_order
+    const sob = fb.sort_order
+    if (soa != null || sob != null) {
+      if (soa == null) return 1
+      if (sob == null) return -1
+      if (soa !== sob) return soa - sob
+    }
+    let c = 0
+    if (key === 'updated') c = (fb.updated_at || '').localeCompare(fa.updated_at || '')
+    else if (key === 'status') c = (STATUS_ORDER[fa.status] ?? 9) - (STATUS_ORDER[fb.status] ?? 9)
+    else if (key === 'company') c = fa.company.localeCompare(fb.company, 'ja')
+    if (c !== 0) return c
+    return fa.name.localeCompare(fb.name, 'ja')
+  })
+}
+
 export default function AppHubHome(): React.JSX.Element {
-  const { apps, isLoading, hasLoadedOnce, loadErrors, load, pathStatus } = useAppHubStore()
+  const { apps, isLoading, hasLoadedOnce, loadErrors, load, pathStatus, registryRoot } =
+    useAppHubStore()
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [companyFilter, setCompanyFilter] = useState<string>('all')
+  const [groupFilter, setGroupFilter] = useState<string>('all')
+  const [sortKey, setSortKey] = useState<SortKey>('name')
   const [detailSlug, setDetailSlug] = useState<string | null>(null)
   const detailApp = apps.find((a) => a.frontmatter.slug === detailSlug) ?? null
 
@@ -51,11 +103,29 @@ export default function AppHubHome(): React.JSX.Element {
     }
   }, [hasLoadedOnce, load])
 
+  // 絞り込み用の選択肢(会社・グループ)は登録データから重複なしで作る。
+  const companies = useMemo(
+    () =>
+      [...new Set(apps.map((a) => a.frontmatter.company).filter(Boolean))].sort((a, b) =>
+        a.localeCompare(b, 'ja')
+      ),
+    [apps]
+  )
+  const groups = useMemo(
+    () =>
+      [...new Set(apps.map((a) => a.frontmatter.project_group).filter(Boolean))].sort((a, b) =>
+        a.localeCompare(b, 'ja')
+      ),
+    [apps]
+  )
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return apps.filter((app) => {
+    const matched = apps.filter((app) => {
       const fm = app.frontmatter
       if (statusFilter !== 'all' && fm.status !== statusFilter) return false
+      if (companyFilter !== 'all' && fm.company !== companyFilter) return false
+      if (groupFilter !== 'all' && fm.project_group !== groupFilter) return false
       if (!q) return true
       const haystack = [
         fm.name,
@@ -72,7 +142,8 @@ export default function AppHubHome(): React.JSX.Element {
         .toLowerCase()
       return haystack.includes(q)
     })
-  }, [apps, query, statusFilter])
+    return sortApps(matched, sortKey)
+  }, [apps, query, statusFilter, companyFilter, groupFilter, sortKey])
 
   const runAction = async (
     label: string,
@@ -106,8 +177,8 @@ export default function AppHubHome(): React.JSX.Element {
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative flex-1 min-w-[12rem] max-w-sm">
           <Search
             size={14}
             className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -128,6 +199,45 @@ export default function AppHubHome(): React.JSX.Element {
           {STATUS_VALUES.map((s) => (
             <option key={s} value={s}>
               {STATUS_LABEL[s]}
+            </option>
+          ))}
+        </select>
+        {companies.length > 0 && (
+          <select
+            value={companyFilter}
+            onChange={(e) => setCompanyFilter(e.target.value)}
+            className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
+          >
+            <option value="all">すべての会社</option>
+            {companies.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        )}
+        {groups.length > 0 && (
+          <select
+            value={groupFilter}
+            onChange={(e) => setGroupFilter(e.target.value)}
+            className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
+          >
+            <option value="all">すべてのグループ</option>
+            {groups.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        )}
+        <select
+          value={sortKey}
+          onChange={(e) => setSortKey(e.target.value as SortKey)}
+          className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
+        >
+          {SORT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
             </option>
           ))}
         </select>
@@ -157,6 +267,7 @@ export default function AppHubHome(): React.JSX.Element {
             <AppCard
               key={app.frontmatter.slug}
               record={app}
+              registryRoot={registryRoot}
               runAction={runAction}
               pathStatus={pathStatus[app.frontmatter.slug] ?? 'unknown'}
               onOpenDetail={() => setDetailSlug(app.frontmatter.slug)}
@@ -189,11 +300,13 @@ const PROCESS_STATUS_CLASS: Record<string, string> = {
 
 function AppCard({
   record,
+  registryRoot,
   runAction,
   pathStatus,
   onOpenDetail
 }: {
   record: AppRecord
+  registryRoot: string
   runAction: (
     label: string,
     action: () => Promise<{ ok: boolean; message: string }>
@@ -203,6 +316,22 @@ function AppCard({
 }): React.JSX.Element {
   const fm = record.frontmatter
   const overview = extractOverviewExcerpt(record.body)
+  const [thumbUrl, setThumbUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    const thumbnail = fm.thumbnail?.trim()
+    if (!thumbnail) {
+      setThumbUrl(null)
+      return
+    }
+    let live = true
+    void loadThumbnailDataUrl(resolveThumbnailPath(registryRoot, thumbnail)).then((url) => {
+      if (live) setThumbUrl(url)
+    })
+    return () => {
+      live = false
+    }
+  }, [fm.thumbnail, registryRoot])
   const primaryUrl = fm.urls.production ?? fm.urls.admin ?? null
   const devCommand = fm.launch?.dev_command?.trim() || ''
   const process = useAppHubProcessStore((s) => s.processes[fm.slug])
@@ -216,9 +345,19 @@ function AppCard({
 
   return (
     <div className="border border-border rounded-lg p-4 space-y-2.5 bg-card">
+      {thumbUrl && (
+        <img
+          src={thumbUrl}
+          alt={`${fm.name} のスクリーンショット`}
+          className="w-full h-32 object-cover rounded-md border border-border/60 bg-secondary/40"
+        />
+      )}
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="font-semibold text-sm">{fm.name}</div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1 font-semibold text-sm">
+            {fm.pinned && <Pin size={12} className="shrink-0 text-primary" fill="currentColor" />}
+            <span className="truncate">{fm.name}</span>
+          </div>
           <div className="text-xs text-muted-foreground">{KIND_LABEL[fm.kind]}</div>
         </div>
         <div className="flex items-center gap-1 shrink-0">
