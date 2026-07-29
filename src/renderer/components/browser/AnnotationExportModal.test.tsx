@@ -123,7 +123,7 @@ describe('AnnotationExportModal', () => {
 
     selectAfsTab()
     act(() => {
-      fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
+      fireEvent.click(screen.getByRole('button', { name: 'コピー' }))
     })
 
     expect(mockWriteText).toHaveBeenCalledOnce()

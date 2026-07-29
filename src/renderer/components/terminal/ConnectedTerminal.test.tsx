@@ -1530,7 +1530,9 @@ describe('ConnectedTerminal', () => {
       await fileLink!.activate(ctrlClick, fileLink!.text)
 
       expect(consoleErrorSpy).toHaveBeenCalledWith('[Terminal File Link Open Failed]', failure)
-      expect(toast.error).toHaveBeenCalledWith('Failed to open file from terminal output.')
+      expect(toast.error).toHaveBeenCalledWith(
+        'ターミナルの出力からのファイルのオープンに失敗しました。'
+      )
     })
   })
 

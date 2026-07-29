@@ -78,7 +78,7 @@ function renderLayout() {
 describe('SettingsLayout', () => {
   it('renders all categories in the sidebar', () => {
     renderLayout()
-    const nav = screen.getByRole('navigation', { name: /settings categories/i })
+    const nav = screen.getByRole('navigation', { name: /設定カテゴリ/ })
     expect(nav).toBeInTheDocument()
     for (const category of categories) {
       expect(screen.getByRole('button', { name: category.label })).toBeInTheDocument()
@@ -109,7 +109,7 @@ describe('SettingsLayout', () => {
 
   it('filters to matching settings when searching', () => {
     renderLayout()
-    const search = screen.getByLabelText('Search settings')
+    const search = screen.getByLabelText('設定を検索')
     fireEvent.change(search, { target: { value: 'font' } })
     expect(screen.getByText('Font Family')).toBeInTheDocument()
     // Non-matching categories are not shown as plain category buttons while searching.
@@ -118,21 +118,21 @@ describe('SettingsLayout', () => {
 
   it('matches a setting via keywords', () => {
     renderLayout()
-    const search = screen.getByLabelText('Search settings')
+    const search = screen.getByLabelText('設定を検索')
     fireEvent.change(search, { target: { value: 'bash' } })
     expect(screen.getByText('Default Shell')).toBeInTheDocument()
   })
 
   it('shows an empty state when no settings match', () => {
     renderLayout()
-    const search = screen.getByLabelText('Search settings')
+    const search = screen.getByLabelText('設定を検索')
     fireEvent.change(search, { target: { value: 'zzzzz' } })
-    expect(screen.getByText(/no settings match/i)).toBeInTheDocument()
+    expect(screen.getByText(/に一致する設定はありません/)).toBeInTheDocument()
   })
 
   it('selecting a search result scrolls to its section', () => {
     renderLayout()
-    const search = screen.getByLabelText('Search settings')
+    const search = screen.getByLabelText('設定を検索')
     fireEvent.change(search, { target: { value: 'font' } })
     fireEvent.click(screen.getByText('Font Family'))
     expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled()
@@ -140,9 +140,9 @@ describe('SettingsLayout', () => {
 
   it('clears the search when the clear button is pressed', () => {
     renderLayout()
-    const search = screen.getByLabelText('Search settings') as HTMLInputElement
+    const search = screen.getByLabelText('設定を検索') as HTMLInputElement
     fireEvent.change(search, { target: { value: 'font' } })
-    fireEvent.click(screen.getByLabelText('Clear search'))
+    fireEvent.click(screen.getByLabelText('検索をクリア'))
     expect(search.value).toBe('')
     // Category buttons return after clearing.
     expect(screen.getByRole('button', { name: 'Updates' })).toBeInTheDocument()

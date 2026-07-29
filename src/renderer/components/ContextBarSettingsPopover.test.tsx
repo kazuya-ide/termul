@@ -24,21 +24,21 @@ describe('ContextBarSettingsPopover', () => {
   it('renders the context bar settings popover trigger', () => {
     render(<ContextBarSettingsPopover />)
 
-    expect(screen.getByRole('button', { name: 'Context bar settings' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'コンテキストバー設定' })).toBeInTheDocument()
   })
 
   it('opens the popover and dispatches updates for each switch', () => {
     render(<ContextBarSettingsPopover />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Context bar settings' }))
+    fireEvent.click(screen.getByRole('button', { name: 'コンテキストバー設定' }))
 
-    expect(screen.getByText('Show in Context Bar')).toBeInTheDocument()
+    expect(screen.getByText('コンテキストバーに表示')).toBeInTheDocument()
 
     const toggleCases: Array<[string, string]> = [
-      ['Git Branch', 'showGitBranch'],
-      ['Git Status', 'showGitStatus'],
-      ['Working Directory', 'showWorkingDirectory'],
-      ['Exit Code', 'showExitCode']
+      ['Gitブランチ', 'showGitBranch'],
+      ['Gitステータス', 'showGitStatus'],
+      ['作業ディレクトリ', 'showWorkingDirectory'],
+      ['終了コード', 'showExitCode']
     ]
 
     toggleCases.forEach(([label, key]) => {

@@ -44,7 +44,7 @@ describe('BrowserControls', () => {
     useBrowserSessionStore.getState().createTab('tab-1', 'https://example.com')
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    const toggleBtn = screen.getByLabelText('Enable annotation mode')
+    const toggleBtn = screen.getByLabelText('注釈モードを有効にする')
     expect(toggleBtn).toBeInTheDocument()
     expect(toggleBtn.getAttribute('aria-pressed')).toBe('false')
   })
@@ -55,7 +55,7 @@ describe('BrowserControls', () => {
 
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    const toggleBtn = screen.getByLabelText('Disable annotation mode')
+    const toggleBtn = screen.getByLabelText('注釈モードを無効にする')
     expect(toggleBtn).toBeInTheDocument()
     expect(toggleBtn.getAttribute('aria-pressed')).toBe('true')
   })
@@ -65,7 +65,7 @@ describe('BrowserControls', () => {
 
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    const toggleBtn = screen.getByLabelText('Enable annotation mode')
+    const toggleBtn = screen.getByLabelText('注釈モードを有効にする')
     fireEvent.click(toggleBtn)
 
     const tab = useBrowserSessionStore.getState().tabs.get('tab-1')
@@ -78,7 +78,7 @@ describe('BrowserControls', () => {
 
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    const toggleBtn = screen.getByLabelText('Disable annotation mode')
+    const toggleBtn = screen.getByLabelText('注釈モードを無効にする')
     fireEvent.click(toggleBtn)
 
     const tab = useBrowserSessionStore.getState().tabs.get('tab-1')
@@ -91,7 +91,7 @@ describe('BrowserControls', () => {
 
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    const toggleBtn = screen.getByLabelText('Disable annotation mode')
+    const toggleBtn = screen.getByLabelText('注釈モードを無効にする')
     // Active state should have ring and shadow classes
     expect(toggleBtn.className).toContain('ring-2')
     expect(toggleBtn.className).toContain('ring-primary/30')
@@ -101,10 +101,10 @@ describe('BrowserControls', () => {
     useBrowserSessionStore.getState().createTab('tab-1', 'https://example.com')
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    expect(screen.getByTitle('Back')).toBeInTheDocument()
-    expect(screen.getByTitle('Forward')).toBeInTheDocument()
-    expect(screen.getByTitle('Reload')).toBeInTheDocument()
-    expect(screen.getByTitle('Debug Console')).toBeInTheDocument()
+    expect(screen.getByTitle('戻る')).toBeInTheDocument()
+    expect(screen.getByTitle('進む')).toBeInTheDocument()
+    expect(screen.getByTitle('再読み込み')).toBeInTheDocument()
+    expect(screen.getByTitle('デバッグコンソール')).toBeInTheDocument()
   })
 
   it('renders URL input with current tab URL', () => {
@@ -112,7 +112,7 @@ describe('BrowserControls', () => {
 
     renderWithProvider(<BrowserControls browserTabId="tab-1" />)
 
-    const input = screen.getByPlaceholderText('Enter URL...') as HTMLInputElement
+    const input = screen.getByPlaceholderText('URLを入力') as HTMLInputElement
     expect(input.value).toBe('https://example.com/page')
   })
 

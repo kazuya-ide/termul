@@ -31,7 +31,7 @@ describe('statusStyle', () => {
     expect(statusStyle('completed').spinning).toBe(false)
     expect(statusStyle('failed').spinning).toBe(false)
     expect(statusStyle('pending').spinning).toBe(false)
-    expect(statusStyle(undefined).label).toBe('pending')
+    expect(statusStyle(undefined).label).toBe('保留中')
   })
 })
 

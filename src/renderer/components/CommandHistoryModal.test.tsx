@@ -55,13 +55,13 @@ describe('CommandHistoryModal', () => {
   it('should render title when open', () => {
     render(<CommandHistoryModal {...defaultProps} />)
 
-    expect(screen.getByText('Command History')).toBeInTheDocument()
+    expect(screen.getByText('コマンド履歴')).toBeInTheDocument()
   })
 
   it('should not render when closed', () => {
     render(<CommandHistoryModal {...defaultProps} isOpen={false} />)
 
-    expect(screen.queryByText('Command History')).not.toBeInTheDocument()
+    expect(screen.queryByText('コマンド履歴')).not.toBeInTheDocument()
   })
 
   it('should render command entries', async () => {
@@ -86,7 +86,7 @@ describe('CommandHistoryModal', () => {
   it('should filter entries based on search query', async () => {
     render(<CommandHistoryModal {...defaultProps} />)
 
-    const input = screen.getByPlaceholderText('Search commands...')
+    const input = screen.getByPlaceholderText('コマンドを検索...')
     fireEvent.change(input, { target: { value: 'bun' } })
 
     await waitFor(() => {
@@ -99,23 +99,23 @@ describe('CommandHistoryModal', () => {
   it('should show empty state when no entries', () => {
     render(<CommandHistoryModal {...defaultProps} entries={[]} allEntries={[]} />)
 
-    expect(screen.getByText('No command history yet')).toBeInTheDocument()
+    expect(screen.getByText('コマンド履歴がまだありません')).toBeInTheDocument()
   })
 
   it('should show empty state when no matching results', () => {
     render(<CommandHistoryModal {...defaultProps} />)
 
-    const input = screen.getByPlaceholderText('Search commands...')
+    const input = screen.getByPlaceholderText('コマンドを検索...')
     fireEvent.change(input, { target: { value: 'nonexistent' } })
 
-    expect(screen.getByText('No matching commands')).toBeInTheDocument()
+    expect(screen.getByText('一致するコマンドがありません')).toBeInTheDocument()
   })
 
   it('should call onClose on escape key', () => {
     const onClose = vi.fn()
     render(<CommandHistoryModal {...defaultProps} onClose={onClose} />)
 
-    const input = screen.getByPlaceholderText('Search commands...')
+    const input = screen.getByPlaceholderText('コマンドを検索...')
     fireEvent.keyDown(input, { key: 'Escape' })
 
     expect(onClose).toHaveBeenCalled()
@@ -144,7 +144,7 @@ describe('CommandHistoryModal', () => {
       <CommandHistoryModal {...defaultProps} onSelectCommand={onSelectCommand} onClose={onClose} />
     )
 
-    const input = screen.getByPlaceholderText('Search commands...')
+    const input = screen.getByPlaceholderText('コマンドを検索...')
     fireEvent.keyDown(input, { key: 'Enter' })
 
     expect(onSelectCommand).toHaveBeenCalledWith('bun install')
@@ -154,7 +154,7 @@ describe('CommandHistoryModal', () => {
   it('should navigate entries with arrow keys', () => {
     render(<CommandHistoryModal {...defaultProps} />)
 
-    const input = screen.getByPlaceholderText('Search commands...')
+    const input = screen.getByPlaceholderText('コマンドを検索...')
 
     // Arrow down should increment selection
     fireEvent.keyDown(input, { key: 'ArrowDown' })
@@ -180,7 +180,7 @@ describe('CommandHistoryModal', () => {
     const onClose = vi.fn()
     render(<CommandHistoryModal {...defaultProps} onClose={onClose} />)
 
-    const modalContent = screen.getByText('Command History').closest('.bg-card')
+    const modalContent = screen.getByText('コマンド履歴').closest('.bg-card')
     if (modalContent) {
       fireEvent.click(modalContent)
     }
@@ -191,9 +191,9 @@ describe('CommandHistoryModal', () => {
   it('should display keyboard shortcuts in footer', () => {
     render(<CommandHistoryModal {...defaultProps} />)
 
-    expect(screen.getByText(/to navigate/)).toBeInTheDocument()
-    expect(screen.getByText(/to insert/)).toBeInTheDocument()
-    expect(screen.getByText(/to close/)).toBeInTheDocument()
+    expect(screen.getByText(/で移動/)).toBeInTheDocument()
+    expect(screen.getByText(/で挿入/)).toBeInTheDocument()
+    expect(screen.getByText(/で閉じる/)).toBeInTheDocument()
   })
 
   // Project filter tests
@@ -201,7 +201,7 @@ describe('CommandHistoryModal', () => {
     it('should render filter dropdown showing "This Project" by default', () => {
       render(<CommandHistoryModal {...defaultProps} />)
 
-      expect(screen.getByText('This Project')).toBeInTheDocument()
+      expect(screen.getByText('このプロジェクト')).toBeInTheDocument()
     })
 
     it('should show only current project entries by default', async () => {
@@ -222,7 +222,7 @@ describe('CommandHistoryModal', () => {
       fireEvent.click(trigger)
 
       // Select "All Projects"
-      const allProjectsOption = screen.getByRole('option', { name: 'All Projects' })
+      const allProjectsOption = screen.getByRole('option', { name: 'すべてのプロジェクト' })
       fireEvent.click(allProjectsOption)
 
       await waitFor(() => {
@@ -237,7 +237,7 @@ describe('CommandHistoryModal', () => {
       // Switch to All Projects
       const trigger = screen.getByRole('combobox')
       fireEvent.click(trigger)
-      const allProjectsOption = screen.getByRole('option', { name: 'All Projects' })
+      const allProjectsOption = screen.getByRole('option', { name: 'すべてのプロジェクト' })
       fireEvent.click(allProjectsOption)
 
       await waitFor(() => {
@@ -246,7 +246,7 @@ describe('CommandHistoryModal', () => {
 
       // Switch back to This Project
       fireEvent.click(trigger)
-      const thisProjectOption = screen.getByRole('option', { name: 'This Project' })
+      const thisProjectOption = screen.getByRole('option', { name: 'このプロジェクト' })
       fireEvent.click(thisProjectOption)
 
       await waitFor(() => {
@@ -259,7 +259,7 @@ describe('CommandHistoryModal', () => {
       render(<CommandHistoryModal {...defaultProps} />)
 
       // Type search query
-      const input = screen.getByPlaceholderText('Search commands...')
+      const input = screen.getByPlaceholderText('コマンドを検索...')
       fireEvent.change(input, { target: { value: 'bun' } })
 
       await waitFor(() => {
@@ -270,7 +270,7 @@ describe('CommandHistoryModal', () => {
       // Switch to All Projects
       const trigger = screen.getByRole('combobox')
       fireEvent.click(trigger)
-      const allProjectsOption = screen.getByRole('option', { name: 'All Projects' })
+      const allProjectsOption = screen.getByRole('option', { name: 'すべてのプロジェクト' })
       fireEvent.click(allProjectsOption)
 
       // Search should still filter
@@ -286,13 +286,13 @@ describe('CommandHistoryModal', () => {
     it('should render Clear History button in footer', () => {
       render(<CommandHistoryModal {...defaultProps} />)
 
-      expect(screen.getByText('Clear History')).toBeInTheDocument()
+      expect(screen.getByText('履歴を消去')).toBeInTheDocument()
     })
 
     it('should disable Clear History button when no entries', () => {
       render(<CommandHistoryModal {...defaultProps} entries={[]} allEntries={[]} />)
 
-      const clearButton = screen.getByText('Clear History').closest('button')
+      const clearButton = screen.getByText('履歴を消去').closest('button')
       expect(clearButton).toBeDisabled()
     })
 
@@ -302,11 +302,11 @@ describe('CommandHistoryModal', () => {
       // Switch to All Projects
       const trigger = screen.getByRole('combobox')
       fireEvent.click(trigger)
-      const allProjectsOption = screen.getByRole('option', { name: 'All Projects' })
+      const allProjectsOption = screen.getByRole('option', { name: 'すべてのプロジェクト' })
       fireEvent.click(allProjectsOption)
 
       await waitFor(() => {
-        const clearButton = screen.getByText('Clear History').closest('button')
+        const clearButton = screen.getByText('履歴を消去').closest('button')
         expect(clearButton).toBeDisabled()
       })
     })
@@ -314,14 +314,12 @@ describe('CommandHistoryModal', () => {
     it('should show confirmation dialog when clicking Clear History', async () => {
       render(<CommandHistoryModal {...defaultProps} />)
 
-      const clearButton = screen.getByText('Clear History')
+      const clearButton = screen.getByText('履歴を消去')
       fireEvent.click(clearButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Clear Command History')).toBeInTheDocument()
-        expect(
-          screen.getByText(/Are you sure you want to clear the command history/)
-        ).toBeInTheDocument()
+        expect(screen.getByText('コマンド履歴を消去')).toBeInTheDocument()
+        expect(screen.getByText(/コマンド履歴を消去しますか/)).toBeInTheDocument()
       })
     })
 
@@ -329,14 +327,14 @@ describe('CommandHistoryModal', () => {
       const onClearHistory = vi.fn().mockResolvedValue(undefined)
       render(<CommandHistoryModal {...defaultProps} onClearHistory={onClearHistory} />)
 
-      const clearButton = screen.getByText('Clear History')
+      const clearButton = screen.getByText('履歴を消去')
       fireEvent.click(clearButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Clear Command History')).toBeInTheDocument()
+        expect(screen.getByText('コマンド履歴を消去')).toBeInTheDocument()
       })
 
-      const confirmButton = screen.getByRole('button', { name: 'Clear' })
+      const confirmButton = screen.getByRole('button', { name: '消去' })
       fireEvent.click(confirmButton)
 
       expect(onClearHistory).toHaveBeenCalledTimes(1)
@@ -346,14 +344,14 @@ describe('CommandHistoryModal', () => {
       const onClearHistory = vi.fn().mockResolvedValue(undefined)
       render(<CommandHistoryModal {...defaultProps} onClearHistory={onClearHistory} />)
 
-      const clearButton = screen.getByText('Clear History')
+      const clearButton = screen.getByText('履歴を消去')
       fireEvent.click(clearButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Clear Command History')).toBeInTheDocument()
+        expect(screen.getByText('コマンド履歴を消去')).toBeInTheDocument()
       })
 
-      const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+      const cancelButton = screen.getByRole('button', { name: 'キャンセル' })
       fireEvent.click(cancelButton)
 
       expect(onClearHistory).not.toHaveBeenCalled()
@@ -363,18 +361,18 @@ describe('CommandHistoryModal', () => {
       const onClearHistory = vi.fn().mockResolvedValue(undefined)
       render(<CommandHistoryModal {...defaultProps} onClearHistory={onClearHistory} />)
 
-      const clearButton = screen.getByText('Clear History')
+      const clearButton = screen.getByText('履歴を消去')
       fireEvent.click(clearButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Clear Command History')).toBeInTheDocument()
+        expect(screen.getByText('コマンド履歴を消去')).toBeInTheDocument()
       })
 
-      const confirmButton = screen.getByRole('button', { name: 'Clear' })
+      const confirmButton = screen.getByRole('button', { name: '消去' })
       fireEvent.click(confirmButton)
 
       await waitFor(() => {
-        expect(screen.queryByText('Clear Command History')).not.toBeInTheDocument()
+        expect(screen.queryByText('コマンド履歴を消去')).not.toBeInTheDocument()
       })
     })
   })

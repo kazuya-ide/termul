@@ -108,7 +108,7 @@ const renderWithRouter = (props = {}) => {
 // Worktrees are collapsed by default and only expand via the chevron, so tests
 // that assert on worktree rows must open the section first.
 const expandWorktrees = () => {
-  fireEvent.click(screen.getByLabelText('Expand worktrees'))
+  fireEvent.click(screen.getByLabelText('作業ツリーを展開'))
 }
 
 describe('ProjectSidebar Context Menu', () => {
@@ -118,10 +118,10 @@ describe('ProjectSidebar Context Menu', () => {
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
 
-    expect(screen.getByText('Rename')).toBeInTheDocument()
-    expect(screen.getByText('Change Color')).toBeInTheDocument()
-    expect(screen.getByText('Archive')).toBeInTheDocument()
-    expect(screen.getByText('Delete')).toBeInTheDocument()
+    expect(screen.getByText('名前を変更')).toBeInTheDocument()
+    expect(screen.getByText('色を変更')).toBeInTheDocument()
+    expect(screen.getByText('アーカイブ')).toBeInTheDocument()
+    expect(screen.getByText('削除')).toBeInTheDocument()
   })
 
   it('should close context menu on escape', async () => {
@@ -130,12 +130,12 @@ describe('ProjectSidebar Context Menu', () => {
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
 
-    expect(screen.getByText('Rename')).toBeInTheDocument()
+    expect(screen.getByText('名前を変更')).toBeInTheDocument()
 
     fireEvent.keyDown(document, { key: 'Escape' })
 
     await waitFor(() => {
-      expect(screen.queryByText('Rename')).not.toBeInTheDocument()
+      expect(screen.queryByText('名前を変更')).not.toBeInTheDocument()
     })
   })
 
@@ -145,7 +145,7 @@ describe('ProjectSidebar Context Menu', () => {
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
 
-    fireEvent.click(screen.getByText('Rename'))
+    fireEvent.click(screen.getByText('名前を変更'))
 
     await waitFor(() => {
       const input = screen.getByRole('textbox')
@@ -160,7 +160,7 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Rename'))
+    fireEvent.click(screen.getByText('名前を変更'))
 
     const input = await screen.findByRole('textbox')
     fireEvent.change(input, { target: { value: 'New Project Name' } })
@@ -175,7 +175,7 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Rename'))
+    fireEvent.click(screen.getByText('名前を変更'))
 
     const input = await screen.findByRole('textbox')
     fireEvent.change(input, { target: { value: 'New Name' } })
@@ -193,7 +193,7 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Archive'))
+    fireEvent.click(screen.getByText('アーカイブ'))
 
     expect(onArchiveProject).toHaveBeenCalledWith('1')
   })
@@ -203,11 +203,11 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Delete'))
+    fireEvent.click(screen.getByText('削除'))
 
     await waitFor(() => {
-      expect(screen.getByText('Delete Project')).toBeInTheDocument()
-      expect(screen.getByText(/Are you sure you want to delete/)).toBeInTheDocument()
+      expect(screen.getByText('プロジェクトを削除')).toBeInTheDocument()
+      expect(screen.getByText(/を削除しますか/)).toBeInTheDocument()
     })
   })
 
@@ -217,14 +217,14 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Delete'))
+    fireEvent.click(screen.getByText('削除'))
 
     await waitFor(() => {
-      expect(screen.getByText('Delete Project')).toBeInTheDocument()
+      expect(screen.getByText('プロジェクトを削除')).toBeInTheDocument()
     })
 
     // Click the Delete button in the confirmation dialog
-    const confirmButtons = screen.getAllByText('Delete')
+    const confirmButtons = screen.getAllByText('削除')
     const confirmButton = confirmButtons[confirmButtons.length - 1]
     fireEvent.click(confirmButton)
 
@@ -237,16 +237,16 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Delete'))
+    fireEvent.click(screen.getByText('削除'))
 
     await waitFor(() => {
-      expect(screen.getByText('Delete Project')).toBeInTheDocument()
+      expect(screen.getByText('プロジェクトを削除')).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByText('Cancel'))
+    fireEvent.click(screen.getByText('キャンセル'))
 
     await waitFor(() => {
-      expect(screen.queryByText('Delete Project')).not.toBeInTheDocument()
+      expect(screen.queryByText('プロジェクトを削除')).not.toBeInTheDocument()
     })
     expect(onDeleteProject).not.toHaveBeenCalled()
   })
@@ -256,10 +256,10 @@ describe('ProjectSidebar Context Menu', () => {
 
     const projectItem = screen.getByText('Project One')
     fireEvent.contextMenu(projectItem)
-    fireEvent.click(screen.getByText('Change Color'))
+    fireEvent.click(screen.getByText('色を変更'))
 
     await waitFor(() => {
-      expect(screen.getByText('Select Color')).toBeInTheDocument()
+      expect(screen.getByText('色を選択')).toBeInTheDocument()
     })
   })
 })
@@ -301,7 +301,7 @@ describe('ProjectSidebar', () => {
   it('should show empty state when no projects', () => {
     renderWithRouter({ projects: [] })
 
-    expect(screen.getByText('No projects yet')).toBeInTheDocument()
+    expect(screen.getByText('プロジェクトがまだありません')).toBeInTheDocument()
   })
 
   it('should not render removed navigation items', () => {
@@ -360,7 +360,7 @@ describe('ProjectSidebar Name Truncation', () => {
     })
 
     // Expand the archived section.
-    fireEvent.click(screen.getByText(/Archived \(1\)/))
+    fireEvent.click(screen.getByText(/アーカイブ \(1\)/))
 
     const nameEl = screen.getByText(longName)
     expect(nameEl).toHaveClass('truncate', 'min-w-0', 'flex-1')
@@ -377,7 +377,7 @@ describe('ProjectSidebar Archived Projects', () => {
   it('should show archived section toggle when there are archived projects', () => {
     renderWithRouter({ projects: projectsWithArchived })
 
-    expect(screen.getByText(/Archived \(1\)/)).toBeInTheDocument()
+    expect(screen.getByText(/アーカイブ \(1\)/)).toBeInTheDocument()
   })
 
   it('should not show archived projects by default', () => {
@@ -390,7 +390,7 @@ describe('ProjectSidebar Archived Projects', () => {
   it('should show archived projects when toggle is clicked', async () => {
     renderWithRouter({ projects: projectsWithArchived })
 
-    fireEvent.click(screen.getByText(/Archived \(1\)/))
+    fireEvent.click(screen.getByText(/アーカイブ \(1\)/))
 
     await waitFor(() => {
       expect(screen.getByText('Archived Project')).toBeInTheDocument()
@@ -401,7 +401,7 @@ describe('ProjectSidebar Archived Projects', () => {
     renderWithRouter({ projects: projectsWithArchived })
 
     // Expand archived section
-    fireEvent.click(screen.getByText(/Archived \(1\)/))
+    fireEvent.click(screen.getByText(/アーカイブ \(1\)/))
 
     await waitFor(() => {
       expect(screen.getByText('Archived Project')).toBeInTheDocument()
@@ -410,9 +410,9 @@ describe('ProjectSidebar Archived Projects', () => {
     // Right-click on archived project
     fireEvent.contextMenu(screen.getByText('Archived Project'))
 
-    expect(screen.getByText('Restore')).toBeInTheDocument()
-    expect(screen.queryByText('Rename')).not.toBeInTheDocument()
-    expect(screen.queryByText('Archive')).not.toBeInTheDocument()
+    expect(screen.getByText('復元')).toBeInTheDocument()
+    expect(screen.queryByText('名前を変更')).not.toBeInTheDocument()
+    expect(screen.queryByText('アーカイブ')).not.toBeInTheDocument()
   })
 
   it('should call onRestoreProject when Restore is clicked', async () => {
@@ -420,7 +420,7 @@ describe('ProjectSidebar Archived Projects', () => {
     renderWithRouter({ projects: projectsWithArchived, onRestoreProject })
 
     // Expand archived section
-    fireEvent.click(screen.getByText(/Archived \(1\)/))
+    fireEvent.click(screen.getByText(/アーカイブ \(1\)/))
 
     await waitFor(() => {
       expect(screen.getByText('Archived Project')).toBeInTheDocument()
@@ -428,7 +428,7 @@ describe('ProjectSidebar Archived Projects', () => {
 
     // Right-click on archived project and click Restore
     fireEvent.contextMenu(screen.getByText('Archived Project'))
-    fireEvent.click(screen.getByText('Restore'))
+    fireEvent.click(screen.getByText('復元'))
 
     expect(onRestoreProject).toHaveBeenCalledWith('2')
   })
@@ -436,7 +436,7 @@ describe('ProjectSidebar Archived Projects', () => {
   it('should not show archived section when there are no archived projects', () => {
     renderWithRouter({ projects: mockProjects })
 
-    expect(screen.queryByText(/Archived/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/アーカイブ/)).not.toBeInTheDocument()
   })
 })
 
@@ -453,7 +453,7 @@ describe('ProjectSidebar Default Shell Submenu', () => {
     fireEvent.contextMenu(projectItem)
 
     await waitFor(() => {
-      expect(screen.getByText('Default Shell')).toBeInTheDocument()
+      expect(screen.getByText('既定のシェル')).toBeInTheDocument()
     })
   })
 
@@ -470,7 +470,7 @@ describe('ProjectSidebar Default Shell Submenu', () => {
     fireEvent.contextMenu(projectItem)
 
     // Hover over Default Shell to show submenu
-    const shellMenuItem = await screen.findByText('Default Shell')
+    const shellMenuItem = await screen.findByText('既定のシェル')
     fireEvent.mouseEnter(shellMenuItem.closest('div')!)
 
     // Click on Zsh in submenu
@@ -502,7 +502,7 @@ describe('ProjectSidebar Terminal Activity Indicator', () => {
     expect(spinner).not.toBeNull()
 
     const wrapper = spinner!.closest('span')
-    expect(wrapper).toHaveAttribute('title', 'Terminal activity')
+    expect(wrapper).toHaveAttribute('title', 'ターミナルが動作中')
   })
 
   it('should show activity indicator even when project is active if hasActivity is true', () => {
@@ -549,7 +549,7 @@ describe('ProjectSidebar Worktree Row', () => {
     renderWithRouter({ projects: projectWithWorktree, activeProjectId: '1' })
     expandWorktrees()
 
-    const row = screen.getByLabelText('Worktree try-new-hero on feature/try-new-hero')
+    const row = screen.getByLabelText('feature/try-new-hero の作業ツリー: try-new-hero')
     expect(row).toHaveAttribute('title', expect.stringContaining('feature/try-new-hero'))
   })
 
@@ -557,7 +557,7 @@ describe('ProjectSidebar Worktree Row', () => {
     renderWithRouter({ projects: projectWithWorktree, activeProjectId: '1' })
     expandWorktrees()
 
-    expect(screen.getByLabelText('Open terminal in try-new-hero')).toBeInTheDocument()
+    expect(screen.getByLabelText('try-new-hero でターミナルを開く')).toBeInTheDocument()
   })
 
   it('opens a terminal in the worktree when the terminal button is clicked, without triggering row select', async () => {
@@ -565,7 +565,7 @@ describe('ProjectSidebar Worktree Row', () => {
     renderWithRouter({ projects: projectWithWorktree, activeProjectId: '1', onSelectProject })
     expandWorktrees()
 
-    fireEvent.click(screen.getByLabelText('Open terminal in try-new-hero'))
+    fireEvent.click(screen.getByLabelText('try-new-hero でターミナルを開く'))
 
     await waitFor(() => {
       expect(mockActivateAndOpenTerminal).toHaveBeenCalled()
@@ -578,7 +578,7 @@ describe('ProjectSidebar Worktree Row', () => {
     renderWithRouter({ projects: projectWithWorktree, activeProjectId: '1' })
     expandWorktrees()
 
-    const termButton = screen.getByLabelText('Open terminal in try-new-hero')
+    const termButton = screen.getByLabelText('try-new-hero でターミナルを開く')
     // Enter on the nested terminal button must not bubble to the row's onKeyDown select
     fireEvent.keyDown(termButton, { key: 'Enter' })
 
@@ -642,7 +642,7 @@ describe('ProjectSidebar Project Search', () => {
     })
 
     expect(screen.getByTestId('project-search-empty')).toBeInTheDocument()
-    expect(screen.getByText('No projects found')).toBeInTheDocument()
+    expect(screen.getByText('プロジェクトが見つかりません')).toBeInTheDocument()
   })
 
   it('clears the query when the clear button is clicked', () => {
@@ -742,7 +742,7 @@ describe('ProjectSidebar Project Search', () => {
       target: { value: 'Project' }
     })
 
-    const toggle = screen.getByLabelText(/Archived projects/)
+    const toggle = screen.getByLabelText(/アーカイブ済みプロジェクト（\d+件）/)
     expect(toggle).toBeDisabled()
   })
 })
@@ -769,20 +769,20 @@ describe('ProjectSidebar Worktree Search', () => {
   it('shows a worktree search box with an icon once there are 10+ worktrees', () => {
     renderWithRouter({ projects: projectWithManyWorktrees, activeProjectId: '1' })
     expandWorktrees()
-    expect(screen.getByLabelText('Search worktrees')).toBeInTheDocument()
+    expect(screen.getByLabelText('作業ツリーを検索')).toBeInTheDocument()
   })
 
   it('shows a clear button only after typing, and clears on click', () => {
     renderWithRouter({ projects: projectWithManyWorktrees, activeProjectId: '1' })
     expandWorktrees()
 
-    const input = screen.getByLabelText('Search worktrees') as HTMLInputElement
-    expect(screen.queryByLabelText('Clear worktree search')).not.toBeInTheDocument()
+    const input = screen.getByLabelText('作業ツリーを検索') as HTMLInputElement
+    expect(screen.queryByLabelText('作業ツリー検索をクリア')).not.toBeInTheDocument()
 
     fireEvent.change(input, { target: { value: 'worktree-3' } })
-    expect(screen.getByLabelText('Clear worktree search')).toBeInTheDocument()
+    expect(screen.getByLabelText('作業ツリー検索をクリア')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByLabelText('Clear worktree search'))
+    fireEvent.click(screen.getByLabelText('作業ツリー検索をクリア'))
     expect(input.value).toBe('')
   })
 
@@ -790,7 +790,7 @@ describe('ProjectSidebar Worktree Search', () => {
     renderWithRouter({ projects: projectWithManyWorktrees, activeProjectId: '1' })
     expandWorktrees()
 
-    const input = screen.getByLabelText('Search worktrees') as HTMLInputElement
+    const input = screen.getByLabelText('作業ツリーを検索') as HTMLInputElement
     fireEvent.change(input, { target: { value: 'worktree-3' } })
     fireEvent.keyDown(input, { key: 'Escape' })
 

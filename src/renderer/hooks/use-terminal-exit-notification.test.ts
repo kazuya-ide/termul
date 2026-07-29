@@ -85,7 +85,7 @@ describe('terminal exit notification logic', () => {
     const { emitExit } = renderExitHook()
     emitExit('pty-1', 0)
 
-    expect(sendDesktopNotification).toHaveBeenCalledWith('My Project', 'Build Server — DONE')
+    expect(sendDesktopNotification).toHaveBeenCalledWith('My Project', 'Build Server — 完了')
   })
 
   it('sends Failed message for non-zero exit code', () => {
@@ -94,7 +94,7 @@ describe('terminal exit notification logic', () => {
 
     expect(sendDesktopNotification).toHaveBeenCalledWith(
       'My Project',
-      'Build Server — Failed (exit 1)'
+      'Build Server — 失敗 (終了コード 1)'
     )
   })
 
@@ -104,7 +104,7 @@ describe('terminal exit notification logic', () => {
 
     expect(sendDesktopNotification).toHaveBeenCalledWith(
       'My Project',
-      'Build Server — Failed (exit -1)'
+      'Build Server — 失敗 (終了コード -1)'
     )
   })
 
@@ -114,7 +114,7 @@ describe('terminal exit notification logic', () => {
     const { emitExit } = renderExitHook()
     emitExit('pty-1', 0)
 
-    expect(sendDesktopNotification).toHaveBeenCalledWith('Termul', 'Build Server — DONE')
+    expect(sendDesktopNotification).toHaveBeenCalledWith('Termul', 'Build Server — 完了')
   })
 
   it('does not send notification for unknown ptyId', () => {
@@ -139,7 +139,7 @@ describe('terminal exit notification logic', () => {
     // The truncated terminal name is then interpolated into the body.
     const truncatedName = `${'A'.repeat(MAX_NOTIFICATION_TEXT_LENGTH - 1)}…`
     expect(truncatedName).toHaveLength(MAX_NOTIFICATION_TEXT_LENGTH)
-    expect(sendDesktopNotification).toHaveBeenCalledWith('My Project', `${truncatedName} — DONE`)
+    expect(sendDesktopNotification).toHaveBeenCalledWith('My Project', `${truncatedName} — 完了`)
   })
 
   it('sanitizes newlines in names', () => {
@@ -152,7 +152,7 @@ describe('terminal exit notification logic', () => {
     const { emitExit } = renderExitHook()
     emitExit('pty-1', 0)
 
-    expect(sendDesktopNotification).toHaveBeenCalledWith('My Project', 'Build Server — DONE')
+    expect(sendDesktopNotification).toHaveBeenCalledWith('My Project', 'Build Server — 完了')
   })
 
   describe('needsAttention flag', () => {

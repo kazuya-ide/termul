@@ -89,7 +89,7 @@ describe('UpdateAvailableToast error surfacing', () => {
 
     expect(downloadUpdate).toHaveBeenCalledTimes(1)
     expect(vi.mocked(toast.error)).toHaveBeenCalledWith(
-      'Update download failed',
+      '更新のダウンロードに失敗しました',
       expect.objectContaining({ description: 'signature verification failed' })
     )
   })
@@ -104,7 +104,7 @@ describe('UpdateAvailableToast error surfacing', () => {
     expect(confirmMock).toHaveBeenCalledTimes(1)
     expect(installAndRestart).toHaveBeenCalledTimes(1)
     expect(vi.mocked(toast.error)).toHaveBeenCalledWith(
-      'Update install failed',
+      '更新のインストールに失敗しました',
       expect.objectContaining({ description: 'relaunch failed' })
     )
   })
@@ -141,6 +141,6 @@ describe('UpdateAvailableToast error surfacing', () => {
 
     expect(confirmMock).toHaveBeenCalledTimes(1)
     const message = confirmMock.mock.calls[0][0]
-    expect(message).toContain('terminal sessions')
+    expect(message).toContain('ターミナルセッション')
   })
 })

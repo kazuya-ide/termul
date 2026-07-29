@@ -70,7 +70,7 @@ describe('TableOfContents', () => {
       />
     )
 
-    expect(screen.getByText('No headings found')).toBeInTheDocument()
+    expect(screen.getByText('見出しが見つかりません')).toBeInTheDocument()
   })
 
   it('renders heading items and highlights the active heading', () => {
@@ -115,7 +115,7 @@ describe('TableOfContents', () => {
       />
     )
 
-    fireEvent.click(screen.getByLabelText('TOC settings'))
+    fireEvent.click(screen.getByLabelText('目次の設定'))
 
     expect(screen.getByText('H1-H1')).toBeInTheDocument()
     expect(screen.getByText('H1-H2')).toBeInTheDocument()

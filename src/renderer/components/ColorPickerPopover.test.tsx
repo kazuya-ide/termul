@@ -15,7 +15,7 @@ describe('ColorPickerPopover', () => {
   it('should render color options', () => {
     render(<ColorPickerPopover {...defaultProps} />)
 
-    expect(screen.getByText('Select Color')).toBeInTheDocument()
+    expect(screen.getByText('色を選択')).toBeInTheDocument()
     // Should render multiple color buttons
     const buttons = screen.getAllByRole('button')
     expect(buttons.length).toBeGreaterThan(0)

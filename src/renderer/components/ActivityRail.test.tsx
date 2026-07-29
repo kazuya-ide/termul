@@ -59,7 +59,7 @@ describe('ActivityRail', () => {
   it('toggles sidebar via persistence-aware updater on click', async () => {
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide sidebar' }))
+    fireEvent.click(screen.getByRole('button', { name: 'サイドバーを隠す' }))
 
     await waitFor(() => {
       expect(mockUpdatePanelVisibility).toHaveBeenCalledWith('sidebarVisible', false)
@@ -69,7 +69,7 @@ describe('ActivityRail', () => {
   it('toggles file explorer via persistence-aware updater on click', async () => {
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide file explorer' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ファイルエクスプローラーを隠す' }))
 
     await waitFor(() => {
       expect(mockUpdatePanelVisibility).toHaveBeenCalledWith('fileExplorerVisible', false)
@@ -81,7 +81,7 @@ describe('ActivityRail', () => {
 
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide sidebar' }))
+    fireEvent.click(screen.getByRole('button', { name: 'サイドバーを隠す' }))
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith('persist failed')
@@ -93,7 +93,7 @@ describe('ActivityRail', () => {
 
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide file explorer' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ファイルエクスプローラーを隠す' }))
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith('persist failed')
@@ -103,7 +103,7 @@ describe('ActivityRail', () => {
   it('navigates to preferences on click', () => {
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open preferences' }))
+    fireEvent.click(screen.getByRole('button', { name: '環境設定を開く' }))
 
     expect(mockNavigate).toHaveBeenCalledWith('/preferences')
   })
@@ -111,13 +111,15 @@ describe('ActivityRail', () => {
   it('exposes the keyboard shortcuts trigger', () => {
     renderRail()
 
-    expect(screen.getByRole('button', { name: 'Open keyboard shortcuts menu' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'キーボードショートカットメニューを開く' })
+    ).toBeInTheDocument()
   })
 
   it('disables color themes when no toggle handler is provided', () => {
     renderRail()
 
-    const themeButton = screen.getByRole('button', { name: 'Color themes' })
+    const themeButton = screen.getByRole('button', { name: 'カラーテーマ' })
     expect(themeButton).toBeDisabled()
     expect(themeButton).toHaveAttribute('aria-disabled', 'true')
     expect(themeButton).not.toHaveAttribute('aria-pressed')
@@ -131,7 +133,7 @@ describe('ActivityRail', () => {
       </MemoryRouter>
     )
 
-    const themeButton = screen.getByRole('button', { name: 'Color themes' })
+    const themeButton = screen.getByRole('button', { name: 'カラーテーマ' })
     expect(themeButton).not.toBeDisabled()
     expect(themeButton).toHaveAttribute('aria-pressed', 'true')
 
@@ -151,7 +153,7 @@ describe('ActivityRail', () => {
 
     renderRail()
 
-    const rail = screen.getByRole('navigation', { name: 'Global actions' })
+    const rail = screen.getByRole('navigation', { name: 'グローバルアクション' })
     expect(rail.className).not.toContain('pt-[32px]')
     expect(rail.querySelector('[data-tauri-drag-region="true"]')).not.toBeNull()
   })
@@ -164,7 +166,7 @@ describe('ActivityRail', () => {
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open projects' }))
+    fireEvent.click(screen.getByRole('button', { name: 'プロジェクトを開く' }))
 
     expect(onOpenCommandPalette).toHaveBeenCalledTimes(1)
   })
@@ -177,7 +179,7 @@ describe('ActivityRail', () => {
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open git changes' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Gitの変更を開く' }))
 
     expect(onOpenGitChanges).toHaveBeenCalledTimes(1)
   })
@@ -190,7 +192,7 @@ describe('ActivityRail', () => {
       </MemoryRouter>
     )
 
-    const gitButton = screen.getByRole('button', { name: 'Open git changes' })
+    const gitButton = screen.getByRole('button', { name: 'Gitの変更を開く' })
     expect(gitButton).toBeDisabled()
     fireEvent.click(gitButton)
     expect(onOpenGitChanges).not.toHaveBeenCalled()
@@ -204,7 +206,7 @@ describe('ActivityRail', () => {
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'New agent chat' }))
+    fireEvent.click(screen.getByRole('button', { name: '新しいエージェントチャット' }))
 
     expect(onOpenAgentChat).toHaveBeenCalledTimes(1)
   })
@@ -217,7 +219,7 @@ describe('ActivityRail', () => {
       </MemoryRouter>
     )
 
-    const chatButton = screen.getByRole('button', { name: 'New agent chat' })
+    const chatButton = screen.getByRole('button', { name: '新しいエージェントチャット' })
     expect(chatButton).toBeDisabled()
     fireEvent.click(chatButton)
     expect(onOpenAgentChat).not.toHaveBeenCalled()
@@ -226,7 +228,7 @@ describe('ActivityRail', () => {
   it('toggles the SSH panel via persistence-aware updater on click', async () => {
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide SSH panel' }))
+    fireEvent.click(screen.getByRole('button', { name: 'SSHパネルを隠す' }))
 
     await waitFor(() => {
       expect(mockUpdatePanelVisibility).toHaveBeenCalledWith('sshPanelVisible', false)
@@ -238,7 +240,7 @@ describe('ActivityRail', () => {
 
     renderRail()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide SSH panel' }))
+    fireEvent.click(screen.getByRole('button', { name: 'SSHパネルを隠す' }))
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith('persist failed')

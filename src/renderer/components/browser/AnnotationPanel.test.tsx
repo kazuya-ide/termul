@@ -83,19 +83,19 @@ describe('AnnotationPanel', () => {
   describe('empty state', () => {
     it('renders empty state when no annotations exist', () => {
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} />)
-      expect(screen.getByText('No annotations on this page.')).toBeInTheDocument()
+      expect(screen.getByText('このページに注釈はありません。')).toBeInTheDocument()
     })
 
     it('shows session-scoped notice', () => {
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} />)
-      expect(screen.getByText(/Session-scoped/i)).toBeInTheDocument()
+      expect(screen.getByText(/セッション限定/)).toBeInTheDocument()
     })
   })
 
   describe('tool group rendering', () => {
     it('renders Draw button with aria-pressed when draw mode is active', () => {
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} annotationSubMode="draw" />)
-      const drawBtn = screen.getByLabelText('Draw rectangle annotations')
+      const drawBtn = screen.getByLabelText('長方形の注釈を描画')
       expect(drawBtn).toBeInTheDocument()
       expect(drawBtn.getAttribute('aria-pressed')).toBe('true')
     })
@@ -108,7 +108,7 @@ describe('AnnotationPanel', () => {
           annotationOverlayAvailable={true}
         />
       )
-      const selectBtn = screen.getByLabelText('Select elements')
+      const selectBtn = screen.getByLabelText('要素を選択')
       expect(selectBtn).toBeInTheDocument()
       expect(selectBtn.getAttribute('aria-pressed')).toBe('true')
     })
@@ -121,7 +121,7 @@ describe('AnnotationPanel', () => {
           annotationOverlayAvailable={true}
         />
       )
-      const drawBtn = screen.getByLabelText('Draw rectangle annotations')
+      const drawBtn = screen.getByLabelText('長方形の注釈を描画')
       expect(drawBtn.getAttribute('aria-pressed')).toBe('false')
     })
 
@@ -133,7 +133,7 @@ describe('AnnotationPanel', () => {
           annotationOverlayAvailable={false}
         />
       )
-      const selectBtn = screen.getByLabelText('Select unavailable on this page')
+      const selectBtn = screen.getByLabelText('このページでは選択操作は利用できません')
       expect(selectBtn).toBeDisabled()
     })
 
@@ -145,7 +145,7 @@ describe('AnnotationPanel', () => {
           annotationOverlayAvailable={false}
         />
       )
-      expect(screen.getByLabelText('Select unavailable on this page')).toBeInTheDocument()
+      expect(screen.getByLabelText('このページでは選択操作は利用できません')).toBeInTheDocument()
     })
 
     it('calls onChangeAnnotationSubMode when Draw button is clicked', () => {
@@ -157,7 +157,7 @@ describe('AnnotationPanel', () => {
           onChangeAnnotationSubMode={onChange}
         />
       )
-      fireEvent.click(screen.getByLabelText('Draw rectangle annotations'))
+      fireEvent.click(screen.getByLabelText('長方形の注釈を描画'))
       expect(onChange).toHaveBeenCalledWith('draw')
     })
 
@@ -170,20 +170,20 @@ describe('AnnotationPanel', () => {
           onChangeAnnotationSubMode={onChange}
         />
       )
-      fireEvent.click(screen.getByLabelText('Select elements'))
+      fireEvent.click(screen.getByLabelText('要素を選択'))
       expect(onChange).toHaveBeenCalledWith('select')
     })
 
     it('renders Note and Export buttons', () => {
       addRegionAnnotation(DEFAULT_PROPS.url, 'tab-1')
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} />)
-      expect(screen.getByLabelText('Add page note')).toBeInTheDocument()
-      expect(screen.getByLabelText('Export annotations')).toBeInTheDocument()
+      expect(screen.getByLabelText('ページにメモを追加')).toBeInTheDocument()
+      expect(screen.getByLabelText('注釈を書き出し')).toBeInTheDocument()
     })
 
     it('Export button is disabled when no annotations', () => {
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} />)
-      expect(screen.getByLabelText('No annotations to export')).toBeDisabled()
+      expect(screen.getByLabelText('書き出す注釈がありません')).toBeDisabled()
     })
   })
 
@@ -282,13 +282,13 @@ describe('AnnotationPanel', () => {
   describe('exit button', () => {
     it('renders exit annotation mode button', () => {
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} />)
-      expect(screen.getByLabelText('Exit annotation mode')).toBeInTheDocument()
+      expect(screen.getByLabelText('注釈モードを終了')).toBeInTheDocument()
     })
 
     it('calls onExitAnnotationMode when exit button is clicked', () => {
       const onExit = vi.fn()
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} onExitAnnotationMode={onExit} />)
-      fireEvent.click(screen.getByLabelText('Exit annotation mode'))
+      fireEvent.click(screen.getByLabelText('注釈モードを終了'))
       expect(onExit).toHaveBeenCalledOnce()
     })
   })
@@ -298,9 +298,9 @@ describe('AnnotationPanel', () => {
       addRegionAnnotation(DEFAULT_PROPS.url, 'tab-1', 'Delete me')
       renderWithProvider(<AnnotationPanel {...DEFAULT_PROPS} />)
 
-      // The delete button uses title="Delete annotation" since Radix TooltipTrigger
+      // The delete button uses title="削除" since Radix TooltipTrigger
       // may interfere with aria-label query
-      const deleteBtn = screen.getByTitle('Delete annotation')
+      const deleteBtn = screen.getByTitle('削除')
       fireEvent.click(deleteBtn)
 
       const annotations = useAnnotationStore.getState().getAnnotationsForUrl(DEFAULT_PROPS.url)

@@ -156,7 +156,7 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
+    expect(screen.getByText('読み込み中...')).toBeInTheDocument()
   })
 
   it('shows root error state and retry action', () => {
@@ -165,9 +165,9 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByText('Failed to load project files.')).toBeInTheDocument()
+    expect(screen.getByText('プロジェクトファイルの読み込みに失敗しました。')).toBeInTheDocument()
     expect(screen.getByText('Permission denied')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '再試行' })).toBeInTheDocument()
   })
 
   it('retries root loading when retry is clicked', () => {
@@ -176,7 +176,7 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    fireEvent.click(screen.getByRole('button', { name: '再試行' }))
 
     expect(mockSetRootLoadError).toHaveBeenCalledWith(null)
     expect(mockToggleDirectory).toHaveBeenCalledWith('/project')
@@ -198,7 +198,7 @@ describe('FileExplorer', () => {
 
     expect(screen.getAllByText('src')).not.toHaveLength(0)
     expect(screen.getAllByText('index.ts')).not.toHaveLength(0)
-    expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+    expect(screen.queryByText('読み込み中...')).not.toBeInTheDocument()
   })
 
   it('renders the refreshed search helper state for short queries while keeping the tree visible', () => {
@@ -210,13 +210,13 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByLabelText('Search files and content')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('Search files and content…')).toBeInTheDocument()
-    expect(screen.getByText('Keep typing to start searching')).toBeInTheDocument()
+    expect(screen.getByLabelText('ファイルと内容を検索')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('ファイルと内容を検索…')).toBeInTheDocument()
+    expect(screen.getByText('入力を続けると検索が始まります')).toBeInTheDocument()
     expect(
-      screen.getByText('Type at least 2 characters to search file names and content.')
+      screen.getByText('ファイル名と内容を検索するには2文字以上入力してください。')
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Clear search' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '検索をクリア' })).toBeInTheDocument()
     expect(screen.getAllByTestId('tree-node').length).toBeGreaterThan(0)
   })
 
@@ -235,15 +235,18 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByRole('tab', { name: /Content 1/i })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tab', { name: /Files 1/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /内容 1/i })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: /ファイル 1/i })).toBeInTheDocument()
     expect(screen.getByText('FileExplorer.tsx')).toBeInTheDocument()
     expect(screen.getByText('src/FileExplorer.tsx')).toBeInTheDocument()
     expect(screen.getByText(/createExplorerSearch\(\)/)).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('tab', { name: /Files 1/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /ファイル 1/i }))
 
-    expect(screen.getByRole('tab', { name: /Files 1/i })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: /ファイル 1/i })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    )
     expect(screen.getByText('term-search.ts')).toBeInTheDocument()
   })
 
@@ -262,7 +265,7 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByRole('tab', { name: /Files …/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /ファイル …/i })).toBeInTheDocument()
   })
 
   it('replaces the pending indicator with the streamed count once matches arrive', () => {
@@ -279,12 +282,12 @@ describe('FileExplorer', () => {
     mockExplorerState.searchFileNameMatches = null
 
     const { rerender } = render(<FileExplorer />)
-    expect(screen.getByRole('tab', { name: /Files …/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /ファイル …/i })).toBeInTheDocument()
 
     mockExplorerState.searchFileNameMatches = ['/project/src/term-search.ts']
     rerender(<FileExplorer />)
 
-    expect(screen.getByRole('tab', { name: /Files 1/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /ファイル 1/i })).toBeInTheDocument()
   })
 
   it('opens file-name search results with existing editor behavior', async () => {
@@ -359,13 +362,13 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByText('No matches for “term”')).toBeInTheDocument()
+    expect(screen.getByText('「term」に一致する結果はありません')).toBeInTheDocument()
     expect(
-      screen.getByText('Try a different term or a shorter phrase to broaden the search.')
+      screen.getByText('別の語句や短いフレーズを試すと検索範囲が広がります。')
     ).toBeInTheDocument()
     expect(
       screen.getByText(
-        'Results were truncated for performance. 3 files were skipped. Scanned 42 files.'
+        'パフォーマンスのため、結果は一部省略されました。 3件のファイルをスキップしました。 42件のファイルをスキャンしました。'
       )
     ).toBeInTheDocument()
   })
@@ -378,13 +381,13 @@ describe('FileExplorer', () => {
 
     const { rerender } = render(<FileExplorer />)
 
-    expect(screen.getByText('Searching for “term”…')).toBeInTheDocument()
+    expect(screen.getByText('「term」を検索中…')).toBeInTheDocument()
 
     mockExplorerState.searchLoading = false
     mockExplorerState.searchError = 'ripgrep unavailable'
     rerender(<FileExplorer />)
 
-    expect(screen.getByText('Search unavailable')).toBeInTheDocument()
+    expect(screen.getByText('検索を利用できません')).toBeInTheDocument()
     expect(screen.getByText('ripgrep unavailable')).toBeInTheDocument()
   })
 
@@ -404,15 +407,18 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByText('Searching for “terminal”…')).toBeInTheDocument()
+    expect(screen.getByText('「terminal」を検索中…')).toBeInTheDocument()
     expect(
-      screen.getByText('Finishing the latest search before showing refreshed matches.')
+      screen.getByText('最新の検索が完了すると、更新された結果が表示されます。')
     ).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /Content 1/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /内容 1/i })).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('tab', { name: /Files 1/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /ファイル 1/i }))
 
-    expect(screen.getByRole('tab', { name: /Files 1/i })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: /ファイル 1/i })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    )
   })
 
   it('surfaces partial-error messaging alongside current results', () => {
@@ -430,11 +436,9 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByText('Partial results for “term”')).toBeInTheDocument()
+    expect(screen.getByText('「term」の一部の結果')).toBeInTheDocument()
     expect(
-      screen.getByText(
-        'Some files timed out Showing the matches that were found before the search stopped.'
-      )
+      screen.getByText('Some files timed out 検索が停止するまでに見つかった一致を表示しています。')
     ).toBeInTheDocument()
     expect(screen.getByText('FileExplorer.tsx')).toBeInTheDocument()
   })
@@ -457,8 +461,8 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.queryByRole('button', { name: /Show \d+ more/ })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Show less' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /他 \d+ 件を表示/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '表示を減らす' })).not.toBeInTheDocument()
   })
 
   it('shows only the first three content hits until expanded', () => {
@@ -480,15 +484,15 @@ describe('FileExplorer', () => {
 
     render(<FileExplorer />)
 
-    expect(screen.getByText('Show 1 more')).toBeInTheDocument()
+    expect(screen.getByText('他 1 件を表示')).toBeInTheDocument()
     expect(screen.queryByText('term fourth')).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Show 1 more' }))
+    fireEvent.click(screen.getByRole('button', { name: '他 1 件を表示' }))
 
     expect(
       screen.getByText((_, element) => element?.textContent === 'term fourth')
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Show less' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '表示を減らす' })).toBeInTheDocument()
   })
 
   it('cancels in-flight filename and content streams on unmount with the active searchId', () => {

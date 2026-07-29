@@ -81,21 +81,19 @@ describe('CommandPalette', () => {
   it('renders a compact command-center layout with metadata, categories, shortcuts, and footer hints', () => {
     renderPalette()
 
+    expect(screen.getByPlaceholderText('コマンド、プロジェクト、設定を検索...')).toBeInTheDocument()
+    expect(screen.getByText('ワークスペース')).toBeInTheDocument()
+    expect(screen.getByText('ナビゲーション')).toBeInTheDocument()
+    expect(screen.getByText('プロジェクト')).toBeInTheDocument()
+    expect(screen.getByText('ツール')).toBeInTheDocument()
+    expect(screen.getByText('アクティブなパネルで新しいシェルを開く')).toBeInTheDocument()
     expect(
-      screen.getByPlaceholderText('Search commands, projects, settings...')
-    ).toBeInTheDocument()
-    expect(screen.getByText('Workspace')).toBeInTheDocument()
-    expect(screen.getByText('Navigation')).toBeInTheDocument()
-    expect(screen.getByText('Projects')).toBeInTheDocument()
-    expect(screen.getByText('Tools')).toBeInTheDocument()
-    expect(screen.getByText('Open a new shell in the active pane')).toBeInTheDocument()
-    expect(
-      screen.getByText('Show the agent launcher prompt in the active pane')
+      screen.getByText('アクティブなパネルにエージェントランチャーのプロンプトを表示')
     ).toBeInTheDocument()
     expect(screen.getByText('Ctrl+T')).toBeInTheDocument()
-    expect(screen.getByText('Navigate')).toBeInTheDocument()
-    expect(screen.getByText('Select')).toBeInTheDocument()
-    expect(screen.getByText('Close')).toBeInTheDocument()
+    expect(screen.getByText('移動')).toBeInTheDocument()
+    expect(screen.getByText('選択')).toBeInTheDocument()
+    expect(screen.getByText('閉じる')).toBeInTheDocument()
   })
 
   it('orders the Projects group above Workspace, Navigation, and Tools', () => {
@@ -105,11 +103,11 @@ describe('CommandPalette', () => {
       (el) => el.textContent
     )
 
-    const projectsIndex = headings.indexOf('Projects')
+    const projectsIndex = headings.indexOf('プロジェクト')
     expect(projectsIndex).toBeGreaterThanOrEqual(0)
-    expect(projectsIndex).toBeLessThan(headings.indexOf('Workspace'))
-    expect(projectsIndex).toBeLessThan(headings.indexOf('Navigation'))
-    expect(projectsIndex).toBeLessThan(headings.indexOf('Tools'))
+    expect(projectsIndex).toBeLessThan(headings.indexOf('ワークスペース'))
+    expect(projectsIndex).toBeLessThan(headings.indexOf('ナビゲーション'))
+    expect(projectsIndex).toBeLessThan(headings.indexOf('ツール'))
   })
 
   it('uses resolved shortcut labels supplied by the shell', () => {
@@ -138,23 +136,23 @@ describe('CommandPalette', () => {
 
   it('searches settings, prefs, and history keywords', async () => {
     renderPalette()
-    const input = screen.getByPlaceholderText('Search commands, projects, settings...')
+    const input = screen.getByPlaceholderText('コマンド、プロジェクト、設定を検索...')
 
     fireEvent.change(input, { target: { value: 'settings' } })
     await waitFor(() => {
-      expect(screen.getByText('Project Settings')).toBeInTheDocument()
-      expect(screen.getByText('App Preferences')).toBeInTheDocument()
+      expect(screen.getByText('プロジェクト設定')).toBeInTheDocument()
+      expect(screen.getByText('アプリの環境設定')).toBeInTheDocument()
     })
 
     fireEvent.change(input, { target: { value: 'prefs' } })
     await waitFor(() => {
-      expect(screen.getByText('App Preferences')).toBeInTheDocument()
+      expect(screen.getByText('アプリの環境設定')).toBeInTheDocument()
     })
 
     fireEvent.change(input, { target: { value: 'history' } })
     await waitFor(() => {
-      expect(screen.getByText('Command History')).toBeInTheDocument()
-      expect(screen.getByText('Review and reuse recent terminal commands')).toBeInTheDocument()
+      expect(screen.getByText('コマンド履歴')).toBeInTheDocument()
+      expect(screen.getByText('直近のターミナルコマンドを確認・再利用')).toBeInTheDocument()
     })
   })
 
@@ -185,36 +183,40 @@ describe('CommandPalette', () => {
       commandId: string
       callback: keyof React.ComponentProps<typeof CommandPalette>
     }> = [
-      { label: 'New Terminal', commandId: 'new-terminal', callback: 'onAddTerminal' },
+      { label: '新規ターミナル', commandId: 'new-terminal', callback: 'onAddTerminal' },
       {
-        label: 'Agent Launcher',
+        label: 'エージェントランチャー',
         commandId: 'show-agent-launcher',
         callback: 'onShowAgentLauncher'
       },
-      { label: 'New Browser Tab', commandId: 'new-browser-tab', callback: 'onNewBrowserTab' },
-      { label: 'Save Workspace Snapshot', commandId: 'save-snapshot', callback: 'onSaveSnapshot' },
+      { label: '新規ブラウザタブ', commandId: 'new-browser-tab', callback: 'onNewBrowserTab' },
       {
-        label: 'Project Settings',
+        label: 'ワークスペースのスナップショットを保存',
+        commandId: 'save-snapshot',
+        callback: 'onSaveSnapshot'
+      },
+      {
+        label: 'プロジェクト設定',
         commandId: 'open-project-settings',
         callback: 'onOpenProjectSettings'
       },
       {
-        label: 'App Preferences',
+        label: 'アプリの環境設定',
         commandId: 'open-app-preferences',
         callback: 'onOpenAppPreferences'
       },
       {
-        label: 'Command History',
+        label: 'コマンド履歴',
         commandId: 'open-command-history',
         callback: 'onOpenCommandHistory'
       },
       {
-        label: 'Open Shortcut Menu',
+        label: 'ショートカットメニューを開く',
         commandId: 'open-shortcut-menu',
         callback: 'onOpenShortcutMenu'
       },
       {
-        label: 'Change Color Theme',
+        label: 'カラーテーマを変更',
         commandId: 'change-color-theme',
         callback: 'onOpenThemePicker'
       }
@@ -249,15 +251,15 @@ describe('CommandPalette', () => {
       onOpenThemePicker: undefined
     })
 
-    expect(screen.queryByText('New Terminal')).not.toBeInTheDocument()
-    expect(screen.queryByText('Agent Launcher')).not.toBeInTheDocument()
-    expect(screen.queryByText('New Browser Tab')).not.toBeInTheDocument()
-    expect(screen.queryByText('Save Workspace Snapshot')).not.toBeInTheDocument()
-    expect(screen.queryByText('Project Settings')).not.toBeInTheDocument()
-    expect(screen.queryByText('App Preferences')).not.toBeInTheDocument()
-    expect(screen.queryByText('Command History')).not.toBeInTheDocument()
-    expect(screen.queryByText('Open Shortcut Menu')).not.toBeInTheDocument()
-    expect(screen.queryByText('Change Color Theme')).not.toBeInTheDocument()
+    expect(screen.queryByText('新規ターミナル')).not.toBeInTheDocument()
+    expect(screen.queryByText('エージェントランチャー')).not.toBeInTheDocument()
+    expect(screen.queryByText('新規ブラウザタブ')).not.toBeInTheDocument()
+    expect(screen.queryByText('ワークスペースのスナップショットを保存')).not.toBeInTheDocument()
+    expect(screen.queryByText('プロジェクト設定')).not.toBeInTheDocument()
+    expect(screen.queryByText('アプリの環境設定')).not.toBeInTheDocument()
+    expect(screen.queryByText('コマンド履歴')).not.toBeInTheDocument()
+    expect(screen.queryByText('ショートカットメニューを開く')).not.toBeInTheDocument()
+    expect(screen.queryByText('カラーテーマを変更')).not.toBeInTheDocument()
     expect(screen.getByText('Alpha')).toBeInTheDocument()
   })
 
@@ -266,8 +268,8 @@ describe('CommandPalette', () => {
 
     renderPalette()
 
-    expect(screen.getByText('Recent')).toBeInTheDocument()
-    expect(screen.getAllByText('Command History')).toHaveLength(2)
+    expect(screen.getByText('最近使った')).toBeInTheDocument()
+    expect(screen.getAllByText('コマンド履歴')).toHaveLength(2)
     expect(screen.getAllByText('Alpha')).toHaveLength(2)
   })
 
@@ -276,8 +278,8 @@ describe('CommandPalette', () => {
 
     renderPalette()
 
-    expect(screen.getByText('Pinned')).toBeInTheDocument()
-    expect(screen.getAllByText('New Terminal')).toHaveLength(2)
+    expect(screen.getByText('ピン留め')).toBeInTheDocument()
+    expect(screen.getAllByText('新規ターミナル')).toHaveLength(2)
     expect(screen.getAllByText('Beta')).toHaveLength(2)
   })
 
@@ -286,13 +288,13 @@ describe('CommandPalette', () => {
 
     renderPalette()
 
-    expect(screen.queryByText('Pinned')).not.toBeInTheDocument()
+    expect(screen.queryByText('ピン留め')).not.toBeInTheDocument()
   })
 
   it('toggles a pin without executing the command or closing the palette', async () => {
     const { props } = renderPalette()
 
-    const pinButton = screen.getByLabelText('Pin New Terminal')
+    const pinButton = screen.getByLabelText('新規ターミナル をピン留め')
     fireEvent.click(pinButton)
 
     await waitFor(() => {
@@ -308,7 +310,7 @@ describe('CommandPalette', () => {
 
     renderPalette()
 
-    expect(screen.getAllByLabelText('Unpin New Terminal').length).toBeGreaterThan(0)
+    expect(screen.getAllByLabelText('新規ターミナル のピン留めを解除').length).toBeGreaterThan(0)
   })
 
   it('keeps optimistic pin state when persistence fails', async () => {
@@ -316,7 +318,7 @@ describe('CommandPalette', () => {
     togglePinnedCommand.mockRejectedValueOnce(new Error('storage unavailable'))
     const { props } = renderPalette()
 
-    fireEvent.click(screen.getByLabelText('Pin Save Workspace Snapshot'))
+    fireEvent.click(screen.getByLabelText('ワークスペースのスナップショットを保存 をピン留め'))
 
     await waitFor(() => {
       expect(consoleWarn).toHaveBeenCalledWith('Failed to toggle pinned command', expect.any(Error))
@@ -332,7 +334,7 @@ describe('CommandPalette', () => {
     saveRecentCommand.mockRejectedValueOnce(new Error('storage unavailable'))
     const { props } = renderPalette()
 
-    fireEvent.click(screen.getByText('Save Workspace Snapshot'))
+    fireEvent.click(screen.getByText('ワークスペースのスナップショットを保存'))
 
     await waitFor(() => {
       expect(props.onClose).toHaveBeenCalled()

@@ -68,7 +68,7 @@ function deferred<T>(): {
 }
 
 async function openPicker(): Promise<void> {
-  fireEvent.click(screen.getByLabelText('Switch git branch'))
+  fireEvent.click(screen.getByLabelText('Git ブランチを切り替え'))
   await waitFor(() => {
     expect(mockBranches).toHaveBeenCalled()
   })
@@ -95,9 +95,9 @@ describe('GitBranchPicker', () => {
     render(<GitBranchPicker {...defaultProps} />)
     await openPicker()
 
-    expect(screen.getByText('This folder is not a git repository.')).toBeDefined()
-    expect(screen.getByRole('button', { name: 'Retry' })).toBeDefined()
-    expect(screen.queryByText('No branches yet.')).toBeNull()
+    expect(screen.getByText('このフォルダは git リポジトリではありません。')).toBeDefined()
+    expect(screen.getByRole('button', { name: '再試行' })).toBeDefined()
+    expect(screen.queryByText('ブランチがまだありません。')).toBeNull()
   })
 
   it('shows empty state when the repo has no local branches', async () => {
@@ -109,8 +109,8 @@ describe('GitBranchPicker', () => {
     render(<GitBranchPicker {...defaultProps} />)
     await openPicker()
 
-    expect(screen.getByText('No branches yet.')).toBeDefined()
-    expect(screen.queryByText('This folder is not a git repository.')).toBeNull()
+    expect(screen.getByText('ブランチがまだありません。')).toBeDefined()
+    expect(screen.queryByText('このフォルダは git リポジトリではありません。')).toBeNull()
   })
 
   it('shows search empty state when branches exist but none match', async () => {
@@ -125,12 +125,12 @@ describe('GitBranchPicker', () => {
     render(<GitBranchPicker {...defaultProps} />)
     await openPicker()
 
-    fireEvent.change(screen.getByPlaceholderText('Search branches...'), {
+    fireEvent.change(screen.getByPlaceholderText('ブランチを検索...'), {
       target: { value: 'feature' }
     })
 
-    expect(screen.getByText('No branches match your search.')).toBeDefined()
-    expect(screen.queryByText('No branches yet.')).toBeNull()
+    expect(screen.getByText('検索条件に一致するブランチがありません。')).toBeDefined()
+    expect(screen.queryByText('ブランチがまだありません。')).toBeNull()
   })
 
   it('ignores stale branch loads from a previous repo path', async () => {
@@ -171,7 +171,9 @@ describe('GitBranchPicker', () => {
     render(<GitBranchPicker {...defaultProps} />)
     await openPicker()
 
-    expect(screen.getByRole('button', { name: 'Create and checkout new branch...' })).toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: '新しいブランチを作成してチェックアウト...' })
+    ).toBeDisabled()
   })
 
   it('disables branch creation when branch loading errors', async () => {
@@ -184,6 +186,8 @@ describe('GitBranchPicker', () => {
     render(<GitBranchPicker {...defaultProps} />)
     await openPicker()
 
-    expect(screen.getByRole('button', { name: 'Create and checkout new branch...' })).toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: '新しいブランチを作成してチェックアウト...' })
+    ).toBeDisabled()
   })
 })

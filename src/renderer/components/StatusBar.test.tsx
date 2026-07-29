@@ -109,7 +109,7 @@ describe('StatusBar', () => {
       renderWithProviders(<StatusBar project={mockProject} />)
 
       expect(screen.getByText('feature-branch')).toBeDefined()
-      expect(screen.getByLabelText('Switch git branch')).toBeDefined()
+      expect(screen.getByLabelText('Git ブランチを切り替え')).toBeDefined()
     })
 
     it('should not render git branch when showGitBranch is false', () => {
@@ -159,7 +159,7 @@ describe('StatusBar', () => {
     it('should render exit code when showExitCode is true', () => {
       renderWithProviders(<StatusBar project={mockProject} />)
 
-      expect(screen.getByText('Exit: 0')).toBeDefined()
+      expect(screen.getByText('終了コード: 0')).toBeDefined()
     })
 
     it('should not render exit code when showExitCode is false', () => {
@@ -169,7 +169,7 @@ describe('StatusBar', () => {
 
       renderWithProviders(<StatusBar project={mockProject} />)
 
-      expect(screen.queryByText('Exit: 0')).toBeNull()
+      expect(screen.queryByText('終了コード: 0')).toBeNull()
     })
 
     it('should hide all optional elements when all settings are false', () => {
@@ -188,7 +188,7 @@ describe('StatusBar', () => {
       expect(screen.getByText('test-project')).toBeDefined()
       expect(screen.queryByText('feature-branch')).toBeNull()
       expect(screen.queryByText('~/project')).toBeNull()
-      expect(screen.queryByText('Exit: 0')).toBeNull()
+      expect(screen.queryByText('終了コード: 0')).toBeNull()
     })
   })
 
@@ -213,7 +213,7 @@ describe('StatusBar', () => {
     it('should render the context bar settings popover trigger', () => {
       renderWithProviders(<StatusBar project={mockProject} />)
 
-      expect(screen.getByLabelText('Context bar settings')).toBeDefined()
+      expect(screen.getByLabelText('コンテキストバー設定')).toBeDefined()
     })
   })
 
@@ -221,13 +221,13 @@ describe('StatusBar', () => {
     it('should render the remote terminal access trigger', () => {
       renderWithProviders(<StatusBar project={mockProject} />)
 
-      expect(screen.getByLabelText('Remote terminal access')).toBeDefined()
+      expect(screen.getByLabelText('リモートターミナルアクセス')).toBeDefined()
     })
 
     it('should render remote trigger without an active project', () => {
       renderWithProviders(<StatusBar project={undefined} />)
 
-      expect(screen.getByLabelText('Remote terminal access')).toBeDefined()
+      expect(screen.getByLabelText('リモートターミナルアクセス')).toBeDefined()
     })
   })
 })

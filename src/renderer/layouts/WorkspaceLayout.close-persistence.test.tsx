@@ -392,10 +392,10 @@ describe('WorkspaceLayout close persistence', () => {
       closeHandler?.()
     })
 
-    expect(await screen.findByText('Unsaved Changes')).toBeInTheDocument()
+    expect(await screen.findByText('未保存の変更')).toBeInTheDocument()
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Save All' }))
+      fireEvent.click(screen.getByRole('button', { name: 'すべて保存' }))
     })
 
     await waitFor(() => {
@@ -417,10 +417,10 @@ describe('WorkspaceLayout close persistence', () => {
       closeHandler?.()
     })
 
-    expect(await screen.findByText('Unsaved Changes')).toBeInTheDocument()
+    expect(await screen.findByText('未保存の変更')).toBeInTheDocument()
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: "Don't Save" }))
+      fireEvent.click(screen.getByRole('button', { name: '保存しない' }))
     })
 
     await waitFor(() => {

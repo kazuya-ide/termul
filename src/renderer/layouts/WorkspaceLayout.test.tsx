@@ -432,10 +432,12 @@ describe('WorkspaceLayout - Empty States', () => {
     it('should render no projects empty state when projects array is empty', () => {
       renderWithRouter()
 
-      expect(screen.getByText('No Projects Yet')).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: 'プロジェクトがまだありません' })
+      ).toBeInTheDocument()
       expect(
         screen.getByText(
-          'Create your first project to organize your terminals, snapshots, and commands'
+          '最初のプロジェクトを作成して、ターミナル・スナップショット・コマンドを整理しましょう'
         )
       ).toBeInTheDocument()
     })
@@ -444,7 +446,7 @@ describe('WorkspaceLayout - Empty States', () => {
       renderWithRouter()
 
       const description = screen.getByText(
-        'Create your first project to organize your terminals, snapshots, and commands'
+        '最初のプロジェクトを作成して、ターミナル・スナップショット・コマンドを整理しましょう'
       )
       expect(description).toBeInTheDocument()
       expect(description.tagName).toBe('P')
@@ -453,7 +455,7 @@ describe('WorkspaceLayout - Empty States', () => {
     it('should have a button to create first project', () => {
       renderWithRouter()
 
-      const button = screen.getByText('Create Your First Project')
+      const button = screen.getByText('最初のプロジェクトを作成')
       expect(button).toBeInTheDocument()
       expect(button.tagName).toBe('BUTTON')
     })
@@ -516,7 +518,7 @@ describe('WorkspaceLayout - Empty States', () => {
     it('should not show no projects empty state when project exists', () => {
       renderWithRouter()
 
-      expect(screen.queryByText('No Projects Yet')).not.toBeInTheDocument()
+      expect(screen.queryByText('プロジェクトがまだありません')).not.toBeInTheDocument()
     })
   })
 
@@ -528,7 +530,9 @@ describe('WorkspaceLayout - Empty States', () => {
 
       renderWithRouter()
 
-      const emptyStateContainer = screen.getByText('No Projects Yet').closest('div')?.parentElement
+      const emptyStateContainer = screen
+        .getByRole('heading', { name: 'プロジェクトがまだありません' })
+        .closest('div')?.parentElement
       expect(emptyStateContainer?.className).toContain('items-center')
       expect(emptyStateContainer?.className).toContain('justify-center')
     })
@@ -573,7 +577,7 @@ describe('WorkspaceLayout - Empty States', () => {
 
       renderWithRouter()
 
-      const title = screen.getByText('No Projects Yet')
+      const title = screen.getByRole('heading', { name: 'プロジェクトがまだありません' })
       expect(title.className).toContain('text-xl')
       expect(title.className).toContain('font-semibold')
     })
@@ -585,7 +589,7 @@ describe('WorkspaceLayout - Empty States', () => {
 
       renderWithRouter()
 
-      const description = screen.getByText(/Create your first project to organize your terminals/)
+      const description = screen.getByText(/最初のプロジェクトを作成して/)
       expect(description.className).toContain('text-muted-foreground')
     })
   })
@@ -598,7 +602,9 @@ describe('WorkspaceLayout - Empty States', () => {
 
       renderWithRouter()
 
-      expect(screen.getByText('No Projects Yet')).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: 'プロジェクトがまだありません' })
+      ).toBeInTheDocument()
       expect(screen.queryByText('No Terminals Yet')).not.toBeInTheDocument()
     })
 
@@ -629,7 +635,7 @@ describe('WorkspaceLayout - Empty States', () => {
 
       renderWithRouter()
 
-      expect(screen.queryByText('No Projects Yet')).not.toBeInTheDocument()
+      expect(screen.queryByText('プロジェクトがまだありません')).not.toBeInTheDocument()
       expect(screen.getByText('Drag a tab or file here')).toBeInTheDocument()
     })
 
@@ -682,7 +688,7 @@ describe('WorkspaceLayout - Empty States', () => {
 
       renderWithRouter()
 
-      expect(screen.queryByText('No Projects Yet')).not.toBeInTheDocument()
+      expect(screen.queryByText('プロジェクトがまだありません')).not.toBeInTheDocument()
       expect(screen.queryByText('No Terminals Yet')).not.toBeInTheDocument()
     })
   })
@@ -820,7 +826,7 @@ describe('WorkspaceLayout - Empty States', () => {
       renderWithRouter()
 
       await waitFor(() => {
-        expect(screen.getByRole('dialog', { name: 'Color theme picker' })).toBeInTheDocument()
+        expect(screen.getByRole('dialog', { name: '配色テーマ選択' })).toBeInTheDocument()
       })
     })
   })

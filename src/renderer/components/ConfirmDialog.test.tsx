@@ -28,7 +28,7 @@ describe('ConfirmDialog', () => {
     const onConfirm = vi.fn()
     render(<ConfirmDialog {...defaultProps} onConfirm={onConfirm} />)
 
-    fireEvent.click(screen.getByText('Confirm'))
+    fireEvent.click(screen.getByText('確認'))
 
     expect(onConfirm).toHaveBeenCalled()
   })
@@ -37,7 +37,7 @@ describe('ConfirmDialog', () => {
     const onCancel = vi.fn()
     render(<ConfirmDialog {...defaultProps} onCancel={onCancel} />)
 
-    fireEvent.click(screen.getByText('Cancel'))
+    fireEvent.click(screen.getByText('キャンセル'))
 
     expect(onCancel).toHaveBeenCalled()
   })

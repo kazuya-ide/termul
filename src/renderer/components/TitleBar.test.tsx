@@ -37,9 +37,9 @@ describe('TitleBar (window control strip)', () => {
   it('renders window controls on Windows/Linux', () => {
     render(<TitleBar />)
 
-    expect(screen.getByRole('button', { name: 'Minimize window' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Maximize window' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Close window' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ウィンドウを最小化' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ウィンドウを最大化' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ウィンドウを閉じる' })).toBeInTheDocument()
   })
 
   it('renders nothing on macOS (native traffic lights)', () => {
@@ -47,13 +47,13 @@ describe('TitleBar (window control strip)', () => {
     const { container } = render(<TitleBar />)
 
     expect(container).toBeEmptyDOMElement()
-    expect(screen.queryByRole('button', { name: 'Minimize window' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'ウィンドウを最小化' })).not.toBeInTheDocument()
   })
 
   it('minimizes the window on click', () => {
     render(<TitleBar />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Minimize window' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ウィンドウを最小化' }))
 
     expect(mockWindowApi.minimize).toHaveBeenCalledTimes(1)
   })
@@ -61,7 +61,7 @@ describe('TitleBar (window control strip)', () => {
   it('toggles maximize on click', async () => {
     render(<TitleBar />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Maximize window' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ウィンドウを最大化' }))
 
     await waitFor(() => {
       expect(mockWindowApi.toggleMaximize).toHaveBeenCalledTimes(1)
@@ -71,7 +71,7 @@ describe('TitleBar (window control strip)', () => {
   it('closes the window on click', () => {
     render(<TitleBar />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close window' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ウィンドウを閉じる' }))
 
     expect(mockWindowApi.close).toHaveBeenCalledTimes(1)
   })
@@ -83,6 +83,6 @@ describe('TitleBar (window control strip)', () => {
       maximizeRef.cb?.(true)
     })
 
-    expect(screen.getByRole('button', { name: 'Restore window' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ウィンドウを元に戻す' })).toBeInTheDocument()
   })
 })

@@ -144,8 +144,8 @@ describe('AgentLauncher routing', () => {
     renderLauncher()
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
 
-    fireEvent.change(screen.getByLabelText('Agent prompt'), { target: { value: 'do it' } })
-    fireEvent.click(screen.getByLabelText(/Launch/))
+    fireEvent.change(screen.getByLabelText('エージェントへの指示'), { target: { value: 'do it' } })
+    fireEvent.click(screen.getByLabelText(/を起動/))
 
     await waitFor(() => expect(mockLaunchAgentInPane).toHaveBeenCalledTimes(1))
     expect(mockStartChat).not.toHaveBeenCalled()
@@ -167,9 +167,11 @@ describe('AgentLauncher routing', () => {
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
 
     // Dual-mode agent: switch to ACP once the toggle has rendered.
-    fireEvent.click(await screen.findByLabelText('Run as ACP'))
-    fireEvent.change(screen.getByLabelText('Agent prompt'), { target: { value: 'hello acp' } })
-    fireEvent.click(screen.getByLabelText(/Launch/))
+    fireEvent.click(await screen.findByLabelText('ACP として実行'))
+    fireEvent.change(screen.getByLabelText('エージェントへの指示'), {
+      target: { value: 'hello acp' }
+    })
+    fireEvent.click(screen.getByLabelText(/を起動/))
 
     await waitFor(() => expect(mockStartChat).toHaveBeenCalledTimes(1))
     expect(mockStartChat).toHaveBeenCalledWith('acp-registry:claude-acp', '/work')
@@ -183,7 +185,7 @@ describe('AgentLauncher routing', () => {
     renderLauncher()
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
 
-    fireEvent.click(await screen.findByLabelText('Run as ACP'))
+    fireEvent.click(await screen.findByLabelText('ACP として実行'))
 
     // Selecting ACP with a resolvable cwd should warm a session ahead of send.
     await waitFor(() =>
@@ -208,7 +210,7 @@ describe('AgentLauncher routing', () => {
       </MemoryRouter>
     )
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
-    fireEvent.click(await screen.findByLabelText('Run as ACP'))
+    fireEvent.click(await screen.findByLabelText('ACP として実行'))
     await waitFor(() =>
       expect(mockPrepareChat).toHaveBeenCalledWith('acp-registry:claude-acp', '/work')
     )
@@ -225,8 +227,8 @@ describe('AgentLauncher routing', () => {
     renderLauncher()
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
 
-    expect(screen.queryByLabelText('Run as ACP')).toBeNull()
-    fireEvent.click(screen.getByLabelText(/Launch/))
+    expect(screen.queryByLabelText('ACP として実行')).toBeNull()
+    fireEvent.click(screen.getByLabelText(/を起動/))
     await waitFor(() => expect(mockLaunchAgentInPane).toHaveBeenCalledTimes(1))
   })
 
@@ -239,8 +241,8 @@ describe('AgentLauncher routing', () => {
     renderLauncher()
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
 
-    fireEvent.change(screen.getByLabelText('Agent prompt'), { target: { value: 'x' } })
-    fireEvent.click(screen.getByLabelText(/Launch/))
+    fireEvent.change(screen.getByLabelText('エージェントへの指示'), { target: { value: 'x' } })
+    fireEvent.click(screen.getByLabelText(/を起動/))
     await waitFor(() => expect(mockStartChat).toHaveBeenCalledTimes(1))
   })
 
@@ -254,8 +256,8 @@ describe('AgentLauncher routing', () => {
     renderLauncher()
     await waitFor(() => expect(mockLoadAllAgents).toHaveBeenCalled())
 
-    fireEvent.change(screen.getByLabelText('Agent prompt'), { target: { value: 'x' } })
-    fireEvent.click(screen.getByLabelText(/Launch/))
+    fireEvent.change(screen.getByLabelText('エージェントへの指示'), { target: { value: 'x' } })
+    fireEvent.click(screen.getByLabelText(/を起動/))
     // The ACP-only entry's single supported mode is 'acp', so resolution lands
     // there even though the legacy payload migrates to mode 'cli' by default.
     await waitFor(() => expect(mockStartChat).toHaveBeenCalledTimes(1))
@@ -266,8 +268,8 @@ describe('AgentLauncher routing', () => {
     // Force the empty state: no CLI agents (prop) and no enabled ACP configs.
     acpConfigsRef.current = []
     renderLauncher([])
-    fireEvent.change(screen.getByLabelText('Agent prompt'), { target: { value: 'x' } })
-    fireEvent.click(screen.getByLabelText(/Launch/))
+    fireEvent.change(screen.getByLabelText('エージェントへの指示'), { target: { value: 'x' } })
+    fireEvent.click(screen.getByLabelText(/を起動/))
     await Promise.resolve()
     expect(mockLaunchAgentInPane).not.toHaveBeenCalled()
     expect(mockStartChat).not.toHaveBeenCalled()

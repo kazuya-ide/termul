@@ -27,36 +27,36 @@ describe('ActivityIndicator', () => {
   it('should render without errors', () => {
     render(<ActivityIndicator />)
 
-    const indicator = screen.getByLabelText('Terminal has activity')
+    const indicator = screen.getByLabelText('アクティビティあり')
     expect(indicator).toBeInTheDocument()
   })
 
   it('should render with base classes', () => {
     render(<ActivityIndicator />)
 
-    const indicator = screen.getByLabelText('Terminal has activity')
+    const indicator = screen.getByLabelText('アクティビティあり')
     expect(indicator).toHaveClass('h-2', 'w-2', 'rounded-full', 'bg-primary')
   })
 
   it('should accept and apply custom className prop', () => {
     render(<ActivityIndicator className="custom-class" />)
 
-    const indicator = screen.getByLabelText('Terminal has activity')
+    const indicator = screen.getByLabelText('アクティビティあり')
     expect(indicator).toHaveClass('custom-class')
   })
 
   it('should have proper accessibility attributes', () => {
     render(<ActivityIndicator />)
 
-    const indicator = screen.getByLabelText('Terminal has activity')
-    expect(indicator).toHaveAttribute('aria-label', 'Terminal has activity')
+    const indicator = screen.getByLabelText('アクティビティあり')
+    expect(indicator).toHaveAttribute('aria-label', 'アクティビティあり')
     expect(indicator).toHaveAttribute('role', 'status')
   })
 
   it('should render as a div element', () => {
     render(<ActivityIndicator />)
 
-    const indicator = screen.getByLabelText('Terminal has activity')
+    const indicator = screen.getByLabelText('アクティビティあり')
     expect(indicator.tagName).toBe('DIV')
   })
 })

@@ -199,7 +199,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    expect(screen.getByTitle('Open terminal menu')).toBeInTheDocument()
+    expect(screen.getByTitle('ターミナルメニューを開く')).toBeInTheDocument()
 
     await waitFor(() => {
       expect(screen.queryByTitle('Close pane')).not.toBeInTheDocument()
@@ -215,7 +215,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    fireEvent.click(screen.getByTitle('Open terminal menu'))
+    fireEvent.click(screen.getByTitle('ターミナルメニューを開く'))
     fireEvent.click(screen.getByText('Bash'))
 
     expect(onAddTerminal).toHaveBeenCalledTimes(1)
@@ -238,7 +238,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    fireEvent.click(screen.getByTitle('New Browser Tab'))
+    fireEvent.click(screen.getByTitle('新規ブラウザタブ'))
 
     expect(onAddBrowserTab).toHaveBeenCalledTimes(1)
   })
@@ -248,8 +248,8 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    expect(screen.getByTitle('Focus pane')).toBeInTheDocument()
-    expect(screen.queryByTitle('Restore pane layout')).not.toBeInTheDocument()
+    expect(screen.getByTitle('ペインにフォーカス')).toBeInTheDocument()
+    expect(screen.queryByTitle('ペイン配置を復元')).not.toBeInTheDocument()
   })
 
   it('renders restore button when pane is fullscreen', async () => {
@@ -259,8 +259,8 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    expect(screen.getByTitle('Restore pane layout')).toBeInTheDocument()
-    expect(screen.queryByTitle('Focus pane')).not.toBeInTheDocument()
+    expect(screen.getByTitle('ペイン配置を復元')).toBeInTheDocument()
+    expect(screen.queryByTitle('ペインにフォーカス')).not.toBeInTheDocument()
   })
 
   it('renders editor tab with non-jitter active style class', async () => {
@@ -294,7 +294,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    const tabCloseButton = screen.getByTitle('Close tab')
+    const tabCloseButton = screen.getByTitle('タブを閉じる')
 
     fireEvent.click(tabCloseButton)
 
@@ -309,7 +309,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    fireEvent.click(screen.getByTitle('Close tab'))
+    fireEvent.click(screen.getByTitle('タブを閉じる'))
 
     expect(mockCloseFileIfIdle).toHaveBeenCalledWith('/a.ts')
     expect(mockCloseTab).toHaveBeenCalledWith('pane-a', 'edit-/a.ts')
@@ -331,7 +331,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    const savingButton = screen.getByTitle('Saving file')
+    const savingButton = screen.getByTitle('保存中')
     expect(savingButton).toBeDisabled()
     fireEvent.click(savingButton)
 
@@ -348,7 +348,7 @@ describe('WorkspaceTabBar', () => {
 
     await flushShellEffect()
 
-    fireEvent.click(screen.getByTitle('Close tab'))
+    fireEvent.click(screen.getByTitle('タブを閉じる'))
 
     expect(mockCloseFileIfIdle).toHaveBeenCalledWith('/a.ts')
     expect(mockCloseTab).not.toHaveBeenCalled()
