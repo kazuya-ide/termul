@@ -2,9 +2,11 @@ import type { AppFrontmatter, AppRecord } from '@shared/types/app-hub.types'
 import { KIND_LABEL, STATUS_LABEL, STATUS_VALUES } from '@shared/types/app-hub.types'
 import {
   AlertTriangle,
+  Archive,
   CheckSquare,
   ChevronDown,
   ChevronUp,
+  Download,
   ExternalLink,
   Eye,
   FolderOpen,
@@ -22,6 +24,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { AppHubSortKey } from '@/hooks/use-app-hub-settings'
+import { useAppHubSettings } from '@/hooks/use-app-hub-settings'
+import { backupRegistryFolder, exportRegistryJson } from '@/lib/app-hub-backup'
 import type { DetectedCandidate } from '@/lib/app-hub-detect'
 import { DEFAULT_SCAN_ROOTS, detectUnregisteredApps } from '@/lib/app-hub-detect'
 import { extractOverviewExcerpt, extractSection } from '@/lib/app-hub-format'
@@ -46,7 +51,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   planned: 'bg-sky-500/15 text-sky-500'
 }
 
-type SortKey = 'name' | 'updated' | 'status' | 'company'
+type SortKey = AppHubSortKey
 
 const SORT_OPTIONS: Array<{ value: SortKey; label: string }> = [
   { value: 'name', label: '名前順' },
@@ -96,12 +101,11 @@ export default function AppHubHome(): React.JSX.Element {
   const { apps, isLoading, hasLoadedOnce, loadErrors, load, pathStatus, registryRoot } =
     useAppHubStore()
   const [query, setQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [companyFilter, setCompanyFilter] = useState<string>('all')
-  const [groupFilter, setGroupFilter] = useState<string>('all')
-  const [sortKey, setSortKey] = useState<SortKey>('name')
+  const { settings, updateSettings } = useAppHubSettings()
+  const { statusFilter, companyFilter, groupFilter, sortKey } = settings
   const [detailSlug, setDetailSlug] = useState<string | null>(null)
   const [showDetect, setShowDetect] = useState(false)
+  const [showBackup, setShowBackup] = useState(false)
   const detailApp = apps.find((a) => a.frontmatter.slug === detailSlug) ?? null
 
   useEffect(() => {
@@ -184,6 +188,14 @@ export default function AppHubHome(): React.JSX.Element {
           </button>
           <button
             type="button"
+            onClick={() => setShowBackup(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border border-border hover:bg-secondary/60"
+          >
+            <Archive size={14} />
+            バックアップ
+          </button>
+          <button
+            type="button"
             onClick={() => void load()}
             disabled={isLoading}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border border-border hover:bg-secondary/60 disabled:opacity-50"
@@ -209,7 +221,7 @@ export default function AppHubHome(): React.JSX.Element {
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => updateSettings({ statusFilter: e.target.value })}
           className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
         >
           <option value="all">すべての状態</option>
@@ -222,7 +234,7 @@ export default function AppHubHome(): React.JSX.Element {
         {companies.length > 0 && (
           <select
             value={companyFilter}
-            onChange={(e) => setCompanyFilter(e.target.value)}
+            onChange={(e) => updateSettings({ companyFilter: e.target.value })}
             className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
           >
             <option value="all">すべての会社</option>
@@ -236,7 +248,7 @@ export default function AppHubHome(): React.JSX.Element {
         {groups.length > 0 && (
           <select
             value={groupFilter}
-            onChange={(e) => setGroupFilter(e.target.value)}
+            onChange={(e) => updateSettings({ groupFilter: e.target.value })}
             className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
           >
             <option value="all">すべてのグループ</option>
@@ -249,7 +261,7 @@ export default function AppHubHome(): React.JSX.Element {
         )}
         <select
           value={sortKey}
-          onChange={(e) => setSortKey(e.target.value as SortKey)}
+          onChange={(e) => updateSettings({ sortKey: e.target.value as SortKey })}
           className="px-2 py-1.5 text-sm rounded-md border border-border bg-background"
         >
           {SORT_OPTIONS.map((o) => (
@@ -305,7 +317,95 @@ export default function AppHubHome(): React.JSX.Element {
         onClose={() => setShowDetect(false)}
         runAction={runAction}
       />
+
+      <AppBackupModal
+        open={showBackup}
+        apps={apps}
+        registryRoot={registryRoot}
+        onClose={() => setShowBackup(false)}
+        runAction={runAction}
+      />
     </div>
+  )
+}
+
+/**
+ * バックアップ/エクスポートモーダル。台帳フォルダ(apps+assets)の丸ごとコピーと、
+ * 全アプリを1つのJSONに書き出す2つの手段を提供する。保存先はダイアログで選ぶ。
+ */
+function AppBackupModal({
+  open,
+  apps,
+  registryRoot,
+  onClose,
+  runAction
+}: {
+  open: boolean
+  apps: AppRecord[]
+  registryRoot: string
+  onClose: () => void
+  runAction: (
+    label: string,
+    action: () => Promise<{ ok: boolean; message: string }>
+  ) => Promise<void>
+}): React.JSX.Element {
+  const [busy, setBusy] = useState(false)
+
+  const run = async (label: string, action: () => Promise<{ ok: boolean; message: string }>) => {
+    setBusy(true)
+    try {
+      await runAction(label, action)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>台帳のバックアップ</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-3 text-sm">
+          <p className="text-xs text-muted-foreground">
+            アプリ台帳ハブの registry フォルダ(apps と assets)を保全します。保存先は選べます。
+          </p>
+
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() =>
+              void run('フォルダのバックアップ', () => backupRegistryFolder(registryRoot))
+            }
+            className="w-full flex items-center gap-2 px-3 py-2 text-left rounded-md border border-border hover:bg-secondary/60 disabled:opacity-50"
+          >
+            <Archive size={16} className="shrink-0" />
+            <span>
+              <span className="font-medium">フォルダごとコピー</span>
+              <span className="block text-xs text-muted-foreground">
+                apps の Markdown と assets の画像を丸ごとコピー(完全バックアップ)
+              </span>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void run('JSONエクスポート', () => exportRegistryJson(apps))}
+            className="w-full flex items-center gap-2 px-3 py-2 text-left rounded-md border border-border hover:bg-secondary/60 disabled:opacity-50"
+          >
+            <Download size={16} className="shrink-0" />
+            <span>
+              <span className="font-medium">JSONで書き出し</span>
+              <span className="block text-xs text-muted-foreground">
+                全{apps.length}件の内容を1つのJSONファイルに保存(画像は含まない)
+              </span>
+            </span>
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
