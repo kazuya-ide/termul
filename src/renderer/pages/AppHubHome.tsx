@@ -13,6 +13,7 @@ import {
   Pin,
   Play,
   RefreshCw,
+  ScanSearch,
   Search,
   Square,
   Terminal
@@ -21,6 +22,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { DetectedCandidate } from '@/lib/app-hub-detect'
+import { DEFAULT_SCAN_ROOTS, detectUnregisteredApps } from '@/lib/app-hub-detect'
 import { extractOverviewExcerpt, extractSection } from '@/lib/app-hub-format'
 import {
   openAppUrl,
@@ -98,6 +101,7 @@ export default function AppHubHome(): React.JSX.Element {
   const [groupFilter, setGroupFilter] = useState<string>('all')
   const [sortKey, setSortKey] = useState<SortKey>('name')
   const [detailSlug, setDetailSlug] = useState<string | null>(null)
+  const [showDetect, setShowDetect] = useState(false)
   const detailApp = apps.find((a) => a.frontmatter.slug === detailSlug) ?? null
 
   useEffect(() => {
@@ -169,15 +173,25 @@ export default function AppHubHome(): React.JSX.Element {
             アプリ台帳ハブ(registry/apps)に登録されているアプリを表示しています。台帳の追加・編集はアプリ台帳ハブ側で行います。
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => void load()}
-          disabled={isLoading}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border border-border hover:bg-secondary/60 disabled:opacity-50"
-        >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          再読み込み
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowDetect(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border border-border hover:bg-secondary/60"
+          >
+            <ScanSearch size={14} />
+            自動検出
+          </button>
+          <button
+            type="button"
+            onClick={() => void load()}
+            disabled={isLoading}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border border-border hover:bg-secondary/60 disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            再読み込み
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -284,7 +298,127 @@ export default function AppHubHome(): React.JSX.Element {
         onClose={() => setDetailSlug(null)}
         runAction={runAction}
       />
+
+      <AppDetectModal
+        open={showDetect}
+        apps={apps}
+        onClose={() => setShowDetect(false)}
+        runAction={runAction}
+      />
     </div>
+  )
+}
+
+/**
+ * 自動検出モーダル。既定の走査フォルダを調べ、package.jsonを持つのに台帳未登録の
+ * プロジェクトを一覧表示する。台帳への登録自体はアプリ台帳ハブ側の役割なので、
+ * ここでは「フォルダ/VS Codeを開く」導線までに留める。
+ */
+function AppDetectModal({
+  open,
+  apps,
+  onClose,
+  runAction
+}: {
+  open: boolean
+  apps: AppRecord[]
+  onClose: () => void
+  runAction: (
+    label: string,
+    action: () => Promise<{ ok: boolean; message: string }>
+  ) => Promise<void>
+}): React.JSX.Element {
+  const [isScanning, setIsScanning] = useState(false)
+  const [hasScanned, setHasScanned] = useState(false)
+  const [candidates, setCandidates] = useState<DetectedCandidate[]>([])
+
+  useEffect(() => {
+    if (!open) return
+    let live = true
+    setIsScanning(true)
+    setHasScanned(false)
+    const registered = apps.map((a) => a.frontmatter.paths.local)
+    void detectUnregisteredApps(DEFAULT_SCAN_ROOTS, registered)
+      .then((found) => {
+        if (!live) return
+        setCandidates(found)
+      })
+      .finally(() => {
+        if (!live) return
+        setIsScanning(false)
+        setHasScanned(true)
+      })
+    return () => {
+      live = false
+    }
+  }, [open, apps])
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>アプリの自動検出</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-3 text-sm">
+          <p className="text-xs text-muted-foreground">
+            既定のフォルダを調べ、package.json
+            があるのに台帳へ未登録のプロジェクトを一覧します。台帳への登録はアプリ台帳ハブ側で行ってください。
+          </p>
+
+          {isScanning && (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <RefreshCw size={14} className="animate-spin" />
+              走査中...
+            </div>
+          )}
+
+          {!isScanning && hasScanned && candidates.length === 0 && (
+            <div className="text-muted-foreground">
+              未登録のプロジェクトは見つかりませんでした。
+            </div>
+          )}
+
+          {!isScanning && candidates.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs text-muted-foreground">
+                {candidates.length}件の未登録プロジェクト
+              </div>
+              {candidates.map((c) => (
+                <div key={c.path} className="border border-border rounded-md p-2.5 space-y-1.5">
+                  <div className="font-medium">
+                    {c.packageName ?? c.dirName}
+                    <span className="ml-2 text-[11px] text-muted-foreground">
+                      slug候補: {c.suggestedSlug}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-muted-foreground truncate" title={c.path}>
+                    {c.path}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => void runAction('フォルダを開く', () => openFolder(c.path))}
+                      className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+                    >
+                      <FolderOpen size={12} />
+                      フォルダ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void runAction('VS Codeで開く', () => openInVSCode(c.path))}
+                      className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+                    >
+                      VS Code
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
