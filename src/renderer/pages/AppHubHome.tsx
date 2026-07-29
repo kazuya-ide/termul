@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronUp,
   ExternalLink,
+  Eye,
   FolderOpen,
   Info,
   ListTodo,
@@ -17,6 +18,7 @@ import {
   Terminal
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { extractOverviewExcerpt, extractSection } from '@/lib/app-hub-format'
@@ -25,6 +27,7 @@ import {
   openClaudeTerminal,
   openFolder,
   openInVSCode,
+  previewAppUrl,
   runSafeCommand
 } from '@/lib/app-hub-launch'
 import { loadThumbnailDataUrl, resolveThumbnailPath } from '@/lib/app-hub-thumbnail'
@@ -332,6 +335,7 @@ function AppCard({
       live = false
     }
   }, [fm.thumbnail, registryRoot])
+  const navigate = useNavigate()
   const primaryUrl = fm.urls.production ?? fm.urls.admin ?? null
   const devCommand = fm.launch?.dev_command?.trim() || ''
   const process = useAppHubProcessStore((s) => s.processes[fm.slug])
@@ -469,6 +473,21 @@ function AppCard({
           >
             <ExternalLink size={12} />
             画面を見る
+          </button>
+        )}
+        {primaryUrl && (
+          <button
+            type="button"
+            onClick={() => {
+              const result = previewAppUrl(primaryUrl)
+              if (result.ok) navigate('/')
+              else toast.error(`プレビューを開けませんでした: ${result.message}`)
+            }}
+            title="termul内の埋め込みブラウザで開く"
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+          >
+            <Eye size={12} />
+            プレビュー
           </button>
         )}
       </div>

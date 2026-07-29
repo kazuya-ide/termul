@@ -14,6 +14,8 @@
  */
 import { Command } from '@tauri-apps/plugin-shell'
 import { openerApi } from '@/lib/tauri-opener-api'
+import { useBrowserSessionStore } from '@/stores/browser-session-store'
+import { useWorkspaceStore } from '@/stores/workspace-store'
 
 export interface LaunchResult {
   ok: boolean
@@ -136,6 +138,26 @@ export async function openAppUrl(url: string): Promise<LaunchResult> {
   return result.success
     ? { ok: true, message: 'URLを開きました' }
     : { ok: false, message: `URLを開けませんでした: ${result.error}` }
+}
+
+const APP_HUB_PREVIEW_TAB_ID = 'apphub-preview'
+
+/**
+ * アプリのURLをtermul内の埋め込みブラウザ(専用タブ)で開く=プレビュー。
+ * 外部ブラウザで開く openAppUrl と違い、termulのワークスペースのタブに表示する。
+ * 埋め込みブラウザが実際に描画されるのはワークスペースルート(/)なので、
+ * 呼び出し側でこの成功後に navigate('/') して画面を切り替える必要がある
+ * (参照実装: browser/terminal-url-navigation.ts の openTerminalUrlInDedicatedBrowser)。
+ */
+export function previewAppUrl(url: string): LaunchResult {
+  try {
+    const tabId = `${APP_HUB_PREVIEW_TAB_ID}-${crypto.randomUUID()}`
+    useBrowserSessionStore.getState().ensureTab(tabId, url)
+    useWorkspaceStore.getState().addBrowserTab(tabId)
+    return { ok: true, message: '' }
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : String(err) }
+  }
 }
 
 /** アプリ台帳ハブ側の safe_commands(id/label/command/args/cwd)をそのまま実行する。 */
