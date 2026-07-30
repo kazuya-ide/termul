@@ -11,6 +11,7 @@ import {
   Eye,
   FolderOpen,
   Info,
+  Link2,
   ListTodo,
   Pin,
   Play,
@@ -31,6 +32,7 @@ import type { DetectedCandidate } from '@/lib/app-hub-detect'
 import { DEFAULT_SCAN_ROOTS, detectUnregisteredApps } from '@/lib/app-hub-detect'
 import { extractOverviewExcerpt, extractSection } from '@/lib/app-hub-format'
 import {
+  createDesktopShortcut,
   openAppUrl,
   openClaudeTerminal,
   openFolder,
@@ -488,6 +490,11 @@ function AppDetectModal({
                 <div key={c.path} className="border border-border rounded-md p-2.5 space-y-1.5">
                   <div className="font-medium">
                     {c.packageName ?? c.dirName}
+                    {c.isExpo && (
+                      <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-500">
+                        Expo
+                      </span>
+                    )}
                     <span className="ml-2 text-[11px] text-muted-foreground">
                       slug候補: {c.suggestedSlug}
                     </span>
@@ -698,6 +705,20 @@ function AppCard({
         >
           <Terminal size={12} />
           Claude Code
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            void runAction('ショートカット作成', () =>
+              createDesktopShortcut(fm.name, fm.paths.local)
+            )
+          }
+          disabled={pathMissing}
+          title="デスクトップにこのアプリのフォルダを開くショートカットを作成"
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-40 disabled:hover:bg-transparent"
+        >
+          <Link2 size={12} />
+          ショートカット
         </button>
         {primaryUrl && (
           <button

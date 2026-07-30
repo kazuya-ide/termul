@@ -31,6 +31,8 @@ export interface DetectedCandidate {
   dirName: string
   /** package.json の name(取得できた場合) */
   packageName: string | null
+  /** Expo(React Native)プロジェクトか(dependencies に expo を含む) */
+  isExpo: boolean
   /** slug の候補(台帳ハブ側で最終決定される。ここでは目安) */
   suggestedSlug: string
 }
@@ -55,14 +57,25 @@ function toSlug(source: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-async function readPackageName(packageJsonPath: string): Promise<string | null> {
+interface PackageMeta {
+  name: string | null
+  isExpo: boolean
+}
+
+async function readPackageMeta(packageJsonPath: string): Promise<PackageMeta> {
   try {
     const result = await filesystemApi.readFile(packageJsonPath)
-    if (!result.success) return null
-    const parsed = JSON.parse(result.data.content) as { name?: unknown }
-    return typeof parsed.name === 'string' && parsed.name.trim() ? parsed.name.trim() : null
+    if (!result.success) return { name: null, isExpo: false }
+    const parsed = JSON.parse(result.data.content) as {
+      name?: unknown
+      dependencies?: Record<string, unknown>
+      devDependencies?: Record<string, unknown>
+    }
+    const name = typeof parsed.name === 'string' && parsed.name.trim() ? parsed.name.trim() : null
+    const isExpo = 'expo' in (parsed.dependencies ?? {}) || 'expo' in (parsed.devDependencies ?? {})
+    return { name, isExpo }
   } catch {
-    return null
+    return { name: null, isExpo: false }
   }
 }
 
@@ -103,12 +116,13 @@ export async function detectUnregisteredApps(
             .replace(/[\\/]+$/, '')
             .split(/[\\/]/)
             .pop() ?? dir
-        const packageName = await readPackageName(packageEntry.path)
+        const meta = await readPackageMeta(packageEntry.path)
         candidates.push({
           path: dir,
           dirName,
-          packageName,
-          suggestedSlug: toSlug(packageName ?? dirName)
+          packageName: meta.name,
+          isExpo: meta.isExpo,
+          suggestedSlug: toSlug(meta.name ?? dirName)
         })
       }
       return

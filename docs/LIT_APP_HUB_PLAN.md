@@ -2,7 +2,7 @@
 
 作成日: 2026-07-27(2026-07-27 一体化方針への修正反映)
 対象リポジトリ: `kazuya-ide/termul`(本家`gnoviawan/termul`のフォーク。日本語化フォーク`ja-localization`ブランチから`feat/lit-app-hub`を分岐)
-状態: **Phase 2〜7 実装済み(2026-07-29時点)。** ホーム画面・アプリ詳細・起動(フォルダ/VS Code/Claude Code/devサーバー)・画面プレビュー(埋め込みブラウザ)・アプリ自動検出・台帳バックアップ/エクスポート・表示設定の永続化・UIの日本語化まで実装済み。残りは Phase 8(Expo拡張)のみ。
+状態: **Phase 2〜8 実装済み(2026-07-30時点)。** ホーム画面・アプリ詳細・起動(フォルダ/VS Code/Claude Code/devサーバー)・画面プレビュー(埋め込みブラウザ)・アプリ自動検出・台帳バックアップ/エクスポート・表示設定の永続化・デスクトップショートカット作成・UIの日本語化まで実装済み。Phase 8(Expo)は「自動検出でExpoプロジェクトを判別」まで対応(Expoアプリの起動は既存のdev_command=`npx expo start`で汎用的に扱えるため専用実装は不要)。
 
 ---
 
@@ -146,7 +146,7 @@ src/renderer/
 | 5 | プロセス管理(devサーバー起動・停止・ログ) | `terminal_spawn`の`kind`拡張(Rust+shared types)、`app-hub-process-store.ts` |
 | 6 | アプリ自動検出 | `app-hub-discovery.ts` |
 | 7 | Windows運用機能(バックアップ・エクスポート・ショートカット等) | `app-hub-store.ts`の永続化を既存Migrationシステムに登録 |
-| 8 | Expo拡張 | MVP後の別フェーズ |
+| 8 | Expo拡張(自動検出でExpo判別。起動は汎用dev_command) | `app-hub-detect.ts`(isExpo判定) |
 
 各フェーズ終了時: `bun run test && bun run typecheck && bun run lint`、必要に応じて`cd src-tauri && cargo check --all-targets && cargo test && cargo clippy --all-targets -- -D warnings`、最終的に`bun run build:tauri:win`。
 

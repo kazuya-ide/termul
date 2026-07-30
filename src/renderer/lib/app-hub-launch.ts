@@ -12,6 +12,7 @@
  * 解決できるようにする。引数は個別にシングルクォートでエスケープして渡すため、
  * シェルメタ文字による注入は起きない(値をそのままコマンドラインへ結合しない)。
  */
+import { desktopDir, join } from '@tauri-apps/api/path'
 import { Command } from '@tauri-apps/plugin-shell'
 import { openerApi } from '@/lib/tauri-opener-api'
 import { useBrowserSessionStore } from '@/stores/browser-session-store'
@@ -155,6 +156,43 @@ export function previewAppUrl(url: string): LaunchResult {
     useBrowserSessionStore.getState().ensureTab(tabId, url)
     useWorkspaceStore.getState().addBrowserTab(tabId)
     return { ok: true, message: '' }
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : String(err) }
+  }
+}
+
+/**
+ * デスクトップに、アプリのフォルダを開く .lnk ショートカットを作る。
+ * TargetPath にフォルダを指定すると、ダブルクリックでエクスプローラが開く。
+ * dev サーバー起動やURL等の複合起動は含めないため壊れにくい。
+ * 値は psQuote でエスケープしてスクリプトに埋め込むので、名前やパスに特殊文字が
+ * 入っても注入は起きない。
+ */
+export async function createDesktopShortcut(
+  appName: string,
+  targetPath: string
+): Promise<LaunchResult> {
+  try {
+    const desktop = await desktopDir()
+    const safeName = appName.replace(/[\\/:*?"<>|]/g, '_').trim() || 'app'
+    const lnkPath = await join(desktop, `${safeName}.lnk`)
+    const script =
+      `$s=(New-Object -ComObject WScript.Shell).CreateShortcut(${psQuote(lnkPath)});` +
+      `$s.TargetPath=${psQuote(targetPath)};` +
+      `$s.WorkingDirectory=${psQuote(targetPath)};` +
+      `$s.Save()`
+    const output = await Command.create('powershell', [
+      '-NoProfile',
+      '-NonInteractive',
+      '-Command',
+      script
+    ]).execute()
+    return output.code === 0
+      ? { ok: true, message: `デスクトップにショートカットを作成しました(${safeName}.lnk)` }
+      : {
+          ok: false,
+          message: `ショートカット作成に失敗しました: ${output.stderr || `exit ${output.code}`}`
+        }
   } catch (err) {
     return { ok: false, message: err instanceof Error ? err.message : String(err) }
   }
