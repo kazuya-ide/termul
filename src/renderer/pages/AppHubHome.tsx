@@ -109,6 +109,12 @@ export default function AppHubHome(): React.JSX.Element {
   const [showDetect, setShowDetect] = useState(false)
   const [showBackup, setShowBackup] = useState(false)
   const detailApp = apps.find((a) => a.frontmatter.slug === detailSlug) ?? null
+  // 連携アプリ(依存)をslugから引けるようにするマップ。
+  const appsBySlug = useMemo(() => {
+    const m = new Map<string, AppRecord>()
+    for (const a of apps) m.set(a.frontmatter.slug, a)
+    return m
+  }, [apps])
 
   useEffect(() => {
     if (!hasLoadedOnce) {
@@ -299,6 +305,7 @@ export default function AppHubHome(): React.JSX.Element {
               key={app.frontmatter.slug}
               record={app}
               registryRoot={registryRoot}
+              appsBySlug={appsBySlug}
               runAction={runAction}
               pathStatus={pathStatus[app.frontmatter.slug] ?? 'unknown'}
               onOpenDetail={() => setDetailSlug(app.frontmatter.slug)}
@@ -542,15 +549,33 @@ const PROCESS_STATUS_CLASS: Record<string, string> = {
   error: 'bg-red-500/15 text-red-500'
 }
 
+interface RelatedAppRef {
+  slug: string
+  relation: string
+}
+
+/** 台帳の related_apps(緩い型)から {slug, relation} を安全に取り出す。 */
+function readRelatedApp(entry: unknown): RelatedAppRef | null {
+  if (!entry || typeof entry !== 'object') return null
+  const e = entry as Record<string, unknown>
+  if (typeof e.slug !== 'string' || !e.slug.trim()) return null
+  return {
+    slug: e.slug.trim(),
+    relation: typeof e.relation === 'string' ? e.relation : 'other'
+  }
+}
+
 function AppCard({
   record,
   registryRoot,
+  appsBySlug,
   runAction,
   pathStatus,
   onOpenDetail
 }: {
   record: AppRecord
   registryRoot: string
+  appsBySlug: Map<string, AppRecord>
   runAction: (
     label: string,
     action: () => Promise<{ ok: boolean; message: string }>
@@ -577,7 +602,19 @@ function AppCard({
     }
   }, [fm.thumbnail, registryRoot])
   const navigate = useNavigate()
-  const primaryUrl = fm.urls.production ?? fm.urls.admin ?? null
+  const primaryUrl = fm.urls.production ?? null
+  const adminUrl = fm.urls.admin ?? null
+  // 連携アプリ(依存 depends_on / API連携 calls_api_of)を台帳から解決する。
+  const linkedApps = (fm.related_apps ?? [])
+    .map(readRelatedApp)
+    .filter(
+      (r): r is RelatedAppRef =>
+        r !== null && (r.relation === 'depends_on' || r.relation === 'calls_api_of')
+    )
+    .map((r) => ({ ...r, dep: appsBySlug.get(r.slug) ?? null }))
+  const requiredDepNames = linkedApps
+    .filter((l) => l.relation === 'depends_on')
+    .map((l) => l.dep?.frontmatter.name ?? l.slug)
   const devCommand = fm.launch?.dev_command?.trim() || ''
   const process = useAppHubProcessStore((s) => s.processes[fm.slug])
   const startProcess = useAppHubProcessStore((s) => s.start)
@@ -745,6 +782,17 @@ function AppCard({
             プレビュー
           </button>
         )}
+        {adminUrl && (
+          <button
+            type="button"
+            onClick={() => void runAction('管理画面を開く', () => openAppUrl(adminUrl))}
+            title="管理画面(admin)を外部ブラウザで開く"
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60"
+          >
+            <ExternalLink size={12} />
+            管理画面
+          </button>
+        )}
       </div>
 
       {fm.safe_commands.length > 0 && (
@@ -763,6 +811,52 @@ function AppCard({
               {cmd.label}
             </button>
           ))}
+        </div>
+      )}
+
+      {linkedApps.length > 0 && (
+        <div className="pt-1.5 border-t border-border/60 space-y-1">
+          <div className="text-[11px] text-muted-foreground">
+            連携アプリ(先に起動が必要な場合あり):
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {linkedApps.map((l) => {
+              const dep = l.dep
+              const relLabel = l.relation === 'depends_on' ? '要' : '連携'
+              if (!dep) {
+                return (
+                  <span
+                    key={l.slug}
+                    className="px-2 py-1 text-[11px] rounded-md border border-border/60 text-muted-foreground"
+                  >
+                    {relLabel}: {l.slug}(台帳に無い)
+                  </span>
+                )
+              }
+              const depName = dep.frontmatter.name
+              const depCmd = dep.frontmatter.launch?.dev_command?.trim() || ''
+              const depPath = dep.frontmatter.paths.local
+              return (
+                <button
+                  key={l.slug}
+                  type="button"
+                  onClick={() => {
+                    if (depCmd) void startProcess(dep.frontmatter.slug, depCmd, depPath)
+                    else void runAction(`${depName}のフォルダを開く`, () => openFolder(depPath))
+                  }}
+                  title={
+                    depCmd
+                      ? `${depName} の開発サーバーを起動`
+                      : `${depName} のフォルダを開く(起動コマンドが台帳に未登録のため手動起動)`
+                  }
+                  className="flex items-center gap-1 px-2 py-1 text-[11px] rounded-md border border-border hover:bg-secondary/60"
+                >
+                  {relLabel}: {depName}
+                  {depCmd ? <Play size={10} /> : <FolderOpen size={10} />}
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
 
@@ -785,7 +879,14 @@ function AppCard({
             ) : (
               <button
                 type="button"
-                onClick={() => void startProcess(fm.slug, devCommand, fm.paths.local)}
+                onClick={() => {
+                  if (requiredDepNames.length > 0) {
+                    toast.info(
+                      `このアプリは ${requiredDepNames.join('・')} が起動している必要があります`
+                    )
+                  }
+                  void startProcess(fm.slug, devCommand, fm.paths.local)
+                }}
                 disabled={pathMissing}
                 className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-secondary/60 disabled:opacity-40 disabled:hover:bg-transparent"
               >
